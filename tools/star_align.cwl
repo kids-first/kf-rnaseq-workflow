@@ -40,7 +40,7 @@ arguments:
       --outFilterIntronMotifs None \
       --alignSoftClipAtReferenceEnds Yes \
       --quantMode TranscriptomeSAM GeneCounts \
-      --outSAMtype BAM SortedByCoordinate \
+      --outSAMtype BAM Unsorted \
       --outSAMunmapped Within \
       --genomeLoad NoSharedMemory \
       --chimSegmentMin 15 \
