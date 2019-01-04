@@ -7,7 +7,7 @@ requirements:
     dockerPull: 'kfdrc/star:latest'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    coresMin: "$(inputs.runThreadN ? inputs.runThreadN : 8)"
+    coresMin: "$(inputs.runThreadN ? inputs.runThreadN : 16)"
     ramMin: 60000
 
 baseCommand: []
