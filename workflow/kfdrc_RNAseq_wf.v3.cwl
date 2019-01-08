@@ -44,7 +44,7 @@ outputs:
 
 steps:
   star:
-    run: ../tools/star_align.d3b.2.cwl
+    run: ../tools/star_align.cwl
     in:
       outSAMattrRGline: STAR_outSAMattrRGline
       readFilesIn1: reads1
@@ -58,9 +58,9 @@ steps:
       gene_counts,
       genomic_bam_out,
       junctions_out,
-    #   log_final_out,
-    #   log_out,
-    #   log_progress_out,
+      log_final_out,
+      log_out,
+      log_progress_out,
     #   star_pass1,
     #   star_pass1_genome,
       transcriptome_bam_out
@@ -100,16 +100,6 @@ steps:
       Gene_TPM,
       Gene_count,
       Exon_count
-    ]
-
-  htseq_count:
-    run: ../tools/htseq-count.cwl
-    in:
-      Aligned_bam: star/genomic_bam_out
-      GTF: GTF_Anno
-      SampleID: sample_name
-    out: [
-      HTSeq_count
     ]
 
   bam2fastq:

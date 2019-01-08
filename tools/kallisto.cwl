@@ -4,7 +4,7 @@ id: kallisto
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'insilicodb/kallisto'
+    dockerPull: 'images.sbgenomics.com/uros_sipetic/kallisto:0.43.1'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8
@@ -18,7 +18,6 @@ arguments:
       quant -i $(inputs.transcript_idx.path)
       -o output --fusion
       -b 10 -t $(inputs.runThreadN)
-      -g $(inputs.GTF.path)
       $(inputs.reads1.path)
       $(inputs.reads2.path) &&
       mv output/abundance.tsv $(inputs.SampleID).abundance.tsv &&

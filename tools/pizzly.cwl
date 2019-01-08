@@ -4,7 +4,7 @@ id: pizzly
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'chrisamiller/docker-pizzly'
+    dockerPull: 'images.sbgenomics.com/uros_sipetic/pizzly:0.37.3'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8
@@ -37,5 +37,5 @@ outputs:
   unfiltered_fusion_fasta:
     type: File
     outputBinding:
-      glob: '*.unfiltered.fusion.fasta'
+      glob: '*.unfiltered.fusions.fasta'
 
