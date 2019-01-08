@@ -7,7 +7,7 @@ requirements:
     dockerPull: 'kfdrc/star:latest'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    coresMin: "$(inputs.runThreadN ? inputs.runThreadN : 16)"
+    coresMin: 16
     ramMin: 60000
 
 baseCommand: []
@@ -17,44 +17,43 @@ arguments:
     valueFrom: |
       tar -zxf $(inputs.genomeDir.path)
 
-      STAR --outSAMattrRGline $(inputs.outSAMattrRGline) \
+      STAR \
+      --runMode alignReads \
+      --runThreadN 16 \
       --genomeDir ./STAR_index/ \
+      --genomeLoad NoSharedMemory \
       --readFilesIn $(inputs.readFilesIn1.path) $(inputs.readFilesIn2.path) \
       --readFilesCommand zcat \
-      --runThreadN $(inputs.runThreadN) \
-      --twopassMode Basic \
+      --limitSjdbInsertNsj 1200000 \
+      --outFileNamePrefix $(inputs.outFileNamePrefix) \
+      --outSAMtype BAM Unsorted \
+      --outSAMstrandField intronMotif \
+      --outSAMattributes NH HI AS nM NM ch \
+      --outSAMunmapped Within \
+      --outSAMattrRGline $(inputs.outSAMattrRGline) \
+      --outFilterType BySJout \
       --outFilterMultimapNmax 20 \
-      --alignSJoverhangMin 8 \
-      --alignSJDBoverhangMin 1 \
       --outFilterMismatchNmax 999 \
       --outFilterMismatchNoverLmax 0.1 \
+      --outFilterScoreMinOverLread 0.33 \
+      --outFilterMatchNminOverLread 0.33 \
       --alignIntronMin 20 \
       --alignIntronMax 1000000 \
       --alignMatesGapMax 1000000 \
-      --outFilterType BySJout \
-      --outFilterScoreMinOverLread 0.33 \
-      --outFilterMatchNminOverLread 0.33 \
-      --limitSjdbInsertNsj 1200000 \
-      --outFileNamePrefix $(inputs.outFileNamePrefix) \
-      --outSAMstrandField intronMotif \
-      --outFilterIntronMotifs None \
-      --alignSoftClipAtReferenceEnds Yes \
-      --quantMode TranscriptomeSAM GeneCounts \
-      --outSAMtype BAM Unsorted \
-      --outSAMunmapped Within \
-      --genomeLoad NoSharedMemory \
+      --alignSJDBoverhangMin 1 \
+      --alignSJoverhangMin 8 \
+      --chimOutType Junctions SeparateSAMold WithinBAM SoftClip \
       --chimSegmentMin 15 \
       --chimJunctionOverhangMin 15 \
-      --chimOutType Junctions SeparateSAMold WithinBAM SoftClip \
       --chimMainSegmentMultNmax 1 \
-      --outSAMattributes NH HI AS nM NM ch
+      --quantMode TranscriptomeSAM GeneCounts \
+      --twopassMode Basic 
 
 inputs:
-  outSAMattrRGline: string
+  genomeDir: File
   readFilesIn1: File[]
   readFilesIn2: File[]
-  genomeDir: File
-  runThreadN: int
+  outSAMattrRGline: string
   outFileNamePrefix: string
 
 outputs:
