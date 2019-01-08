@@ -4,23 +4,23 @@ id: rnaseqc
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'broadinstitute/gtex_rnaseq:V8'
+    dockerPull: 'gcr.io/broad-cga-aarong-gtex/rnaseqc:latest'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8
     ramMin: 10000
 
-baseCommand: [bash, -c]
+baseCommand: [rnaseqc]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      /src/run_rnaseqc.py
-      $(inputs.Aligned_bam.path)
       $(inputs.GTF.path)
-      $(input.GenomeRef.path)
-      $(inputs.SampleID)
-      --output_dir output/
+      $(inputs.Aligned_bam.path)
+      output/
+      --legacy
+      --stranded=rf
+      --rpkm
 
 inputs:
   Aligned_bam: File

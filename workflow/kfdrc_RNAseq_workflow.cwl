@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf_rnaseq_wf
+id: kfdrc_rnaseq_wf
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
@@ -36,7 +36,6 @@ outputs:
   RNASeQC_Gene_TPM: {type: File, outputSource: rna_seqc/Gene_TPM}
   RNASeQC_Gene_count: {type: File, outputSource: rna_seqc/Gene_count}
   RNASeQC_Exon_count: {type: File, outputSource: rna_seqc/Exon_count}
-  HTSeq_expression: {type: File, outputSource: htseq_count/HTSeq_count}
   kallisto_Abundance: {type: File, outputSource: kallisto/abundance_out}
   kallisto_Fusion: {type: File, outputSource: kallisto/fusion_out}
   Pizzly_Fasta: {type: File, outputSource: pizzly/fusions_fasta}
@@ -61,8 +60,6 @@ steps:
       log_final_out,
       log_out,
       log_progress_out,
-    #   star_pass1,
-    #   star_pass1_genome,
       transcriptome_bam_out
     ]
 
