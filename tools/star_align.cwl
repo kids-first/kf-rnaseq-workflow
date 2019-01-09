@@ -18,7 +18,7 @@ arguments:
       tar -zxf $(inputs.genomeDir.path)
 
       STAR --outSAMattrRGline $(inputs.outSAMattrRGline) \
-      --genomeDir ./STAR_index/ \
+      --genomeDir ./$(inputs.genomeDir.nameroot.split('.')[0])/ \
       --readFilesIn $(inputs.readFilesIn1.path) $(inputs.readFilesIn2.path) \
       --readFilesCommand zcat \
       --runThreadN $(inputs.runThreadN) \
@@ -67,6 +67,3 @@ outputs:
   chimeric_sam_out: {type: File, outputBinding: {glob: '*Chimeric.out.sam'}}
   chimeric_junctions: {type: File, outputBinding: {glob: '*Chimeric.out.junction'}}
   gene_counts: {type: File, outputBinding: {glob: '*ReadsPerGene.out.tab'}}
-  star_pass1_genome: {type: Directory, outputBinding: {glob: '*_STARgenome'}}
-  star_pass1: {type: Directory, outputBinding: {glob: '*_STARpass1'}}
-

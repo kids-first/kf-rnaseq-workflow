@@ -51,6 +51,7 @@ steps:
       readFilesIn2: reads2
       r1_adapter: r1_adapter
       r2_adapter: r2_adapter
+      sample_name: sample_name
     out: [
     trimmedReadsR1,
     trimmedReadsR2,
@@ -117,16 +118,6 @@ steps:
       Gene_TPM,
       Gene_count,
       Exon_count
-    ]
-
-  bam2fastq:
-    run: ../tools/bam2fastq.cwl
-    in:
-      Aligned_bam: star/genomic_bam_out
-      SampleID: sample_name
-    out: [
-      kallisto_fq1,
-      kallisto_fq2
     ]
 
   kallisto:
