@@ -8,6 +8,8 @@ requirements:
 
 inputs:
   sample_name: string
+  r1_adapter: string
+  r2_adapter: string
   reads1: File
   reads2: File
   STARgenome: File
@@ -16,13 +18,13 @@ inputs:
   runThread: int
   STAR_outSAMattrRGline: string
   RNAseQC_GTF: File
-  GenomeReference: File
   GTF_Anno: File
   kallisto_idx: File
-  kallisto_transcript_ref: File
+  pizzly_transcript_ref: File
 
 
 outputs:
+  cutadapt_stats: {type: File, outputSource: cutadapt/cutadapt_stats}
   STAR_transcriptome_bam: {type: File, outputSource: star/transcriptome_bam_out}
   STAR_junctions: {type: File, outputSource: star/junctions_out}
   STAR_genomic_bam: {type: File, outputSource: star/genomic_bam_out}
@@ -42,12 +44,25 @@ outputs:
   Pizzly_unfiltered_Fasta: {type: File, outputSource: pizzly/unfiltered_fusion_fasta}
 
 steps:
+  cutadapt:
+    run: ../tools/cutadapter.cwl
+    in:
+      readFilesIn1: reads1
+      readFilesIn2: reads2
+      r1_adapter: r1_adapter
+      r2_adapter: r2_adapter
+    out: [
+    trimmedReadsR1,
+    trimmedReadsR2,
+    cutadapt_stats
+    ]
+
   star:
     run: ../tools/star_align.cwl
     in:
       outSAMattrRGline: STAR_outSAMattrRGline
-      readFilesIn1: reads1
-      readFilesIn2: reads2
+      readFilesIn1: cutadapt/trimmedReadsR1
+      readFilesIn2: cutadapt/trimmedReadsR2
       genomeDir: STARgenome
       runThreadN: runThread
       outFileNamePrefix: sample_name
@@ -118,9 +133,8 @@ steps:
     run: ../tools/kallisto.cwl
     in:
       transcript_idx: kallisto_idx
-      GTF: GTF_Anno
-      reads1: bam2fastq/kallisto_fq1
-      reads2: bam2fastq/kallisto_fq2
+      reads1: cutadapt/trimmedReadsR1
+      reads2: cutadapt/trimmedReadsR2
       runThreadN: runThread
       SampleID: sample_name
     out: [
@@ -131,7 +145,7 @@ steps:
   pizzly:
     run: ../tools/pizzly.cwl
     in:
-      transcript_fa: kallisto_transcript_ref
+      transcript_fa: pizzly_transcript_ref
       GTF: GTF_Anno
       kallisto_fusion: kallisto/fusion_out
       SampleID: sample_name

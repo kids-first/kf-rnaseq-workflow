@@ -25,7 +25,6 @@ arguments:
 
 inputs:
   transcript_idx: File
-  GTF: File
   reads1: File
   reads2: File
   runThreadN: int
