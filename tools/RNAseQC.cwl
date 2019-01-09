@@ -15,39 +15,35 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      $(inputs.GTF.path)
-      $(inputs.Aligned_bam.path)
+      $(inputs.collapsed_gtf.path)
+      $(inputs.Aligned_sorted_bam.path)
       output/
       --legacy
       --stranded=rf
       --rpkm
 
 inputs:
-  Aligned_bam: File
-  GTF: File
-  GenomeRef:
-    type: File
-    secondaryFiles: [.fai, ^.dict]
-  SampleID: string
+  Aligned_sorted_bam: File
+  collapsed_gtf: File
 
 outputs:
   Metrics:
     type: File
     outputBinding:
-      glob: '*.metrics.tsv'
+      glob: 'output/*.metrics.tsv'
 
   Gene_TPM:
     type: File
     outputBinding:
-      glob: '*.gene_tpm.gct'
+      glob: 'output/*.gene_tpm.gct'
 
   Gene_count:
     type: File
     outputBinding:
-      glob: '*.gene_reads.gct'
+      glob: 'output/*.gene_reads.gct'
 
   Exon_count:
     type: File
     outputBinding:
-      glob: '*.exon_reads.gct'
+      glob: 'output/*.exon_reads.gct'
 

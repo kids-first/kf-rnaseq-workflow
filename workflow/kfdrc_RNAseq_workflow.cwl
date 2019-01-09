@@ -85,13 +85,18 @@ steps:
       isoform_out
     ]
 
+  samtools_sort:
+    run: ../tools/samtools_sort.cwl
+    in:
+      unsorted_bam: star/genomic_bam_out
+    out:
+      [sorted_bam]
+
   rna_seqc:
     run: ../tools/RNAseQC.cwl
     in:
-      Aligned_bam: star/genomic_bam_out
-      GTF: RNAseQC_GTF
-      GenomeRef: GenomeReference
-      SampleID: sample_name
+      Aligned_sorted_bam: samtools_sort/sorted_bam
+      collapsed_gtf: RNAseQC_GTF
     out: [
       Metrics,
       Gene_TPM,
