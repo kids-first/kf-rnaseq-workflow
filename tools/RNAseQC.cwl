@@ -20,7 +20,6 @@ arguments:
       output/
       --legacy
       --stranded=rf
-      --rpkm
 
 inputs:
   Aligned_sorted_bam: File
