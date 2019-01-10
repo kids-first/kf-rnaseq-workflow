@@ -34,7 +34,7 @@ arguments:
       --outFilterScoreMinOverLread 0.33
       --outFilterMatchNminOverLread 0.33
       --limitSjdbInsertNsj 1200000
-      --outFileNamePrefix $(inputs.outFileNamePrefix)
+      --outFileNamePrefix $(inputs.outFileNamePrefix).
       --outSAMstrandField intronMotif
       --outFilterIntronMotifs None
       --alignSoftClipAtReferenceEnds Yes
