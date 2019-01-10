@@ -8,8 +8,8 @@ requirements:
 
 inputs:
   sample_name: string
-  r1_adapter: string
-  r2_adapter: string
+  r1_adapter: {type: ['null', string]}
+  r2_adapter: {type: ['null', string]}
   reads1: File
   reads2: File
   STARgenome: File
@@ -67,6 +67,9 @@ steps:
       genomeDir: STARgenome
       runThreadN: runThread
       outFileNamePrefix: sample_name
+      r1_adapter: r1_adapter
+      r2_adapter: r2_adapter
+
     out: [
       chimeric_junctions,
       chimeric_sam_out,

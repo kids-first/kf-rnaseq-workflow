@@ -4,7 +4,7 @@ id: rsem-calculate-expression
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'jinh2/star-rsem'
+    dockerPull: 'images.sbgenomics.com/uros_sipetic/rsem:1.3.1'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8
@@ -16,13 +16,14 @@ arguments:
     shellQuote: false
     valueFrom: >-
       -zxf $(inputs.genomeDir.path) &&
-      /usr/local/RSEM-1.3.1/rsem-calculate-expression
+      rsem-calculate-expression
       --paired-end
       --alignments
+      --append-names
       --no-bam-output
       -p $(inputs.runThreadN)
       $(inputs.bam.path)
-      ./STAR-RSEM-Ref/Homo_sapiens_assembly38
+      ./$(inputs.genomeDir.nameroot.split('.')[0])/$(inputs.genomeDir.nameroot.split('.')[0])
       $(inputs.outFileNamePrefix)
 
 inputs:
