@@ -4,7 +4,7 @@ id: star_fusion
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'trinityctat/ctatfusion:1.4.0'
+    dockerPull: 'trinityctat/ctatfusion:1.5.0'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8

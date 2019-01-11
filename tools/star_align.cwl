@@ -24,15 +24,18 @@ arguments:
       --twopassMode Basic
       --outFilterMultimapNmax 20
       --alignSJoverhangMin 8
-      --alignSJDBoverhangMin 1
+      --alignSJDBoverhangMin 10
+      --alignSJstitchMismatchNmax 5 -1 5 5
       --outFilterMismatchNmax 999
       --outFilterMismatchNoverLmax 0.1
-      --alignIntronMin 20
-      --alignIntronMax 1000000
-      --alignMatesGapMax 1000000
+      --alignIntronMax 100000
+      --chimSegmentReadGapMax 3
+      --chimOutJunctionFormat 1
+      --alignMatesGapMax 100000
       --outFilterType BySJout
       --outFilterScoreMinOverLread 0.33
       --outFilterMatchNminOverLread 0.33
+      --outReadsUnmapped None
       --limitSjdbInsertNsj 1200000
       --outFileNamePrefix $(inputs.outFileNamePrefix).
       --outSAMstrandField intronMotif
@@ -42,8 +45,8 @@ arguments:
       --outSAMtype BAM Unsorted
       --outSAMunmapped Within
       --genomeLoad NoSharedMemory
-      --chimSegmentMin 15
-      --chimJunctionOverhangMin 15
+      --chimSegmentMin 12
+      --chimJunctionOverhangMin 12
       --chimOutType Junctions SeparateSAMold WithinBAM SoftClip
       --chimMainSegmentMultNmax 1
       --outSAMattributes NH HI AS nM NM ch
