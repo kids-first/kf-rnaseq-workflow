@@ -27,6 +27,7 @@ inputs:
   sample_name: string
   r1_adapter: {type: ['null', string]}
   r2_adapter: {type: ['null', string]}
+  STAR_outSAMattrRGline: string
   STARgenome: File
   RSEMgenome: File
   FusionGenome: File
@@ -49,7 +50,6 @@ inputs:
 inputs:
   reads1: File
   reads2: File
-  STAR_outSAMattrRGline: string
 
 ```
 
@@ -61,7 +61,10 @@ inputs:
 cutadapt step will simple pass on the fastq files to STAR.  If they do need trimming, supply the adapters and the 
 cutadapt step will trim, and pass trimmed fastqs along
 
-3) Suggested inputs are:
+3) Suggested `STAR_outSAMattrRGline`, with **TABS SEPARATING THE TAGS**,  format is:
+    `ID:sample_name LB:aliquot_id   PL:platform SM:BSID`
+    for example `ID:7316-242   LB:750189 PL:ILLUMINA SM:BS_W72364MN`
+4) Suggested inputs are:
 ```text
 FusionGenome: GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
 GTF_Anno: gencode.v27.primary_assembly.annotation.gtf

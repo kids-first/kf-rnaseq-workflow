@@ -24,7 +24,6 @@ arguments:
       fastq
       -1 $(inputs.SampleID).converted_1.fastq -2 $(inputs.SampleID).converted_2.fastq -@ $(inputs.runThreadN) - &&
       ls ./*.fastq | xargs -IFN -P 2 gzip FN &&
-      samtools view -H $(inputs.input_bam.path) | grep ^@RG > rg.txt
 
 
 inputs:
@@ -42,8 +41,3 @@ outputs:
     type: File
     outputBinding:
       glob: '*.converted_2.fastq.gz'
-
-  rg:
-    type: File
-    outputBinding:
-      glob: rg.txt

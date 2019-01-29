@@ -10,6 +10,7 @@ inputs:
   sample_name: string
   r1_adapter: {type: ['null', string]}
   r2_adapter: {type: ['null', string]}
+  STAR_outSAMattrRGline: string
   STARgenome: File
   RSEMgenome: File
   FusionGenome: File
@@ -50,14 +51,7 @@ steps:
       SampleID: sample_name
       runThreadN: runThread
     out:
-      [fq1, fq2, rg]
-
-  expression_updatergsample:
-    run: ../tools/expression_prepare_rg.cwl
-    in:
-      rg: bam2fastq/rg
-      sample: sample_name
-    out: [rg_str]
+      [fq1, fq2]
 
   cutadapt:
     run: ../tools/cutadapter.cwl
@@ -76,7 +70,7 @@ steps:
   star:
     run: ../tools/star_align.cwl
     in:
-      outSAMattrRGline: expression_updatergsample/rg_str
+      outSAMattrRGline: STAR_outSAMattrRGline
       readFilesIn1: cutadapt/trimmedReadsR1
       readFilesIn2: cutadapt/trimmedReadsR2
       genomeDir: STARgenome
