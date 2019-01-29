@@ -23,8 +23,7 @@ arguments:
       samtools
       fastq
       -1 $(inputs.SampleID).converted_1.fastq -2 $(inputs.SampleID).converted_2.fastq -@ $(inputs.runThreadN) - &&
-      ls ./*.fastq | xargs -IFN -P 2 gzip FN &&
-
+      ls ./*.fastq | xargs -IFN -P 2 gzip FN
 
 inputs:
   input_bam: File
