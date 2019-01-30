@@ -10,20 +10,12 @@ requirements:
     coresMin: 36
     ramMin: 30000
 
-baseCommand: [samtools, sort]
+baseCommand: [samtools, fastq]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      -n
-      -@ $(inputs.runThreadN)
-      -m 1G
-      -O SAM
-      $(inputs.input_bam.path) |
-      samtools
-      fastq
-      -1 $(inputs.SampleID).converted_1.fastq -2 $(inputs.SampleID).converted_2.fastq -@ $(inputs.runThreadN) - &&
-      ls ./*.fastq | xargs -IFN -P 2 gzip FN
+      -1 $(inputs.SampleID).converted_1.fastq.gz -2 $(inputs.SampleID).converted_2.fastq.gz -@ $(inputs.runThreadN) $(inputs.input_bam.path)
 
 inputs:
   input_bam: File
