@@ -15,8 +15,8 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      -m 1G -n -O SAM -@ $(inputs.runThreadN) $(inputs.input_bam.path) &&
-      samtools fastq -1 $(inputs.SampleID).converted_1.fastq.gz -2 $(inputs.SampleID).converted_2.fastq.gz -@ $(inputs.runThreadN) -
+      -m 1G -n -O SAM -@ $(inputs.runThreadN) $(inputs.input_bam.path) |
+      samtools fastq -c 2 -1 $(inputs.SampleID).converted_1.fastq.gz -2 $(inputs.SampleID).converted_2.fastq.gz -@ $(inputs.runThreadN) -
 
 inputs:
   input_bam: File
