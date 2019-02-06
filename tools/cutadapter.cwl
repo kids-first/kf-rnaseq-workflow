@@ -4,7 +4,7 @@ id: cutadapter
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'migbro/cutadapt:latest'
+    dockerPull: 'kfdrc/cutadapt:latest'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 16
