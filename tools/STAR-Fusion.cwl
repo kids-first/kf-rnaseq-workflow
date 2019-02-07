@@ -20,14 +20,13 @@ arguments:
       --genome_lib_dir ./GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir
       -J $(inputs.Chimeric.path) 
       --output_dir STAR-Fusion_outdir
-      --CPU $(inputs.runThreadN) &&
+      --CPU 8 &&
       mv STAR-Fusion_outdir/star-fusion.fusion_predictions.tsv $(inputs.SampleID).fusion_predictions.tsv
       
 
 inputs:
   Chimeric: File
   genomeDir: File
-  runThreadN: int
   SampleID: string
 
 outputs:

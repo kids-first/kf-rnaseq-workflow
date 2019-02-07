@@ -17,7 +17,7 @@ arguments:
     valueFrom: >-
       quant -i $(inputs.transcript_idx.path)
       -o output --fusion
-      -b 10 -t $(inputs.runThreadN)
+      -b 10 -t 8
       $(inputs.reads1.path)
       $(inputs.reads2.path) &&
       mv output/abundance.tsv $(inputs.SampleID).abundance.tsv &&
@@ -27,7 +27,6 @@ inputs:
   transcript_idx: File
   reads1: File
   reads2: File
-  runThreadN: int
   SampleID: string
 
 outputs:

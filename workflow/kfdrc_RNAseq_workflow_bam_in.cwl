@@ -96,7 +96,6 @@ steps:
     in:
       Chimeric: star/chimeric_junctions
       genomeDir: FusionGenome
-      runThreadN: runThread
       SampleID: sample_name
     out:
       [fusion_out]
@@ -137,7 +136,6 @@ steps:
       transcript_idx: kallisto_idx
       reads1: cutadapt/trimmedReadsR1
       reads2: cutadapt/trimmedReadsR2
-      runThreadN: runThread
       SampleID: sample_name
     out: [
       abundance_out,
