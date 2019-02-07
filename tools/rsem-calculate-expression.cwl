@@ -7,7 +7,7 @@ requirements:
     dockerPull: 'images.sbgenomics.com/uros_sipetic/rsem:1.3.1'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    coresMin: 8
+    coresMin: 16
     ramMin: 10000
 
 baseCommand: [tar]
@@ -21,7 +21,7 @@ arguments:
       --alignments
       --append-names
       --no-bam-output
-      -p 8
+      -p 16
       $(inputs.bam.path)
       ./$(inputs.genomeDir.nameroot.split('.')[0])/$(inputs.genomeDir.nameroot.split('.')[0])
       $(inputs.outFileNamePrefix)
