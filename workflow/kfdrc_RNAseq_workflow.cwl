@@ -97,7 +97,6 @@ steps:
     in:
       bam: star/transcriptome_bam_out
       genomeDir: RSEMgenome
-      runThreadN: runThread
       outFileNamePrefix: sample_name
     out: [
       gene_out,

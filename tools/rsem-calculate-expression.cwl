@@ -21,7 +21,7 @@ arguments:
       --alignments
       --append-names
       --no-bam-output
-      -p $(inputs.runThreadN)
+      -p 8
       $(inputs.bam.path)
       ./$(inputs.genomeDir.nameroot.split('.')[0])/$(inputs.genomeDir.nameroot.split('.')[0])
       $(inputs.outFileNamePrefix)
@@ -29,7 +29,6 @@ arguments:
 inputs:
   bam: File
   genomeDir: File
-  runThreadN: int
   outFileNamePrefix: string
 
 outputs:
