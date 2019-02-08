@@ -7,8 +7,8 @@ requirements:
     dockerPull: 'images.sbgenomics.com/uros_sipetic/pizzly:0.37.3'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    coresMin: 8
-    ramMin: 10000
+    coresMin: 4
+    ramMin: 24000
 
 baseCommand: [pizzly]
 arguments:
