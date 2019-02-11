@@ -8,7 +8,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8
-    ramMin: 62000
+    ramMin: 64000
 
 baseCommand: [tar]
 arguments:
@@ -34,3 +34,5 @@ outputs:
     type: File
     outputBinding:
       glob: '*.fusion_predictions.tsv'
+
+
