@@ -8,7 +8,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8
-    ramMin: 50000
+    ramMin: 62000
 
 baseCommand: [tar]
 arguments:
