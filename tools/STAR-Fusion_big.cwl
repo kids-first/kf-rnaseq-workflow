@@ -7,8 +7,8 @@ requirements:
     dockerPull: 'trinityctat/ctatfusion:1.5.0'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    coresMin: 8
-    ramMin: 64000
+    coresMin: 16
+    ramMin: 100000
 
 baseCommand: [tar]
 arguments:
@@ -17,25 +17,22 @@ arguments:
     valueFrom: >-
       -zxf $(inputs.genomeDir.path) &&
       /usr/local/src/STAR-Fusion/STAR-Fusion
-      --left_fq $(inputs.readFilesIn1.path)
-      --right_fq $(inputs.readFilesIn2.path)
       --genome_lib_dir ./GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir
-      -J $(inputs.Chimeric.path) 
+      -J $(inputs.Chimeric.path)
       --output_dir STAR-Fusion_outdir
-      --examine_coding_effect --denovo_reconstruct --FusionInspector inspect
-      --CPU 8 &&
-      mv STAR-Fusion_outdir/star-fusion.fusion_predictions.abridged.coding_effect.tsv $(inputs.SampleID).fusion_predictions.abridged.coding_effect.tsv
-      
+      --CPU 16 &&
+      mv STAR-Fusion_outdir/star-fusion.fusion_predictions.tsv $(inputs.SampleID).fusion_predictions.tsv
+
 
 inputs:
-  readFilesIn1: File
-  readFilesIn2: File
   Chimeric: File
   genomeDir: File
   SampleID: string
 
 outputs:
-  abridged_coding:
+  fusion_out:
     type: File
     outputBinding:
-      glob: '*.fusion_predictions.abridged.coding_effect.tsv'
+      glob: '*.fusion_predictions.tsv'
+
+
