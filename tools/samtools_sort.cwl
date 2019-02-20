@@ -7,7 +7,7 @@ requirements:
     dockerPull: 'kfdrc/samtools:1.9'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    coresMin: 8
+    coresMin: 16
     ramMin: 24000
 
 baseCommand: [samtools]
@@ -16,10 +16,15 @@ arguments:
     shellQuote: false
     valueFrom: >-
       sort $(inputs.unsorted_bam.path)
-      -@ 8
-      -m 2G
+      -@ 16
+      -m 1G
       -O bam
-      > $(inputs.unsorted_bam.nameroot).sorted.bam
+      > $(inputs.unsorted_bam.nameroot).sorted.bam &&
+      samtools
+      index
+      -@ 16
+      $(inputs.unsorted_bam.nameroot).sorted.bam
+      $(inputs.unsorted_bam.nameroot).sorted.bai
 
 inputs:
   unsorted_bam: File
@@ -29,3 +34,7 @@ outputs:
     type: File
     outputBinding:
       glob: '*.sorted.bam'
+  sorted_bai:
+    type: File
+    outputBinding:
+      glob: '*.sorted.bai'
