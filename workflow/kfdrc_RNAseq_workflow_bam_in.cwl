@@ -13,6 +13,9 @@ inputs:
   STAR_outSAMattrRGline: string
   STARgenome: File
   RSEMgenome: File
+  reference_genome: File
+  gtf_anno: File
+  arriba_strand_flag: {type: ['null', string]}
   FusionGenome: File
   runThread: int
   input_bam: File
@@ -31,6 +34,7 @@ outputs:
   STAR_chimeric_junctions: {type: File, outputSource: star/chimeric_junctions}
   STAR_chimeric_sam: {type: File, outputSource: star/chimeric_sam_out}
   STAR_Fusion: {type: File, outputSource: star_fusion/abridged_coding}
+  arriba_fusion: {type: File, outputSource: arriba_fusion/arriba_fusions}
   RSEM_isoform: {type: File, outputSource: rsem/isoform_out}
   RSEM_gene: {type: File, outputSource: rsem/gene_out}
   RNASeQC_Metrics: {type: File, outputSource: rna_seqc/Metrics}
@@ -97,6 +101,18 @@ steps:
       SampleID: sample_name
     out:
       [abridged_coding]
+
+  arriba_fusion:
+    run: ../tools/arriba.cwl
+    in:
+      genome_aligned_bam: star/genomic_bam_out
+      reference_fasta: reference_genome
+      gtf_anno: gtf_anno
+      outFileNamePrefix: sample_name
+      arriba_strand_flag: arriba_strand_flag
+
+    out:
+      [arriba_fusions]
 
   rsem:
     run: ../tools/rsem-calculate-expression.cwl

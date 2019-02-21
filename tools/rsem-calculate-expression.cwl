@@ -16,20 +16,20 @@ arguments:
     shellQuote: false
     valueFrom: >-
       -zxf $(inputs.genomeDir.path) &&
-      rsem-calculate-expression
-      --paired-end
-      --alignments
-      --append-names
-      --no-bam-output
-      -p 16
-      $(inputs.bam.path)
-      ./$(inputs.genomeDir.nameroot.split('.')[0])/$(inputs.genomeDir.nameroot.split('.')[0])
-      $(inputs.outFileNamePrefix)
+      ${
+        var cmd = "rsem-calculate-expression --paired-end --alignments --append-names --no-bam-output -p 16";
+        if (inputs.forward_prob != null){
+          cmd += " --forward-prob " + inputs.forward_prob;
+        }
+        cmd += " " + inputs.bam.path + " ./" + inputs.genomeDir.nameroot.split('.')[0] + "/" + inputs.genomeDir.nameroot.split('.')[0] + " " +  inputs.outFileNamePrefix;
+        return cmd
+      }
 
 inputs:
   bam: File
   genomeDir: File
   outFileNamePrefix: string
+  forward_prob: {type: ['null', double], doc: "Leave blank if unstranded, 1 if an upstream would be read forward, 0 if read reverse"}
 
 outputs:
   gene_out:
