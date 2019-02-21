@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: arriba_fusion
+id: fusion_catcher
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
@@ -22,7 +22,7 @@ arguments:
       /opt/fusioncatcher/v1.00/bin/fusioncatcher
       -p 36
       -o OUTPUT
-      -i INPUT
+      -i INPUTS
       -d ./$(inputs.ensembl_genome.nameroot)/
       --skip-blat
 

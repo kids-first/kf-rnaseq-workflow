@@ -19,17 +19,18 @@ arguments:
       -a $(inputs.reference_fasta.path)
       -g $(inputs.gtf_anno.path)
       -o $(inputs.outFileNamePrefix).arriba.fusions.tsv
-      -O $(inputs.outFileNamePrefix).arriba.discardedfusions.tsv
+      -O $(inputs.outFileNamePrefix).arriba.discarded_fusions.tsv
       -b /arriba_v1.0.1/database/blacklist_hg38_GRCh38_2018-04-04.tsv.gz
       -T
       -P
       ${
-        if(input.arriba_strand_flag == null){
+        if(inputs.arriba_strand_flag == null){
           return "-s auto";
         }
         else{
-          return "-s " + input.arriba_strand_flag;
+          return "-s " + inputs.arriba_strand_flag;
         }
+      }
 
 inputs:
   genome_aligned_bam: File
