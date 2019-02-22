@@ -21,7 +21,7 @@ arguments:
         if (inputs.forward_prob != null){
           cmd += " --forward-prob " + inputs.forward_prob;
         }
-        cmd += " " + inputs.bam.path + " ./" + inputs.genomeDir.nameroot.split('.')[0] + "/" + inputs.genomeDir.nameroot.split('.')[0] + " " +  inputs.outFileNamePrefix;
+        cmd += " " + inputs.bam.path + " ./" + inputs.genomeDir.nameroot.split('.')[0] + "/" + inputs.genomeDir.nameroot.split('.')[0] + " " +  inputs.outFileNamePrefix + ".rsem";
         return cmd
       }
 

@@ -24,8 +24,8 @@ arguments:
         return cmd;
       }
 
-      mv output/abundance.tsv $(inputs.SampleID).abundance.tsv &&
-      mv output/fusion.txt $(inputs.SampleID).fusion.txt
+      mv output/abundance.tsv $(inputs.SampleID).kallisto.abundance.tsv &&
+      mv output/fusion.txt $(inputs.SampleID).kallisto.fusion.txt
 
 inputs:
   transcript_idx: File

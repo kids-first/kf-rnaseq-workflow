@@ -25,14 +25,25 @@ arguments:
       -i INPUTS
       -d ./$(inputs.ensembl_genome.nameroot)/
       --skip-blat
+      --skip-filter-adapter &&
+      mv ./OUTPUT/final-list_candidate-fusion-genes.txt ./$(inputs.outFileNamePrefix).final-list_candidate-fusion-genes.txt &&
+      mv ./OUTPUT/final-list_candidate-fusion-genes.hg19.txt ./$(inputs.outFileNamePrefix).inal-list_candidate-fusion-genes.hg19.txt &&
+      mv ./OUTPUT/fusioncatcher.log ./$(inputs.outFileNamePrefix).fusioncatcher.log
+
 
 inputs:
   ensembl_genome: File
   readFilesIn1: File
   readFilesIn2: File
+  outFileNamePrefix: string
 
 outputs:
-  fusion_caught:
+  final_fusion:
     type: File
     outputBinding:
-      glob: "./OUTPUT/*"
+      glob: "final-list_candidate-fusion-genes.*"
+  log:
+    type: File
+    outputBinding:
+      glob: "fusioncatcher.log"
+

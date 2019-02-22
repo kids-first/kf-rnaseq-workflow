@@ -15,6 +15,7 @@ inputs:
   STARgenome: File
   RSEMgenome: File
   reference_genome: File
+  fusionCatcher_ensembl: File
   gtf_anno: File
   arriba_strand_flag: {type: ['null', string]}
   FusionGenome: File
@@ -33,8 +34,10 @@ outputs:
   STAR_gene_counts: {type: File, outputSource: star/gene_counts}
   STAR_chimeric_junctions: {type: File, outputSource: star/chimeric_junctions}
   STAR_chimeric_sam: {type: File, outputSource: star/chimeric_sam_out}
-  STAR_Fusion: {type: File, outputSource: star_fusion/abridged_coding}
+  STAR-Fusion_abridged_coding: {type: File, outputSource: star_fusion/abridged_coding}
+  fusionCatcher_fusion: {type: File, outputSource: fusionCatcher/final_fusion}
   arriba_fusion: {type: File, outputSource: arriba_fusion/arriba_fusions}
+  arriba_discarded: {type: File, outputSource: arriba_fusion/arriba_discarded}
   RSEM_isoform: {type: File, outputSource: rsem/isoform_out}
   RSEM_gene: {type: File, outputSource: rsem/gene_out}
   RNASeQC_Metrics: {type: File, outputSource: rna_seqc/Metrics}
@@ -83,6 +86,17 @@ steps:
       transcriptome_bam_out
     ]
 
+  fusionCatcher:
+    run: ../tools/fusionCatcher.cwl
+    in:
+      ensembl_genome: fusionCatcher_ensembl
+      readFilesIn1: cutadapt/trimmedReadsR1
+      readFilesIn2: cutadapt/trimmedReadsR2
+      outFileNamePrefix: sample_name
+
+    out:
+      [final_fusion, log]
+
   star_fusion:
     run: ../tools/STAR-Fusion.cwl
     in:
@@ -102,9 +116,8 @@ steps:
       gtf_anno: gtf_anno
       outFileNamePrefix: sample_name
       arriba_strand_flag: arriba_strand_flag
-
     out:
-      [arriba_fusions]
+      [arriba_fusions, arriba_discarded]
 
   rsem:
     run: ../tools/rsem-calculate-expression.cwl

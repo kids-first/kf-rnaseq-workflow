@@ -24,7 +24,7 @@ arguments:
       --output_dir STAR-Fusion_outdir
       --examine_coding_effect --denovo_reconstruct --FusionInspector inspect
       --CPU 8 &&
-      mv STAR-Fusion_outdir/star-fusion.fusion_predictions.abridged.coding_effect.tsv $(inputs.SampleID).fusion_predictions.abridged.coding_effect.tsv
+      mv STAR-Fusion_outdir/star-fusion.fusion_predictions.abridged.coding_effect.tsv $(inputs.SampleID).STAR.fusion_predictions.abridged.coding_effect.tsv
       
 
 inputs:
