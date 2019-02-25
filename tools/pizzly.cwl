@@ -29,13 +29,8 @@ inputs:
   SampleID: string
 
 outputs:
-  fusions_fasta:
+  fusions_flattnened:
     type: File
     outputBinding:
-      glob: "$(inputs.SampleID).fusions.fasta"
-
-  unfiltered_fusion_fasta:
-    type: File
-    outputBinding:
-      glob: '*.unfiltered.fusions.fasta'
+      glob: "$(inputs.SampleID).json"
 

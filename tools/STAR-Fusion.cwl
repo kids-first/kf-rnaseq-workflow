@@ -20,7 +20,7 @@ arguments:
       --left_fq $(inputs.readFilesIn1.path)
       --right_fq $(inputs.readFilesIn2.path)
       --genome_lib_dir ./GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir
-      -J $(inputs.Chimeric.path) 
+      -J $(inputs.Chimeric_junction.path)
       --output_dir STAR-Fusion_outdir
       --examine_coding_effect --denovo_reconstruct --FusionInspector inspect
       --CPU 8 &&
@@ -30,7 +30,7 @@ arguments:
 inputs:
   readFilesIn1: File
   readFilesIn2: File
-  Chimeric: File
+  Chimeric_junction: File
   genomeDir: File
   SampleID: string
 

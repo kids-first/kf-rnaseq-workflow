@@ -24,7 +24,6 @@ arguments:
       -o OUTPUT
       -i INPUTS
       -d ./$(inputs.ensembl_genome.nameroot)/
-      --skip-blat
       --skip-filter-adapter &&
       mv ./OUTPUT/final-list_candidate-fusion-genes.txt ./$(inputs.outFileNamePrefix).final-list_candidate-fusion-genes.txt &&
       mv ./OUTPUT/final-list_candidate-fusion-genes.hg19.txt ./$(inputs.outFileNamePrefix).inal-list_candidate-fusion-genes.hg19.txt &&
@@ -39,11 +38,11 @@ inputs:
 
 outputs:
   final_fusion:
-    type: File
+    type: File[]
     outputBinding:
-      glob: "final-list_candidate-fusion-genes.*"
+      glob: "$(inputs.outFileNamePrefix).final-list_candidate-fusion-genes.*"
   log:
     type: File
     outputBinding:
-      glob: "fusioncatcher.log"
+      glob: "$(inputs.outFileNamePrefix).fusioncatcher.log"
 

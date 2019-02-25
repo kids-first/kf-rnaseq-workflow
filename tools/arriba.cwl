@@ -32,8 +32,6 @@ arguments:
         }
       }
 
-      gzip $(inputs.outFileNamePrefix).arriba.discarded_fusions.tsv
-
 inputs:
   genome_aligned_bam: File
   reference_fasta: File
@@ -46,7 +44,3 @@ outputs:
     type: File
     outputBinding:
       glob: "$(inputs.outFileNamePrefix).arriba.fusions.tsv"
-  arriba_discarded:
-    type: File
-    outputBinding:
-      glob: "$(inputs.outFileNamePrefix).arriba.discarded_fusions.tsv.gz"

@@ -14,7 +14,6 @@ inputs:
   STARgenome: File
   RSEMgenome: File
   reference_genome: File
-  fusionCatcher_ensembl: File
   gtf_anno: File
   arriba_strand_flag: {type: ['null', string]}
   FusionGenome: File
@@ -23,7 +22,7 @@ inputs:
   RNAseQC_GTF: File
   kallisto_strand: {type: ['null', string]}
   kallisto_idx: File
-
+  pizzly_transcript_ref: File
 
 outputs:
   cutadapt_stats: {type: File, outputSource: cutadapt/cutadapt_stats}
@@ -35,9 +34,8 @@ outputs:
   STAR_chimeric_junctions: {type: File, outputSource: star/chimeric_junctions}
   STAR_chimeric_sam: {type: File, outputSource: star/chimeric_sam_out}
   STAR-Fusion_abridged_coding: {type: File, outputSource: star_fusion/abridged_coding}
-  fusionCatcher_fusion: {type: File, outputSource: fusionCatcher/final_fusion}
+  pizzly_fusion: {type: File, outputSource: pizzly/fusion_flattened}
   arriba_fusion: {type: File, outputSource: arriba_fusion/arriba_fusions}
-  arriba_discarded: {type: File, outputSource: arriba_fusion/arriba_discarded}
   RSEM_isoform: {type: File, outputSource: rsem/isoform_out}
   RSEM_gene: {type: File, outputSource: rsem/gene_out}
   RNASeQC_Metrics: {type: File, outputSource: rna_seqc/Metrics}
@@ -96,21 +94,21 @@ steps:
       transcriptome_bam_out
     ]
 
-  fusionCatcher:
-    run: ../tools/fusionCatcher.cwl
+  pizzly:
+    run: ../tools/pizzly.cwl
     in:
-      ensembl_genome: fusionCatcher_ensembl
-      readFilesIn1: cutadapt/trimmedReadsR1
-      readFilesIn2: cutadapt/trimmedReadsR2
-      outFileNamePrefix: sample_name
-
-    out:
-      [final_fusion, log]
+      transcript_fa: pizzly_transcript_ref
+      GTF: gtf_anno
+      kallisto_fusion: kallisto/fusion_out
+      SampleID: sample_name
+    out: [fusions_flattnened]
 
   star_fusion:
     run: ../tools/STAR-Fusion.cwl
     in:
-      Chimeric: star/chimeric_junctions
+      reads1: cutadapt/trimmedReadsR1
+      reads2: cutadapt/trimmedReadsR2
+      Chimeric_junction: star/chimeric_junctions
       genomeDir: FusionGenome
       SampleID: sample_name
     out:
@@ -126,7 +124,7 @@ steps:
       outFileNamePrefix: sample_name
       arriba_strand_flag: arriba_strand_flag
     out:
-      [arriba_fusions, arriba_discarded]
+      [arriba_fusions]
 
   rsem:
     run: ../tools/rsem-calculate-expression.cwl
