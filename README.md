@@ -2,7 +2,7 @@
 RNA-Seq workflow for Kids-First DRC
 
 ## Introduction
-According to GDC's RNA-Seq workflow, this workflow is composed by several steps.
+Follow mostly the workflow of the GDC.
 
 ### STAR
 RNA-Seq raw data alignment.
@@ -10,13 +10,14 @@ RNA-Seq raw data alignment.
 Calculation of gene expression.
 ### STAR-Fusion
 Fusion detection for `STAR` chimeric reads.
-### HTSeq
-htseq-count tool for gene expression count using genomic bam file from `STAR`.
 ### RNA-SeQC
+Generate metrics such as gene and transcript counts, sense/antisene mapping, ampping rates, etc
 ### Kallisto
 Fusion detection using genomic bam file from `STAR`.
 ### Pizzly
-Further fusion analysis tool and generate fusion fasta file from `Kallisto` result.
+Further fusion analysis tool and generate fusion txt (in tsv format) file from `Kallisto` result.
+### arriba
+Another fusion caller that uses star output.
 
 
 ## Usage
@@ -30,10 +31,12 @@ inputs:
   STAR_outSAMattrRGline: string
   STARgenome: File
   RSEMgenome: File
+  reference_fasta: File
+  gtf_anno: File
+  wf_strand_param: {type: ['null', string], doc: "use 'default' or leave blank for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript"}
   FusionGenome: File
   runThread: int
   RNAseQC_GTF: File
-  GTF_Anno: File
   kallisto_idx: File
   pizzly_transcript_ref: File
 ```
@@ -61,16 +64,23 @@ inputs:
 cutadapt step will simple pass on the fastq files to STAR.  If they do need trimming, supply the adapters and the 
 cutadapt step will trim, and pass trimmed fastqs along
 
-3) Suggested `STAR_outSAMattrRGline`, with **TABS SEPARATING THE TAGS**,  format is:
+3) `wf_strand_param` is a workflow convenience param so that, if you input the following, the equivalent will propagate 
+to the four tools that use that parameter:
+    - `default`: 'rsem_std': null, 'kallisto_std': null, 'rnaseqc_std': null, 'arriba_std': null. This means unstranded or auto in the case of arriba.
+    - `rf_stranded`: 'rsem_std': 0, 'kallisto_std': 'rf-stranded', 'rnaseqc_std': 'rf', 'arriba_std': 'reverse'.  This means if read1 in the input fastq/bam is reverse complement to the transcript that it maps to.
+    - `fr-stranded`: 'rsem_std': 1, 'kallisto_std': 'fr-stranded', 'rnaseqc_std': 'fr', 'arriba_std': 'yes'. This means if read1 in the input fastq/bam is the same sense (maps 5' to 3') to the transcript that it maps to.
+
+4) Suggested `STAR_outSAMattrRGline`, with **TABS SEPARATING THE TAGS**,  format is:
     `ID:sample_name LB:aliquot_id   PL:platform SM:BSID`
     for example `ID:7316-242   LB:750189 PL:ILLUMINA SM:BS_W72364MN`
-4) Suggested inputs are:
+5) Suggested inputs are:
 ```text
 FusionGenome: GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
-GTF_Anno: gencode.v27.primary_assembly.annotation.gtf
+gtf_anno: gencode.v27.primary_assembly.annotation.gtf
 RNAseQC_GTF: gencode.v27.primary_assembly.RNAseQC.gtf
 RSEMgenome: RSEM_GENCODE27.tar.gz
 STARgenome: STAR_GENCODE27.tar.gz
+reference_fasta: GRCh38.primary_assembly.genome.fa
 kallisto_idx: gencode.v27.kallisto.index
 pizzly_transcript_ref: gencode.v27.transcripts.pizzly.fa.gz
 ```
@@ -81,11 +91,14 @@ outputs:
   cutadapt_stats: {type: File, outputSource: cutadapt/cutadapt_stats} # only if adapter supplied
   STAR_transcriptome_bam: {type: File, outputSource: star/transcriptome_bam_out}
   STAR_junctions: {type: File, outputSource: star/junctions_out}
-  STAR_genomic_bam: {type: File, outputSource: star/genomic_bam_out}
+  STAR_sorted_genomic_bam: {type: File, outputSource: samtools_sort/sorted_bam}
+  STAR_sorted_genomic_bai: {type: File, outputSource: samtools_sort/sorted_bai}
   STAR_gene_counts: {type: File, outputSource: star/gene_counts}
   STAR_chimeric_junctions: {type: File, outputSource: star/chimeric_junctions}
   STAR_chimeric_sam: {type: File, outputSource: star/chimeric_sam_out}
-  STAR_Fusion: {type: File, outputSource: star_fusion/fusion_out}
+  STAR-Fusion_result: {type: File, outputSource: star_fusion/abridged_coding}
+  pizzly_fusion_result: {type: File, outputSource: pizzly/fusions_flattened}
+  arriba_fusion_result: {type: File, outputSource: arriba_fusion/arriba_fusions}
   RSEM_isoform: {type: File, outputSource: rsem/isoform_out}
   RSEM_gene: {type: File, outputSource: rsem/gene_out}
   RNASeQC_Metrics: {type: File, outputSource: rna_seqc/Metrics}
@@ -94,6 +107,5 @@ outputs:
   RNASeQC_Exon_count: {type: File, outputSource: rna_seqc/Exon_count}
   kallisto_Abundance: {type: File, outputSource: kallisto/abundance_out}
   kallisto_Fusion: {type: File, outputSource: kallisto/fusion_out}
-  Pizzly_Fasta: {type: File, outputSource: pizzly/fusions_fasta}
   Pizzly_unfiltered_Fasta: {type: File, outputSource: pizzly/unfiltered_fusion_fasta}
   ```

@@ -33,9 +33,9 @@ outputs:
   STAR_gene_counts: {type: File, outputSource: star/gene_counts}
   STAR_chimeric_junctions: {type: File, outputSource: star/chimeric_junctions}
   STAR_chimeric_sam: {type: File, outputSource: star/chimeric_sam_out}
-  STAR-Fusion_abridged_coding: {type: File, outputSource: star_fusion/abridged_coding}
-  pizzly_fusion: {type: File, outputSource: pizzly/fusions_flattened}
-  arriba_fusion: {type: File, outputSource: arriba_fusion/arriba_fusions}
+  STAR-Fusion_results: {type: File, outputSource: star_fusion/abridged_coding}
+  pizzly_fusion_results: {type: File, outputSource: pizzly/fusions_flattened}
+  arriba_fusion_results: {type: File, outputSource: arriba_fusion/arriba_fusions}
   RSEM_isoform: {type: File, outputSource: rsem/isoform_out}
   RSEM_gene: {type: File, outputSource: rsem/gene_out}
   RNASeQC_Metrics: {type: File, outputSource: rna_seqc/Metrics}
@@ -81,6 +81,18 @@ steps:
       transcriptome_bam_out
     ]
 
+  strand_parse:
+    run: ../tools/expression_parse_strand_param.cwl
+    in:
+      strand: wf_strand_param
+    out:
+      [
+        rsem_std,
+        kallisto_std,
+        rnaseqc_std,
+        arriba_std
+      ]
+
   pizzly:
     run: ../tools/pizzly.cwl
     in:
@@ -108,7 +120,7 @@ steps:
       reference_fasta: reference_genome
       gtf_anno: gtf_anno
       outFileNamePrefix: sample_name
-      arriba_strand_flag: arriba_strand_flag
+      arriba_strand_flag: strand_parse/arriba_std
     out:
       [arriba_fusions]
 
@@ -118,7 +130,7 @@ steps:
       bam: star/transcriptome_bam_out
       genomeDir: RSEMgenome
       outFileNamePrefix: sample_name
-      forward_prob: rsem_forward_prob
+      forward_prob: strand_parse/rsem_std
     out: [
       gene_out,
       isoform_out
@@ -136,6 +148,7 @@ steps:
     in:
       Aligned_sorted_bam: samtools_sort/sorted_bam
       collapsed_gtf: RNAseQC_GTF
+      strand: strand_parse/rnaseqc_std
     out: [
       Metrics,
       Gene_TPM,
@@ -147,7 +160,7 @@ steps:
     run: ../tools/kallisto.cwl
     in:
       transcript_idx: kallisto_idx
-      strand: kallisto_strand
+      strand: strand_parse/kallisto_std
       reads1: cutadapt/trimmedReadsR1
       reads2: cutadapt/trimmedReadsR2
       SampleID: sample_name
