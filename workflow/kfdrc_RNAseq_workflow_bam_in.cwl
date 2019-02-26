@@ -42,7 +42,6 @@ outputs:
   RNASeQC_Gene_count: {type: File, outputSource: rna_seqc/Gene_count}
   RNASeQC_Exon_count: {type: File, outputSource: rna_seqc/Exon_count}
   kallisto_Abundance: {type: File, outputSource: kallisto/abundance_out}
-  kallisto_Fusion: {type: File, outputSource: kallisto/fusion_out}
 
 steps:
 

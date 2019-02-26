@@ -16,7 +16,7 @@ inputs:
   RSEMgenome: File
   reference_genome: File
   gtf_anno: File
-  wf_strand_param: {type: string, doc: "use 'default' for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript"}
+  wf_strand_param: {type: ['null', string], doc: "use 'default' for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript"}
   FusionGenome: File
   runThread: int
   STAR_outSAMattrRGline: string
@@ -43,7 +43,6 @@ outputs:
   RNASeQC_Gene_count: {type: File, outputSource: rna_seqc/Gene_count}
   RNASeQC_Exon_count: {type: File, outputSource: rna_seqc/Exon_count}
   kallisto_Abundance: {type: File, outputSource: kallisto/abundance_out}
-  kallisto_Fusion: {type: File, outputSource: kallisto/fusion_out}
 
 steps:
   cutadapt:
