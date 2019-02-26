@@ -4,7 +4,7 @@ id: pizzly
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'images.sbgenomics.com/uros_sipetic/pizzly:0.37.3'
+    dockerPull: 'migbro/pizzly:latest'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 4
@@ -20,7 +20,8 @@ arguments:
       --insert-size 400
       --fasta $(inputs.transcript_fa.path)
       --output $(inputs.SampleID)
-      $(inputs.kallisto_fusion.path) 
+      $(inputs.kallisto_fusion.path) &&
+      python3 /pizzly/scripts/get_fragment_length.py $(inputs.SampleID).json > $(inputs.SampleID).pizzly.flattened.txt
 
 inputs:
   transcript_fa: File
@@ -29,8 +30,8 @@ inputs:
   SampleID: string
 
 outputs:
-  fusions_flattnened:
+  fusions_flattened:
     type: File
     outputBinding:
-      glob: "$(inputs.SampleID).json"
+      glob: "$(inputs.SampleID).pizzly.flattened.txt"
 

@@ -13,14 +13,13 @@ inputs:
   STAR_outSAMattrRGline: string
   STARgenome: File
   RSEMgenome: File
-  reference_genome: File
+  reference_fasta: File
   gtf_anno: File
-  arriba_strand_flag: {type: ['null', string]}
+  wf_strand_param: {type: ['null', string], doc: "use 'default' or leave blank for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript"}
   FusionGenome: File
   runThread: int
   input_bam: File
   RNAseQC_GTF: File
-  kallisto_strand: {type: ['null', string]}
   kallisto_idx: File
   pizzly_transcript_ref: File
 
@@ -34,7 +33,7 @@ outputs:
   STAR_chimeric_junctions: {type: File, outputSource: star/chimeric_junctions}
   STAR_chimeric_sam: {type: File, outputSource: star/chimeric_sam_out}
   STAR-Fusion_abridged_coding: {type: File, outputSource: star_fusion/abridged_coding}
-  pizzly_fusion: {type: File, outputSource: pizzly/fusion_flattened}
+  pizzly_fusion: {type: File, outputSource: pizzly/fusions_flattened}
   arriba_fusion: {type: File, outputSource: arriba_fusion/arriba_fusions}
   RSEM_isoform: {type: File, outputSource: rsem/isoform_out}
   RSEM_gene: {type: File, outputSource: rsem/gene_out}
@@ -94,35 +93,37 @@ steps:
       transcriptome_bam_out
     ]
 
-  pizzly:
-    run: ../tools/pizzly.cwl
-    in:
-      transcript_fa: pizzly_transcript_ref
-      GTF: gtf_anno
-      kallisto_fusion: kallisto/fusion_out
-      SampleID: sample_name
-    out: [fusions_flattnened]
 
+  strand_parse:
+    run: ../tools/expression_parse_strand_param.cwl
+    in:
+      strand: wf_strand_param
+    out:
+      [
+        rsem_std,
+        kallisto_std,
+        rnaseqc_std,
+        arriba_std
+      ]
   star_fusion:
     run: ../tools/STAR-Fusion.cwl
     in:
-      reads1: cutadapt/trimmedReadsR1
-      reads2: cutadapt/trimmedReadsR2
+      readFilesIn1: cutadapt/trimmedReadsR1
+      readFilesIn2: cutadapt/trimmedReadsR2
       Chimeric_junction: star/chimeric_junctions
       genomeDir: FusionGenome
       SampleID: sample_name
     out:
       [abridged_coding]
 
-
   arriba_fusion:
     run: ../tools/arriba.cwl
     in:
       genome_aligned_bam: star/genomic_bam_out
-      reference_fasta: reference_genome
+      reference_fasta: reference_fasta
       gtf_anno: gtf_anno
       outFileNamePrefix: sample_name
-      arriba_strand_flag: arriba_strand_flag
+      arriba_strand_flag: strand_parse/arriba_std
     out:
       [arriba_fusions]
 
@@ -132,6 +133,7 @@ steps:
       bam: star/transcriptome_bam_out
       genomeDir: RSEMgenome
       outFileNamePrefix: sample_name
+      forward_prob: strand_parse/rsem_std
     out: [
       gene_out,
       isoform_out
@@ -149,6 +151,7 @@ steps:
     in:
       Aligned_sorted_bam: samtools_sort/sorted_bam
       collapsed_gtf: RNAseQC_GTF
+      strand: strand_parse/rnaseqc_std
     out: [
       Metrics,
       Gene_TPM,
@@ -160,7 +163,7 @@ steps:
     run: ../tools/kallisto.cwl
     in:
       transcript_idx: kallisto_idx
-      strand: kallisto_strand
+      strand: strand_parse/kallisto_std
       reads1: cutadapt/trimmedReadsR1
       reads2: cutadapt/trimmedReadsR2
       SampleID: sample_name
@@ -168,6 +171,16 @@ steps:
       abundance_out,
       fusion_out
     ]
+
+  pizzly:
+    run: ../tools/pizzly.cwl
+    in:
+      transcript_fa: pizzly_transcript_ref
+      GTF: gtf_anno
+      kallisto_fusion: kallisto/fusion_out
+      SampleID: sample_name
+    out: [fusions_flattened]
+
 
 $namespaces:
   sbg: https://sevenbridges.com

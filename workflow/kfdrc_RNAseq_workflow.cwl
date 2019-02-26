@@ -16,12 +16,11 @@ inputs:
   RSEMgenome: File
   reference_genome: File
   gtf_anno: File
-  arriba_strand_flag: {type: ['null', string]}
+  wf_strand_param: {type: string, doc: "use 'default' for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript"}
   FusionGenome: File
   runThread: int
   STAR_outSAMattrRGline: string
   RNAseQC_GTF: File
-  kallisto_strand: {type: ['null', string]}
   kallisto_idx: File
   pizzly_transcript_ref: File
 
@@ -35,7 +34,7 @@ outputs:
   STAR_chimeric_junctions: {type: File, outputSource: star/chimeric_junctions}
   STAR_chimeric_sam: {type: File, outputSource: star/chimeric_sam_out}
   STAR-Fusion_abridged_coding: {type: File, outputSource: star_fusion/abridged_coding}
-  pizzly_fusion: {type: File, outputSource: pizzly/fusion_flattened}
+  pizzly_fusion: {type: File, outputSource: pizzly/fusions_flattened}
   arriba_fusion: {type: File, outputSource: arriba_fusion/arriba_fusions}
   RSEM_isoform: {type: File, outputSource: rsem/isoform_out}
   RSEM_gene: {type: File, outputSource: rsem/gene_out}
@@ -92,7 +91,7 @@ steps:
       GTF: gtf_anno
       kallisto_fusion: kallisto/fusion_out
       SampleID: sample_name
-    out: [fusions_flattnened]
+    out: [fusions_flattened]
 
   star_fusion:
     run: ../tools/STAR-Fusion.cwl
@@ -122,6 +121,7 @@ steps:
       bam: star/transcriptome_bam_out
       genomeDir: RSEMgenome
       outFileNamePrefix: sample_name
+      forward_prob: rsem_forward_prob
     out: [
       gene_out,
       isoform_out

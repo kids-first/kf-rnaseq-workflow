@@ -18,12 +18,18 @@ arguments:
       $(inputs.collapsed_gtf.path)
       $(inputs.Aligned_sorted_bam.path)
       output/
-      --legacy
-      --stranded=rf
+      ${
+        var cmd = "--legacy";
+        if (inputs.strand != null){
+          cmd += " --stranded=rf";
+        }
+        return cmd;
+      }
 
 inputs:
   Aligned_sorted_bam: File
   collapsed_gtf: File
+  strand: {type: ['null', string]}
 
 outputs:
   Metrics:
