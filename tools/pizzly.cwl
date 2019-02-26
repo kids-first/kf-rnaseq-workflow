@@ -21,7 +21,7 @@ arguments:
       --fasta $(inputs.transcript_fa.path)
       --output $(inputs.SampleID)
       $(inputs.kallisto_fusion.path) &&
-      python3 /pizzly/scripts/get_fragment_length.py $(inputs.SampleID).json > $(inputs.SampleID).pizzly.flattened.txt
+      python /pizzly/scripts/flatten_json.py $(inputs.SampleID).json > $(inputs.SampleID).pizzly.flattened.txt
 
 inputs:
   transcript_fa: File

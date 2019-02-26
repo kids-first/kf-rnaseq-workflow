@@ -4,7 +4,7 @@ id: arriba_fusion
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'migbro/arriba:latest'
+    dockerPull: 'kfdrc/arriba:latest'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8
