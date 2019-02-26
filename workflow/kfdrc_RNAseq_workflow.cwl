@@ -69,9 +69,6 @@ steps:
       genomeDir: STARgenome
       runThreadN: runThread
       outFileNamePrefix: sample_name
-      r1_adapter: r1_adapter
-      r2_adapter: r2_adapter
-
     out: [
       chimeric_junctions,
       chimeric_sam_out,

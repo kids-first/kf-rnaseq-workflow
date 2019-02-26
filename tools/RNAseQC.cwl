@@ -21,7 +21,7 @@ arguments:
       ${
         var cmd = "--legacy";
         if (inputs.strand != null){
-          cmd += " --stranded=rf";
+          cmd += " --stranded=" + inputs.strand;
         }
         return cmd;
       }

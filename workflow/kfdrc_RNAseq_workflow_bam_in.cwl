@@ -78,9 +78,6 @@ steps:
       genomeDir: STARgenome
       runThreadN: runThread
       outFileNamePrefix: sample_name
-      r1_adapter: r1_adapter
-      r2_adapter: r2_adapter
-
     out: [
       chimeric_junctions,
       chimeric_sam_out,
@@ -93,7 +90,6 @@ steps:
       transcriptome_bam_out
     ]
 
-
   strand_parse:
     run: ../tools/expression_parse_strand_param.cwl
     in:
@@ -105,6 +101,7 @@ steps:
         rnaseqc_std,
         arriba_std
       ]
+
   star_fusion:
     run: ../tools/STAR-Fusion.cwl
     in:
