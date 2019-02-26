@@ -32,9 +32,9 @@ outputs:
   STAR_gene_counts: {type: File, outputSource: star/gene_counts}
   STAR_chimeric_junctions: {type: File, outputSource: star/chimeric_junctions}
   STAR_chimeric_sam: {type: File, outputSource: star/chimeric_sam_out}
-  STAR-Fusion_abridged_coding: {type: File, outputSource: star_fusion/abridged_coding}
-  pizzly_fusion: {type: File, outputSource: pizzly/fusions_flattened}
-  arriba_fusion: {type: File, outputSource: arriba_fusion/arriba_fusions}
+  STAR-Fusion_result: {type: File, outputSource: star_fusion/abridged_coding}
+  pizzly_fusion_result: {type: File, outputSource: pizzly/fusions_flattened}
+  arriba_fusion_result: {type: File, outputSource: arriba_fusion/arriba_fusions}
   RSEM_isoform: {type: File, outputSource: rsem/isoform_out}
   RSEM_gene: {type: File, outputSource: rsem/gene_out}
   RNASeQC_Metrics: {type: File, outputSource: rna_seqc/Metrics}

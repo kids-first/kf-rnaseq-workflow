@@ -17,7 +17,7 @@ outputs:
 
 expression:
   "${
-      strand = inputs.strand;
+      var strand = inputs.strand;
       if (inputs.strand == null){
         strand = 'default';
       }
