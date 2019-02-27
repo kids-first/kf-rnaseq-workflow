@@ -45,4 +45,3 @@ outputs:
     type: File
     outputBinding:
       glob: "$(inputs.outFileNamePrefix).fusioncatcher.log"
-

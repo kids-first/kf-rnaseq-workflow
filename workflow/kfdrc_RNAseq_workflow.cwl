@@ -168,7 +168,6 @@ steps:
       fusion_out
     ]
 
-
 $namespaces:
   sbg: https://sevenbridges.com
 hints:

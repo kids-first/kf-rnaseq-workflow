@@ -4,10 +4,10 @@ id: pizzly
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'migbro/pizzly:latest'
+    dockerPull: 'kfdrc/pizzly:latest'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    coresMin: 4
+    coresMin: 16
     ramMin: 24000
 
 baseCommand: [pizzly]
@@ -34,4 +34,3 @@ outputs:
     type: File
     outputBinding:
       glob: "$(inputs.SampleID).pizzly.flattened.txt"
-

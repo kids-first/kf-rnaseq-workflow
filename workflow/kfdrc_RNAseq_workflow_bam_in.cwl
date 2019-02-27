@@ -177,7 +177,6 @@ steps:
       SampleID: sample_name
     out: [fusions_flattened]
 
-
 $namespaces:
   sbg: https://sevenbridges.com
 hints:

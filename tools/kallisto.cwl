@@ -44,4 +44,3 @@ outputs:
     type: File
     outputBinding:
       glob: '*.fusion.txt'
-

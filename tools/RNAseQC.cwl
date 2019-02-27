@@ -51,4 +51,3 @@ outputs:
     type: File
     outputBinding:
       glob: 'output/*.exon_reads.gct'
-
