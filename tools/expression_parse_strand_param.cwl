@@ -17,9 +17,9 @@ outputs:
 
 expression:
   "${
-      var strand = inputs.strand;
-      if (inputs.strand == null){
-        strand = 'default';
+      var strand = 'default';
+      if (inputs.strand != null){
+        strand = inputs.strand;
       }
       var parse_dict = {
           'default': {'rsem_std': null, 'kallisto_std': null, 'rnaseqc_std': null, 'arriba_std': null},
@@ -27,6 +27,6 @@ expression:
           'fr-stranded': {'rsem_std': 1, 'kallisto_std': 'fr-stranded', 'rnaseqc_std': 'fr', 'arriba_std': 'yes'}
           };
 
-        return parse_dict[inputs.strand];
+        return parse_dict[strand];
 
   }"

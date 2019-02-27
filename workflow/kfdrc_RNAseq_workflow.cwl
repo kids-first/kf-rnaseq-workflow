@@ -14,7 +14,7 @@ inputs:
   reads2: File
   STARgenome: File
   RSEMgenome: File
-  reference_genome: File
+  reference_fasta: File
   gtf_anno: File
   wf_strand_param: {type: ['null', string], doc: "use 'default' for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript"}
   FusionGenome: File
@@ -116,7 +116,7 @@ steps:
     run: ../tools/arriba.cwl
     in:
       genome_aligned_bam: star/genomic_bam_out
-      reference_fasta: reference_genome
+      reference_fasta: reference_fasta
       gtf_anno: gtf_anno
       outFileNamePrefix: sample_name
       arriba_strand_flag: strand_parse/arriba_std
