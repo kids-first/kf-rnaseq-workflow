@@ -7,7 +7,7 @@ requirements:
     dockerPull: 'kfdrc/pizzly:latest'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    coresMin: 16
+    coresMin: 8
     ramMin: 24000
 
 baseCommand: [pizzly]
