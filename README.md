@@ -11,7 +11,7 @@ Calculation of gene expression.
 ### STAR-Fusion
 Fusion detection for `STAR` chimeric reads.
 ### RNA-SeQC
-Generate metrics such as gene and transcript counts, sense/antisene mapping, ampping rates, etc
+Generate metrics such as gene and transcript counts, sense/antisene mapping, mapping rates, etc
 ### Kallisto
 Fusion detection using genomic bam file from `STAR`.
 ### Pizzly
@@ -90,22 +90,15 @@ pizzly_transcript_ref: gencode.v27.transcripts.pizzly.fa.gz
 outputs:
   cutadapt_stats: {type: File, outputSource: cutadapt/cutadapt_stats} # only if adapter supplied
   STAR_transcriptome_bam: {type: File, outputSource: star/transcriptome_bam_out}
-  STAR_junctions: {type: File, outputSource: star/junctions_out}
   STAR_sorted_genomic_bam: {type: File, outputSource: samtools_sort/sorted_bam}
   STAR_sorted_genomic_bai: {type: File, outputSource: samtools_sort/sorted_bai}
-  STAR_gene_counts: {type: File, outputSource: star/gene_counts}
-  STAR_chimeric_junctions: {type: File, outputSource: star/chimeric_junctions}
-  STAR_chimeric_sam: {type: File, outputSource: star/chimeric_sam_out}
-  STAR-Fusion_result: {type: File, outputSource: star_fusion/abridged_coding}
-  pizzly_fusion_result: {type: File, outputSource: pizzly/fusions_flattened}
-  arriba_fusion_result: {type: File, outputSource: arriba_fusion/arriba_fusions}
+  STAR_supplemental: {type: File, outputSource: supplemental/STAR_supplemental} # contains STAR final log, sj junctions file, chimeric junctions file, and gene count file
+  STAR-Fusion_results: {type: File, outputSource: star_fusion/abridged_coding}
+  pizzly_fusion_results: {type: File, outputSource: pizzly/fusions_flattened}
+  arriba_fusion_results: {type: File, outputSource: arriba_fusion/arriba_fusions}
   RSEM_isoform: {type: File, outputSource: rsem/isoform_out}
   RSEM_gene: {type: File, outputSource: rsem/gene_out}
   RNASeQC_Metrics: {type: File, outputSource: rna_seqc/Metrics}
-  RNASeQC_Gene_TPM: {type: File, outputSource: rna_seqc/Gene_TPM}
-  RNASeQC_Gene_count: {type: File, outputSource: rna_seqc/Gene_count}
-  RNASeQC_Exon_count: {type: File, outputSource: rna_seqc/Exon_count}
+  RNASeQC_supplemental: {type: File, outputSource: supplemental/RNASeQC_supplemental} # contains RNASeQC counts files
   kallisto_Abundance: {type: File, outputSource: kallisto/abundance_out}
-  kallisto_Fusion: {type: File, outputSource: kallisto/fusion_out}
-  Pizzly_unfiltered_Fasta: {type: File, outputSource: pizzly/unfiltered_fusion_fasta}
   ```
