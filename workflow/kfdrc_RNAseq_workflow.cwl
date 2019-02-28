@@ -81,6 +81,7 @@ steps:
     run: ../tools/samtools_sort.cwl
     in:
       unsorted_bam: star/genomic_bam_out
+      chimeric_sam_out: star/chimeric_sam_out
     out:
       [sorted_bam, sorted_bai]
 
