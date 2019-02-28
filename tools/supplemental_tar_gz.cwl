@@ -27,33 +27,14 @@ arguments:
       $(inputs.outFileNamePrefix).STAR.supplemental.tar.gz
       $(inputs.outFileNamePrefix)_STAR_supplemental
 
-      mkdir $(inputs.outFileNamePrefix)_RNASeQC_supplemental
-
-      cp $(inputs.Gene_TPM.path)
-      $(inputs.Gene_count.path)
-      $(inputs.Exon_count.path)
-      $(inputs.outFileNamePrefix)_RNASeQC_supplemental
-
-      tar -czf
-      $(inputs.outFileNamePrefix).RNASeQC.supplemental.tar.gz
-      $(inputs.outFileNamePrefix)_RNASeQC_supplemental
-
 inputs:
   outFileNamePrefix: string
   log_final_out: File
   junctions_out: File
   chimeric_junctions: File
-  gene_counts: File
-  Gene_TPM: File
-  Gene_count: File
-  Exon_count: File
 
 outputs:
   STAR_supplemental:
     type: File
     outputBinding:
       glob: "$(inputs.outFileNamePrefix).STAR.supplemental.tar.gz"
-  RNASeQC_supplemental:
-    type: File
-    outputBinding:
-      glob: "$(inputs.outFileNamePrefix).RNASeQC.supplemental.tar.gz"

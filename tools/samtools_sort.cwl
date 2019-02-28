@@ -24,10 +24,16 @@ arguments:
       index
       -@ 16
       $(inputs.unsorted_bam.nameroot).sorted.bam
-      $(inputs.unsorted_bam.nameroot).sorted.bai
+      $(inputs.unsorted_bam.nameroot).sorted.bai &&
+      samtools view
+      -bh
+      -@ 16
+      $(inputs.chimeric_sam_out.path)
+      -o $(inputs.chimeric_sam_out.nameroot).bam
 
 inputs:
   unsorted_bam: File
+  chimeric_sam_out: File
 
 outputs:
   sorted_bam:
@@ -38,3 +44,7 @@ outputs:
     type: File
     outputBinding:
       glob: '*.sorted.bai'
+  chimeric_bam_out:
+    type: File
+    outputBinding:
+      glob: "$(inputs.chimeric_sam_out.nameroot).bam"

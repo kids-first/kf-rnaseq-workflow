@@ -29,14 +29,16 @@ outputs:
   STAR_transcriptome_bam: {type: File, outputSource: star/transcriptome_bam_out}
   STAR_sorted_genomic_bam: {type: File, outputSource: samtools_sort/sorted_bam}
   STAR_sorted_genomic_bai: {type: File, outputSource: samtools_sort/sorted_bai}
+  STAR_chimeric_bam_out: {type: File, outputSource: samtools_sort/chimeric_bam_out}
   STAR_supplemental: {type: File, outputSource: supplemental/STAR_supplemental}
   STAR-Fusion_results: {type: File, outputSource: star_fusion/abridged_coding}
   pizzly_fusion_results: {type: File, outputSource: pizzly/fusions_flattened}
   arriba_fusion_results: {type: File, outputSource: arriba_fusion/arriba_fusions}
+  arriba_fusion_viz: {type: File, outputSource: arriba_fusion/arriba_pdf}
   RSEM_isoform: {type: File, outputSource: rsem/isoform_out}
   RSEM_gene: {type: File, outputSource: rsem/gene_out}
   RNASeQC_Metrics: {type: File, outputSource: rna_seqc/Metrics}
-  RNASeQC_supplemental: {type: File, outputSource: supplemental/RNASeQC_supplemental}
+  RNASeQC_Exon_count: {type: File, outputSource: rna_seqc/Exon_count}
   kallisto_Abundance: {type: File, outputSource: kallisto/abundance_out}
 
 steps:
@@ -65,6 +67,7 @@ steps:
       outFileNamePrefix: sample_name
     out: [
       chimeric_junctions,
+      chimeric_sam_out,
       gene_counts,
       genomic_bam_out,
       junctions_out,
@@ -73,6 +76,13 @@ steps:
       log_progress_out,
       transcriptome_bam_out
     ]
+
+  samtools_sort:
+    run: ../tools/samtools_sort.cwl
+    in:
+      unsorted_bam: star/genomic_bam_out
+    out:
+      [sorted_bam, sorted_bai]
 
   strand_parse:
     run: ../tools/expression_parse_strand_param.cwl
@@ -109,13 +119,18 @@ steps:
   arriba_fusion:
     run: ../tools/arriba.cwl
     in:
-      genome_aligned_bam: star/genomic_bam_out
+      genome_aligned_bam: samtools_sort/sorted_bam
+      genome_aligned_bai: samtools_sort/sorted_bai
+      chimeric_sam_out: star/chimeric_sam_out
       reference_fasta: reference_fasta
       gtf_anno: gtf_anno
       outFileNamePrefix: sample_name
       arriba_strand_flag: strand_parse/arriba_std
     out:
-      [arriba_fusions]
+      [
+        arriba_fusions,
+        arriba_pdf
+      ]
 
   rsem:
     run: ../tools/rsem-calculate-expression.cwl
@@ -128,13 +143,6 @@ steps:
       gene_out,
       isoform_out
     ]
-
-  samtools_sort:
-    run: ../tools/samtools_sort.cwl
-    in:
-      unsorted_bam: star/genomic_bam_out
-    out:
-      [sorted_bam, sorted_bai]
 
   rna_seqc:
     run: ../tools/RNAseQC.cwl
@@ -157,12 +165,8 @@ steps:
       gene_counts: star/gene_counts
       junctions_out: star/junctions_out
       log_final_out: star/log_final_out
-      Gene_TPM: rna_seqc/Gene_TPM
-      Gene_count: rna_seqc/Gene_count
-      Exon_count: rna_seqc/Exon_count
     out: [
-      STAR_supplemental,
-      RNASeQC_supplemental
+      STAR_supplemental
     ]
 
   kallisto:

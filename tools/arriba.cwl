@@ -15,6 +15,7 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
+      -c $(inputs.chimeric_sam_out.path)
       -x $(inputs.genome_aligned_bam.path)
       -a $(inputs.reference_fasta.path)
       -g $(inputs.gtf_anno.path)
@@ -30,10 +31,19 @@ arguments:
         else{
           return "-s " + inputs.arriba_strand_flag;
         }
-      }
+      } &&
+      /arriba_v1.0.1/draw_fusions.R
+      --annotation=$(inputs.gtf_anno.path)
+      --fusions=$(inputs.outFileNamePrefix).arriba.fusions.tsv
+      --alignments=$(inputs.genome_aligned_bam.path)
+      --cytobands=/arriba_v1.0.1/database/cytobands_hg38_GRCh38_2018-02-23.tsv
+      --proteinDomains=/arriba_v1.0.1/database/protein_domains_hg38_GRCh38_2018-03-06.gff3
+      --output=$(inputs.outFileNamePrefix).arriba.fusions.pdf
 
 inputs:
   genome_aligned_bam: File
+  genome_aligned_bai: File
+  chimeric_sam_out: File
   reference_fasta: File
   gtf_anno: File
   outFileNamePrefix: string
@@ -44,3 +54,7 @@ outputs:
     type: File
     outputBinding:
       glob: "$(inputs.outFileNamePrefix).arriba.fusions.tsv"
+  arriba_pdf:
+    type: File
+    outputBinding:
+      glob: "$(inputs.outFileNamePrefix).arriba.fusions.pdf"
