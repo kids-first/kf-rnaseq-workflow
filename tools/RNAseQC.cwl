@@ -36,17 +36,14 @@ outputs:
     type: File
     outputBinding:
       glob: 'output/*.metrics.tsv'
-
   Gene_TPM:
     type: File
     outputBinding:
       glob: 'output/*.gene_tpm.gct'
-
   Gene_count:
     type: File
     outputBinding:
       glob: 'output/*.gene_reads.gct'
-
   Exon_count:
     type: File
     outputBinding:

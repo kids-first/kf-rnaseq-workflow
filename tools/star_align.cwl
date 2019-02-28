@@ -47,7 +47,7 @@ arguments:
       --genomeLoad NoSharedMemory
       --chimSegmentMin 12
       --chimJunctionOverhangMin 12
-      --chimOutType Junctions SeparateSAMold WithinBAM SoftClip
+      --chimOutType Junctions WithinBAM SoftClip
       --chimMainSegmentMultNmax 1
       --outSAMattributes NH HI AS nM NM ch
 
@@ -66,6 +66,5 @@ outputs:
   genomic_bam_out: {type: File, outputBinding: {glob: '*Aligned.out.bam'}}
   junctions_out: {type: File, outputBinding: {glob: '*SJ.out.tab'}}
   transcriptome_bam_out: {type: File, outputBinding: {glob: '*Aligned.toTranscriptome.out.bam'}}
-  chimeric_sam_out: {type: File, outputBinding: {glob: '*Chimeric.out.sam'}}
   chimeric_junctions: {type: File, outputBinding: {glob: '*Chimeric.out.junction'}}
   gene_counts: {type: File, outputBinding: {glob: '*ReadsPerGene.out.tab'}}
