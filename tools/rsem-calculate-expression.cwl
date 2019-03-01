@@ -23,7 +23,8 @@ arguments:
         }
         cmd += " " + inputs.bam.path + " ./" + inputs.genomeDir.nameroot.split('.')[0] + "/" + inputs.genomeDir.nameroot.split('.')[0] + " " +  inputs.outFileNamePrefix + ".rsem";
         return cmd
-      }
+      } &&
+      gzip *results
 
 inputs:
   bam: File
@@ -35,9 +36,9 @@ outputs:
   gene_out:
     type: File
     outputBinding: 
-      glob: '*genes.results'
+      glob: '*genes.results.gz'
 
   isoform_out:
     type: File
     outputBinding:
-      glob: '*isoforms.results'
+      glob: '*isoforms.results.gz'

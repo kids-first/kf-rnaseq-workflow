@@ -93,7 +93,10 @@ outputs:
   STAR_sorted_genomic_bam: {type: File, outputSource: samtools_sort/sorted_bam}
   STAR_sorted_genomic_bai: {type: File, outputSource: samtools_sort/sorted_bai}
   STAR_chimeric_bam_out: {type: File, outputSource: samtools_sort/chimeric_bam_out}
-  STAR_supplemental: {type: File, outputSource: supplemental/STAR_supplemental} # contains STAR final log, sj junctions file, chimeric junctions file, and gene count file
+  STAR_chimeric_junctions: {type: File, outputSource: star_fusion/chimeric_junction_compressed}
+  STAR_gene_count: {type: File, outputSource: star/gene_counts}
+  STAR_junctions_out: {type: File, outputSource: star/junctions_out}
+  STAR_final_log: {type: File, outputSource: star/log_final_out}
   STAR-Fusion_results: {type: File, outputSource: star_fusion/abridged_coding}
   pizzly_fusion_results: {type: File, outputSource: pizzly/fusions_flattened}
   arriba_fusion_results: {type: File, outputSource: arriba_fusion/arriba_fusions}
@@ -101,6 +104,6 @@ outputs:
   RSEM_isoform: {type: File, outputSource: rsem/isoform_out}
   RSEM_gene: {type: File, outputSource: rsem/gene_out}
   RNASeQC_Metrics: {type: File, outputSource: rna_seqc/Metrics}
-  RNASeQC_Exon_count: {type: File, outputSource: rna_seqc/Exon_count}
+  RNASeQC_counts: {type: File, outputSource: supplemental/RNASeQC_counts} # contains gene tpm, gene read, and exon counts
   kallisto_Abundance: {type: File, outputSource: kallisto/abundance_out}
   ```

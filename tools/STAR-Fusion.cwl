@@ -24,7 +24,8 @@ arguments:
       --output_dir STAR-Fusion_outdir
       --examine_coding_effect --denovo_reconstruct --FusionInspector inspect
       --CPU 8 &&
-      mv STAR-Fusion_outdir/star-fusion.fusion_predictions.abridged.coding_effect.tsv $(inputs.SampleID).STAR.fusion_predictions.abridged.coding_effect.tsv
+      mv STAR-Fusion_outdir/star-fusion.fusion_predictions.abridged.coding_effect.tsv $(inputs.SampleID).STAR.fusion_predictions.abridged.coding_effect.tsv &&
+      gzip -c $(inputs.Chimeric_junction.path) > $(inputs.Chimeric_junction.basename).gz
       
 
 inputs:
@@ -39,3 +40,7 @@ outputs:
     type: File
     outputBinding:
       glob: '*.fusion_predictions.abridged.coding_effect.tsv'
+  chimeric_junction_compressed:
+    type: File
+    outputBinding:
+      glob: "$(inputs.Chimeric_junction.basename).gz"

@@ -25,6 +25,7 @@ arguments:
       }
 
       mv output/abundance.tsv $(inputs.SampleID).kallisto.abundance.tsv &&
+      gzip $(inputs.SampleID).kallisto.abundance.tsv &&
       mv output/fusion.txt $(inputs.SampleID).kallisto.fusion.txt
 
 inputs:
@@ -38,7 +39,7 @@ outputs:
   abundance_out:
     type: File
     outputBinding:
-      glob: '*.abundance.tsv'
+      glob: '*.abundance.tsv.gz'
 
   fusion_out:
     type: File

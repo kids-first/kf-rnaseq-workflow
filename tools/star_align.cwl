@@ -49,7 +49,8 @@ arguments:
       --chimJunctionOverhangMin 12
       --chimOutType Junctions SeparateSAMold WithinBAM SoftClip
       --chimMainSegmentMultNmax 1
-      --outSAMattributes NH HI AS nM NM ch
+      --outSAMattributes NH HI AS nM NM ch &&
+      gzip *ReadsPerGene.out.tab  *SJ.out.tab
 
 inputs:
   outSAMattrRGline: string
@@ -64,8 +65,8 @@ outputs:
   log_out: {type: File, outputBinding: {glob: '*Log.out'}}
   log_final_out: {type: File, outputBinding: {glob: '*Log.final.out'}}
   genomic_bam_out: {type: File, outputBinding: {glob: '*Aligned.out.bam'}}
-  junctions_out: {type: File, outputBinding: {glob: '*SJ.out.tab'}}
+  junctions_out: {type: File, outputBinding: {glob: '*SJ.out.tab.gz'}}
   transcriptome_bam_out: {type: File, outputBinding: {glob: '*Aligned.toTranscriptome.out.bam'}}
   chimeric_sam_out: {type: File, outputBinding: {glob: '*Chimeric.out.sam'}}
   chimeric_junctions: {type: File, outputBinding: {glob: '*Chimeric.out.junction'}}
-  gene_counts: {type: File, outputBinding: {glob: '*ReadsPerGene.out.tab'}}
+  gene_counts: {type: File, outputBinding: {glob: '*ReadsPerGene.out.tab.gz'}}

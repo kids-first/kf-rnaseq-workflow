@@ -21,7 +21,7 @@ arguments:
       --fasta $(inputs.transcript_fa.path)
       --output $(inputs.SampleID)
       $(inputs.kallisto_fusion.path) &&
-      python /pizzly/scripts/flatten_json.py $(inputs.SampleID).json > $(inputs.SampleID).pizzly.flattened.txt
+      python /pizzly/scripts/flatten_json.py $(inputs.SampleID).json > $(inputs.SampleID).pizzly.flattened.tsv
 
 inputs:
   transcript_fa: File
@@ -33,4 +33,4 @@ outputs:
   fusions_flattened:
     type: File
     outputBinding:
-      glob: "$(inputs.SampleID).pizzly.flattened.txt"
+      glob: "$(inputs.SampleID).pizzly.flattened.tsv"

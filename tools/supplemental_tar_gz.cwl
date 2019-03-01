@@ -15,26 +15,25 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      $(inputs.outFileNamePrefix)_STAR_supplemental
+      $(inputs.outFileNamePrefix)_RNASeQC_counts
 
-      cp $(inputs.log_final_out.path)
-      $(inputs.junctions_out.path)
-      $(inputs.chimeric_junctions.path)
-      $(inputs.gene_counts.path)
-      $(inputs.outFileNamePrefix)_STAR_supplemental
+      cp $(inputs.Gene_TPM.path)
+      $(inputs.Gene_count.path)
+      $(inputs.Gene_count.path)
+      $(inputs.outFileNamePrefix)_RNASeQC_counts
 
       tar -czf
-      $(inputs.outFileNamePrefix).STAR.supplemental.tar.gz
-      $(inputs.outFileNamePrefix)_STAR_supplemental
+      $(inputs.outFileNamePrefix).RNASeQC.counts.tar.gz
+      $(inputs.outFileNamePrefix)_RNASeQC_counts
 
 inputs:
   outFileNamePrefix: string
-  log_final_out: File
-  junctions_out: File
-  chimeric_junctions: File
+  Gene_TPM: File
+  Gene_count: File
+  Exon_count: File
 
 outputs:
-  STAR_supplemental:
+  RNASeQC_counts:
     type: File
     outputBinding:
-      glob: "$(inputs.outFileNamePrefix).STAR.supplemental.tar.gz"
+      glob: "$(inputs.outFileNamePrefix).RNASeQC.counts.tar.gz"
