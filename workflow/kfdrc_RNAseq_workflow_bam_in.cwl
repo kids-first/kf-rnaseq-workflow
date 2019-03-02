@@ -142,7 +142,7 @@ steps:
       bam: star/transcriptome_bam_out
       genomeDir: RSEMgenome
       outFileNamePrefix: sample_name
-      forward_prob: strand_parse/rsem_std
+      strandedness: strand_parse/rsem_std
     out: [
       gene_out,
       isoform_out
