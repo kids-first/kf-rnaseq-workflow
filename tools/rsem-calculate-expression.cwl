@@ -18,7 +18,7 @@ arguments:
       -zxf $(inputs.genomeDir.path) &&
       ${
         var cmd = "rsem-calculate-expression --paired-end --alignments --append-names --no-bam-output -p 16";
-        if (inputs.strandedness != null || inputs.strandedness != "default"){
+        if (inputs.strandedness != null && inputs.strandedness != "default"){
           cmd += " --strandedness " + inputs.strandedness;
         }
         cmd += " " + inputs.bam.path + " ./" + inputs.genomeDir.nameroot.split('.')[0] + "/" + inputs.genomeDir.nameroot.split('.')[0] + " " +  inputs.outFileNamePrefix + ".rsem";
