@@ -17,7 +17,7 @@ arguments:
     valueFrom: >-
       ${
         var cmd = "quant -i " + inputs.transcript_idx.path + " -o output --fusion -b 10 -t 8";
-        if (inputs.strand != null || inputs.strand != "default"){
+        if (inputs.strand != null && inputs.strand != "default"){
           cmd += " --" + inputs.strand;
         }
         cmd += " " + inputs.reads1.path + " " + inputs.reads2.path;
