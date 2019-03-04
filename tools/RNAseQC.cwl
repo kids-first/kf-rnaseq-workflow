@@ -20,7 +20,7 @@ arguments:
       output/
       ${
         var cmd = "--legacy";
-        if (inputs.strand != null){
+        if (inputs.strand != null or inputs.strand != "default"){
           cmd += " --stranded=" + inputs.strand;
         }
         return cmd;

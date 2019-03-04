@@ -22,7 +22,7 @@ expression:
         strand = inputs.strand;
       }
       var parse_dict = {
-          'default': {'rsem_std': null, 'kallisto_std': null, 'rnaseqc_std': null, 'arriba_std': null},
+          'default': {'rsem_std': 'none', 'kallisto_std': 'default', 'rnaseqc_std': 'default', 'arriba_std': 'auto'},
           'rf-stranded': {'rsem_std': 'reverse', 'kallisto_std': 'rf-stranded', 'rnaseqc_std': 'rf', 'arriba_std': 'reverse'},
           'fr-stranded': {'rsem_std': 'forward', 'kallisto_std': 'fr-stranded', 'rnaseqc_std': 'fr', 'arriba_std': 'yes'}
           };
