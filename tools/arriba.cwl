@@ -8,7 +8,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8
-    ramMin: 32000
+    ramMin: 64000
 
 baseCommand: [/arriba_v1.0.1/arriba]
 arguments:
