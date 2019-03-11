@@ -112,8 +112,6 @@ steps:
   star_fusion:
     run: ../tools/STAR-Fusion.cwl
     in:
-      readFilesIn1: cutadapt/trimmedReadsR1
-      readFilesIn2: cutadapt/trimmedReadsR2
       Chimeric_junction: star/chimeric_junctions
       genomeDir: FusionGenome
       SampleID: sample_name

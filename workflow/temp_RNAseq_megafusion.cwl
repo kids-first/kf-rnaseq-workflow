@@ -1,7 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kfdrc_rnaseq_wf_bam_in_big_fusion
-doc: temp pipeline to give star fusion an insane amount of memory
+id: kfdrc_rnaseq_temp_big_resource
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
@@ -14,34 +13,35 @@ inputs:
   STAR_outSAMattrRGline: string
   STARgenome: File
   RSEMgenome: File
+  reference_fasta: File
+  gtf_anno: File
+  wf_strand_param: {type: ['null', string], doc: "use 'default' or leave blank for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript"}
   FusionGenome: File
   runThread: int
   input_bam: File
   RNAseQC_GTF: File
-  GTF_Anno: File
   kallisto_idx: File
   pizzly_transcript_ref: File
-
 
 outputs:
   cutadapt_stats: {type: File, outputSource: cutadapt/cutadapt_stats}
   STAR_transcriptome_bam: {type: File, outputSource: star/transcriptome_bam_out}
-  STAR_junctions: {type: File, outputSource: star/junctions_out}
-  STAR_genomic_bam: {type: File, outputSource: star/genomic_bam_out}
-  STAR_gene_counts: {type: File, outputSource: star/gene_counts}
-  STAR_chimeric_junctions: {type: File, outputSource: star/chimeric_junctions}
-  STAR_chimeric_sam: {type: File, outputSource: star/chimeric_sam_out}
-  STAR_Fusion: {type: File, outputSource: star_fusion/fusion_out}
+  STAR_sorted_genomic_bam: {type: File, outputSource: samtools_sort/sorted_bam}
+  STAR_sorted_genomic_bai: {type: File, outputSource: samtools_sort/sorted_bai}
+  STAR_chimeric_bam_out: {type: File, outputSource: samtools_sort/chimeric_bam_out}
+  STAR_chimeric_junctions: {type: File, outputSource: star_fusion/chimeric_junction_compressed}
+  STAR_gene_count: {type: File, outputSource: star/gene_counts}
+  STAR_junctions_out: {type: File, outputSource: star/junctions_out}
+  STAR_final_log: {type: File, outputSource: star/log_final_out}
+  STAR-Fusion_results: {type: File, outputSource: star_fusion/abridged_coding}
+  pizzly_fusion_results: {type: File, outputSource: pizzly/fusions_flattened}
+  arriba_fusion_results: {type: File, outputSource: arriba_fusion/arriba_fusions}
+  arriba_fusion_viz: {type: File, outputSource: arriba_fusion/arriba_pdf}
   RSEM_isoform: {type: File, outputSource: rsem/isoform_out}
   RSEM_gene: {type: File, outputSource: rsem/gene_out}
   RNASeQC_Metrics: {type: File, outputSource: rna_seqc/Metrics}
-  RNASeQC_Gene_TPM: {type: File, outputSource: rna_seqc/Gene_TPM}
-  RNASeQC_Gene_count: {type: File, outputSource: rna_seqc/Gene_count}
-  RNASeQC_Exon_count: {type: File, outputSource: rna_seqc/Exon_count}
+  RNASeQC_counts: {type: File, outputSource: supplemental/RNASeQC_counts}
   kallisto_Abundance: {type: File, outputSource: kallisto/abundance_out}
-  kallisto_Fusion: {type: File, outputSource: kallisto/fusion_out}
-  Pizzly_Fasta: {type: File, outputSource: pizzly/fusions_fasta}
-  Pizzly_unfiltered_Fasta: {type: File, outputSource: pizzly/unfiltered_fusion_fasta}
 
 steps:
 
@@ -77,9 +77,6 @@ steps:
       genomeDir: STARgenome
       runThreadN: runThread
       outFileNamePrefix: sample_name
-      r1_adapter: r1_adapter
-      r2_adapter: r2_adapter
-
     out: [
       chimeric_junctions,
       chimeric_sam_out,
@@ -92,17 +89,56 @@ steps:
       transcriptome_bam_out
     ]
 
-  star_fusion:
-    run: ../tools/STAR-Fusion_big.cwl
-    hints:
-      - class: sbg:AWSInstanceType
-        value: r4.4xlarge;ebs-gp2;500
+  samtools_sort:
+    run: ../tools/samtools_sort.cwl
     in:
-      Chimeric: star/chimeric_junctions
+      unsorted_bam: star/genomic_bam_out
+      chimeric_sam_out: star/chimeric_sam_out
+    out:
+      [sorted_bam, sorted_bai, chimeric_bam_out]
+
+  strand_parse:
+    run: ../tools/expression_parse_strand_param.cwl
+    in:
+      strand: wf_strand_param
+    out:
+      [
+        rsem_std,
+        kallisto_std,
+        rnaseqc_std,
+        arriba_std
+      ]
+
+  star_fusion:
+    run: ../tools/STAR-Fusion.cwl
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: r4.4xlarge
+    in:
+      Chimeric_junction: star/chimeric_junctions
       genomeDir: FusionGenome
       SampleID: sample_name
     out:
-      [fusion_out]
+      [abridged_coding, chimeric_junction_compressed]
+
+  arriba_fusion:
+    run: ../tools/arriba.cwl
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: r4.4xlarge
+    in:
+      genome_aligned_bam: samtools_sort/sorted_bam
+      genome_aligned_bai: samtools_sort/sorted_bai
+      chimeric_sam_out: star/chimeric_sam_out
+      reference_fasta: reference_fasta
+      gtf_anno: gtf_anno
+      outFileNamePrefix: sample_name
+      arriba_strand_flag: strand_parse/arriba_std
+    out:
+      [
+        arriba_fusions,
+        arriba_pdf
+      ]
 
   rsem:
     run: ../tools/rsem-calculate-expression.cwl
@@ -110,23 +146,18 @@ steps:
       bam: star/transcriptome_bam_out
       genomeDir: RSEMgenome
       outFileNamePrefix: sample_name
+      strandedness: strand_parse/rsem_std
     out: [
       gene_out,
       isoform_out
     ]
-
-  samtools_sort:
-    run: ../tools/samtools_sort.cwl
-    in:
-      unsorted_bam: star/genomic_bam_out
-    out:
-      [sorted_bam]
 
   rna_seqc:
     run: ../tools/RNAseQC.cwl
     in:
       Aligned_sorted_bam: samtools_sort/sorted_bam
       collapsed_gtf: RNAseQC_GTF
+      strand: strand_parse/rnaseqc_std
     out: [
       Metrics,
       Gene_TPM,
@@ -134,10 +165,22 @@ steps:
       Exon_count
     ]
 
+  supplemental:
+    run: ../tools/supplemental_tar_gz.cwl
+    in:
+      outFileNamePrefix: sample_name
+      Gene_TPM: rna_seqc/Gene_TPM
+      Gene_count: rna_seqc/Gene_count
+      Exon_count: rna_seqc/Exon_count
+    out: [
+      RNASeQC_counts
+    ]
+
   kallisto:
     run: ../tools/kallisto.cwl
     in:
       transcript_idx: kallisto_idx
+      strand: strand_parse/kallisto_std
       reads1: cutadapt/trimmedReadsR1
       reads2: cutadapt/trimmedReadsR2
       SampleID: sample_name
@@ -149,20 +192,17 @@ steps:
   pizzly:
     run: ../tools/pizzly.cwl
     hints:
-      - class: sbg:AWSInstanceType
-        value: r4.2xlarge;ebs-gp2;500
+      - class: 'sbg:AWSInstanceType'
+        value: r4.4xlarge
     in:
       transcript_fa: pizzly_transcript_ref
-      GTF: GTF_Anno
+      GTF: gtf_anno
       kallisto_fusion: kallisto/fusion_out
       SampleID: sample_name
-    out: [
-      fusions_fasta,
-      unfiltered_fusion_fasta
-    ]
+    out: [fusions_flattened]
 
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
   - class: 'sbg:maxNumberOfParallelInstances'
-    value: 2
+    value: 3
