@@ -26,7 +26,11 @@ expression:
           'rf-stranded': {'rsem_std': 'reverse', 'kallisto_std': 'rf-stranded', 'rnaseqc_std': 'rf', 'arriba_std': 'reverse'},
           'fr-stranded': {'rsem_std': 'forward', 'kallisto_std': 'fr-stranded', 'rnaseqc_std': 'fr', 'arriba_std': 'yes'}
           };
-
+      if (strand in parse_dict){
         return parse_dict[strand];
-
+        
+      }
+      else{
+        throw new Error(strand + ' is a not a valid strand param. Use one of default, rf-stranded, fr-stranded');
+      }
   }"
