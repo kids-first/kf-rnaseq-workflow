@@ -46,7 +46,7 @@ outputs:
 steps:
 
   bam2fastq:
-    run: ../tools/bam2fastq.cwl
+    run: ../tools/samtools_fastq.cwl
     in:
       input_bam: input_bam
       SampleID: sample_name
@@ -110,7 +110,7 @@ steps:
       ]
 
   star_fusion:
-    run: ../tools/STAR-Fusion.cwl
+    run: ../tools/star_fusion.cwl
     in:
       Chimeric_junction: star/chimeric_junctions
       genomeDir: FusionGenome
@@ -119,7 +119,7 @@ steps:
       [abridged_coding, chimeric_junction_compressed]
 
   arriba_fusion:
-    run: ../tools/arriba.cwl
+    run: ../tools/arriba_fusion.cwl
     in:
       genome_aligned_bam: samtools_sort/sorted_bam
       genome_aligned_bai: samtools_sort/sorted_bai
@@ -135,7 +135,7 @@ steps:
       ]
 
   rsem:
-    run: ../tools/rsem-calculate-expression.cwl
+    run: ../tools/rsem_calc_expression.cwl
     in:
       bam: star/transcriptome_bam_out
       genomeDir: RSEMgenome
@@ -147,7 +147,7 @@ steps:
     ]
 
   rna_seqc:
-    run: ../tools/RNAseQC.cwl
+    run: ../tools/rnaseqc.cwl
     in:
       Aligned_sorted_bam: samtools_sort/sorted_bam
       collapsed_gtf: RNAseQC_GTF
@@ -171,7 +171,7 @@ steps:
     ]
 
   kallisto:
-    run: ../tools/kallisto.cwl
+    run: ../tools/kallisto_calc_expression.cwl
     in:
       transcript_idx: kallisto_idx
       strand: strand_parse/kallisto_std
@@ -184,7 +184,7 @@ steps:
     ]
 
   pizzly:
-    run: ../tools/pizzly.cwl
+    run: ../tools/pizzly_fusion.cwl
     in:
       transcript_fa: pizzly_transcript_ref
       GTF: gtf_anno

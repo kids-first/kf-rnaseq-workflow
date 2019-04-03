@@ -10,12 +10,14 @@ requirements:
     coresMin: 36
     ramMin: 30000
 
-baseCommand: [samtools, sort]
+baseCommand: ["/bin/bash", "-c"]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      -m 1G -n -O SAM -@ $(inputs.runThreadN) $(inputs.input_bam.path) |
+      set -eo pipefail
+
+      samtools sort -m 1G -n -O SAM -@ $(inputs.runThreadN) $(inputs.input_bam.path) |
       samtools fastq -c 2 -1 $(inputs.SampleID).converted_1.fastq.gz -2 $(inputs.SampleID).converted_2.fastq.gz -@ $(inputs.runThreadN) -
 
 inputs:
