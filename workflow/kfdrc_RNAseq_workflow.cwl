@@ -4,7 +4,6 @@ id: kfdrc_rnaseq_wf
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
-  - class: SubworkflowFeatureRequirement
 
 inputs:
   sample_name: string

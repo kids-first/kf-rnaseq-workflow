@@ -4,13 +4,13 @@ id: arriba_fusion
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/arriba:1.1.0'
+    dockerPull: 'kfdrc/arriba:1.0.1'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8
     ramMin: 64000
 
-baseCommand: [/arriba_v1.1.0/arriba]
+baseCommand: [/arriba_v1.0.1/arriba]
 arguments:
   - position: 1
     shellQuote: false
@@ -21,7 +21,7 @@ arguments:
       -g $(inputs.gtf_anno.path)
       -o $(inputs.outFileNamePrefix).arriba.fusions.tsv
       -O $(inputs.outFileNamePrefix).arriba.discarded_fusions.tsv
-      -b /arriba_v1.1.0/database/blacklist_hg38_GRCh38_2018-11-04.tsv.gz
+      -b /arriba_v1.0.1/database/blacklist_hg38_GRCh38_2018-04-04.tsv.gz
       -T
       -P
       ${
@@ -32,12 +32,12 @@ arguments:
           return "-s " + inputs.arriba_strand_flag;
         }
       } &&
-      /arriba_v1.1.0/draw_fusions.R
+      /arriba_v1.0.1/draw_fusions.R
       --annotation=$(inputs.gtf_anno.path)
       --fusions=$(inputs.outFileNamePrefix).arriba.fusions.tsv
       --alignments=$(inputs.genome_aligned_bam.path)
-      --cytobands=/arriba_v1.1.0/database/cytobands_hg38_GRCh38_2018-02-23.tsv
-      --proteinDomains=/arriba_v1.1.0/database/protein_domains_hg38_GRCh38_2018-03-06.gff3
+      --cytobands=/arriba_v1.0.1/database/cytobands_hg38_GRCh38_2018-02-23.tsv
+      --proteinDomains=/arriba_v1.0.1/database/protein_domains_hg38_GRCh38_2018-03-06.gff3
       --output=$(inputs.outFileNamePrefix).arriba.fusions.pdf
 
 inputs:
