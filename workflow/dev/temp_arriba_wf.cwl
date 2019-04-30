@@ -45,3 +45,9 @@ steps:
         arriba_fusions,
         arriba_pdf
       ]
+
+# $namespaces:
+#   sbg: https://sevenbridges.com
+# hints:
+#   - class: 'sbg:AWSInstanceType'
+#     value: r4.8xlarge;ebs-gp2;200
