@@ -4,50 +4,47 @@ id: rnaseqc
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'broadinstitute/gtex_rnaseq:V8'
+    dockerPull: 'gcr.io/broad-cga-aarong-gtex/rnaseqc:latest'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8
     ramMin: 10000
 
-baseCommand: [bash, -c]
+baseCommand: [rnaseqc]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      /src/run_rnaseqc.py
-      $(inputs.Aligned_bam.path)
-      $(inputs.GTF.path)
-      $(input.GenomeRef.path)
-      $(inputs.SampleID)
-      --output_dir output/
+      $(inputs.collapsed_gtf.path)
+      $(inputs.Aligned_sorted_bam.path)
+      output/
+      ${
+        var cmd = "--legacy";
+        if (inputs.strand != null && inputs.strand != "default"){
+          cmd += " --stranded=" + inputs.strand;
+        }
+        return cmd;
+      }
 
 inputs:
-  Aligned_bam: File
-  GTF: File
-  GenomeRef:
-    type: File
-    secondaryFiles: [.fai, ^.dict]
-  SampleID: string
+  Aligned_sorted_bam: File
+  collapsed_gtf: File
+  strand: {type: ['null', string]}
 
 outputs:
   Metrics:
     type: File
     outputBinding:
-      glob: '*.metrics.tsv'
-
+      glob: 'output/*.metrics.tsv'
   Gene_TPM:
     type: File
     outputBinding:
-      glob: '*.gene_tpm.gct'
-
+      glob: 'output/*.gene_tpm.gct'
   Gene_count:
     type: File
     outputBinding:
-      glob: '*.gene_reads.gct'
-
+      glob: 'output/*.gene_reads.gct'
   Exon_count:
     type: File
     outputBinding:
-      glob: '*.exon_reads.gct'
-
+      glob: 'output/*.exon_reads.gct'

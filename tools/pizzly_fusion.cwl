@@ -4,11 +4,11 @@ id: pizzly
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'chrisamiller/docker-pizzly'
+    dockerPull: 'kfdrc/pizzly:latest'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8
-    ramMin: 10000
+    ramMin: 24000
 
 baseCommand: [pizzly]
 arguments:
@@ -20,7 +20,8 @@ arguments:
       --insert-size 400
       --fasta $(inputs.transcript_fa.path)
       --output $(inputs.SampleID)
-      $(inputs.kallisto_fusion.path) 
+      $(inputs.kallisto_fusion.path) &&
+      python /pizzly/scripts/flatten_json.py $(inputs.SampleID).json > $(inputs.SampleID).pizzly.flattened.tsv
 
 inputs:
   transcript_fa: File
@@ -29,13 +30,7 @@ inputs:
   SampleID: string
 
 outputs:
-  fusions_fasta:
+  fusions_flattened:
     type: File
     outputBinding:
-      glob: "$(inputs.SampleID).fusions.fasta"
-
-  unfiltered_fusion_fasta:
-    type: File
-    outputBinding:
-      glob: '*.unfiltered.fusion.fasta'
-
+      glob: "$(inputs.SampleID).pizzly.flattened.tsv"
