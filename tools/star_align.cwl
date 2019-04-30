@@ -7,7 +7,7 @@ requirements:
     dockerPull: 'kfdrc/star:latest'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    coresMin: "$(inputs.runThreadN ? inputs.runThreadN : 16)"
+    coresMin: 16
     ramMin: 60000
 
 baseCommand: [tar, -xzf]
@@ -58,6 +58,7 @@ inputs:
   readFilesIn2: File
   genomeDir: File
   runThreadN: int
+
   outFileNamePrefix: string
 
 outputs:
