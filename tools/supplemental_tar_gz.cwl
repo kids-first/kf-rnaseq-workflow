@@ -19,7 +19,7 @@ arguments:
 
       cp $(inputs.Gene_TPM.path)
       $(inputs.Gene_count.path)
-      $(inputs.Gene_count.path)
+      $(inputs.Exon_count.path)
       $(inputs.outFileNamePrefix)_RNASeQC_counts
 
       tar -czf
