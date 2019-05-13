@@ -15,8 +15,8 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      $(inputs.genomeDir)
-      STAR --runMode genomeGenerate --runThreadN $(inputs.runThreadN) --genomeDir $(inputs.genomeDir) --genomeFastaFiles $(inputs.genome_fa.path) --sjdbGTFfile $(inputs.gtf.path) --sjdbOverhang 100
+      $(inputs.genomeDir) &&
+      STAR --runMode genomeGenerate --runThreadN $(inputs.runThreadN) --genomeDir $(inputs.genomeDir) --genomeFastaFiles $(inputs.genome_fa.path) --sjdbGTFfile $(inputs.gtf.path) --sjdbOverhang $(inputs.sjdbOverhang)
       && tar -czf $(inputs.genomeDir).tar.gz ./$(inputs.genomeDir)
 
 inputs:
@@ -24,6 +24,7 @@ inputs:
   genome_fa: File
   gtf: File
   runThreadN: int
+  sjdbOverhang: int
 
 outputs:
   star_ref:
