@@ -16,7 +16,7 @@ arguments:
     shellQuote: false
     valueFrom: >-
       ${
-        var cmd = "quant -i " + inputs.transcript_idx.path + " -o output --fusion -b 10 -t 8";
+        var cmd = "quant -i " + inputs.transcript_idx.path + " -o output -b 10 -t 8";
         if (inputs.strand != null && inputs.strand != "default"){
           cmd += " --" + inputs.strand;
         }
@@ -25,8 +25,7 @@ arguments:
       }
 
       mv output/abundance.tsv $(inputs.SampleID).kallisto.abundance.tsv &&
-      gzip $(inputs.SampleID).kallisto.abundance.tsv &&
-      mv output/fusion.txt $(inputs.SampleID).kallisto.fusion.txt
+      gzip $(inputs.SampleID).kallisto.abundance.tsv
 
 inputs:
   transcript_idx: File
@@ -40,8 +39,3 @@ outputs:
     type: File
     outputBinding:
       glob: '*.abundance.tsv.gz'
-
-  fusion_out:
-    type: File
-    outputBinding:
-      glob: '*.fusion.txt'
