@@ -161,7 +161,7 @@ steps:
     ]
 
   kallisto:
-    run: ../tools/kallisto_calc_expression.cwl
+    run: ../tools/kallisto_calc_expression_with_fusion.cwl
     in:
       transcript_idx: kallisto_idx
       strand: strand_parse/kallisto_std
