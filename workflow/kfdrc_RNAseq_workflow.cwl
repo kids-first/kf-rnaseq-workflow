@@ -21,7 +21,6 @@ inputs:
   STAR_outSAMattrRGline: string
   RNAseQC_GTF: File
   kallisto_idx: File
-  pizzly_transcript_ref: File
 
 outputs:
   cutadapt_stats: {type: File, outputSource: cutadapt/cutadapt_stats}
@@ -34,7 +33,6 @@ outputs:
   STAR_junctions_out: {type: File, outputSource: star/junctions_out}
   STAR_final_log: {type: File, outputSource: star/log_final_out}
   STAR-Fusion_results: {type: File, outputSource: star_fusion/abridged_coding}
-  pizzly_fusion_results: {type: File, outputSource: pizzly/fusions_flattened}
   arriba_fusion_results: {type: File, outputSource: arriba_fusion/arriba_fusions}
   arriba_fusion_viz: {type: File, outputSource: arriba_fusion/arriba_pdf}
   RSEM_isoform: {type: File, outputSource: rsem/isoform_out}
@@ -169,18 +167,8 @@ steps:
       reads2: cutadapt/trimmedReadsR2
       SampleID: sample_name
     out: [
-      abundance_out,
-      fusion_out
+      abundance_out
     ]
-  
-  pizzly:
-    run: ../tools/pizzly_fusion.cwl
-    in:
-      transcript_fa: pizzly_transcript_ref
-      GTF: gtf_anno
-      kallisto_fusion: kallisto/fusion_out
-      SampleID: sample_name
-    out: [fusions_flattened]
 
 $namespaces:
   sbg: https://sevenbridges.com
