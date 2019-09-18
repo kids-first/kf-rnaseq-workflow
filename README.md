@@ -1,3 +1,4 @@
+![data service logo](/docs/dataservice.png)
 # kf-rnaseq-workflow
 RNA-Seq workflow for Kids-First DRC
 
