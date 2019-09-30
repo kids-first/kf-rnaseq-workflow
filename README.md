@@ -39,17 +39,19 @@ inputs:
   RSEMgenome: File
   reference_fasta: File
   gtf_anno: File
-  wf_strand_param: {type: ['null', string], doc: "use 'default' or leave blank for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript"}
   FusionGenome: File
   runThread: int
   RNAseQC_GTF: File
   kallisto_idx: File
+  wf_strand_param: {type: [{type: enum, name: wf_strand_param, symbols: ["default", "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto, 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the transcript, 'fr-stranded' if read1 same sense as transcript"}
+  input_type: {type: [{type: enum, name: input_type, symbols: ["BAM", "FASTQ"]}], doc: "Please select one option for input file type, BAM or FASTQ."}
+
 ```
 
 ### Bam input-specific:
 ```yaml
 inputs:
-    input_bam: File
+    reads1: File
 
 ```
 
@@ -63,21 +65,22 @@ inputs:
 
 ### Run:
 
-1) For fastq input, run `kfdrc-rnaseq-wf`, for bam input: `kfdrc-rnaseq-wf-bam-in`
+1) For FASTQ or BAM input, run `kfdrc-rnaseq-wf` as this can accept both file types.
+For fastq input, please enter the reads 1 file in reads1 and the reads 2 file in reads2.
+For bam input, please enter the reads file in reads1 and leave reads2 empty as it is optional. 
 
-2) r1_adapter and r2_adapter are OPTIONAL.  If the input reads have already been trimmed, leave these as null and 
-cutadapt step will simple pass on the fastq files to STAR.  If they do need trimming, supply the adapters and the 
-cutadapt step will trim, and pass trimmed fastqs along
+2) r1_adapter and r2_adapter are OPTIONAL.  
+If the input reads have already been trimmed, leave these as null and cutadapt step will simple pass on the fastq files to STAR.  
+If they do need trimming, supply the adapters and the cutadapt step will trim, and pass trimmed fastqs along.
 
-3) `wf_strand_param` is a workflow convenience param so that, if you input the following, the equivalent will propagate 
-to the four tools that use that parameter:
+3) `wf_strand_param` is a workflow convenience param so that, if you input the following, the equivalent will propagate to the four tools that use that parameter:
     - `default`: 'rsem_std': null, 'kallisto_std': null, 'rnaseqc_std': null, 'arriba_std': null. This means unstranded or auto in the case of arriba.
     - `rf-stranded`: 'rsem_std': 0, 'kallisto_std': 'rf-stranded', 'rnaseqc_std': 'rf', 'arriba_std': 'reverse'.  This means if read1 in the input fastq/bam is reverse complement to the transcript that it maps to.
     - `fr-stranded`: 'rsem_std': 1, 'kallisto_std': 'fr-stranded', 'rnaseqc_std': 'fr', 'arriba_std': 'yes'. This means if read1 in the input fastq/bam is the same sense (maps 5' to 3') to the transcript that it maps to.
 
 4) Suggested `STAR_outSAMattrRGline`, with **TABS SEPARATING THE TAGS**,  format is:
-    `ID:sample_name LB:aliquot_id   PL:platform SM:BSID`
-    for example `ID:7316-242   LB:750189 PL:ILLUMINA SM:BS_W72364MN`
+    
+    `ID:sample_name LB:aliquot_id   PL:platform SM:BSID` for example `ID:7316-242   LB:750189 PL:ILLUMINA SM:BS_W72364MN`
 5) Suggested inputs are:
 ```text
 FusionGenome: GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
