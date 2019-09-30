@@ -1,4 +1,4 @@
-![data service logo](https://www.google.com/imgres?imgurl=https%3A%2F%2Fportal.kidsfirstdrc.org%2Fstatic%2Fmedia%2Flogo-kids-first-data-portal.a0e11b4a.svg&imgrefurl=https%3A%2F%2Fkidsfirstdrc.org%2F&docid=EyK7wgP9WlrwRM&tbnid=hT1LKgrwUq-XSM%3A&vet=10ahUKEwj34-qx4PjkAhUiiOAKHZ04BQgQMwhFKAAwAA..i&w=800&h=297&bih=948&biw=840&q=kidsfirst%20logo&ved=0ahUKEwj34-qx4PjkAhUiiOAKHZ04BQgQMwhFKAAwAA&iact=mrc&uact=8)
+![data service logo](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9BnbvIsTkK3QlSGMDvlgu0tZQJ1q4crMvA-S3fcWfIq6y2d2Y)
 
 # Kids First RNA-Seq Workflow
 This is the Kids First RNA-Seq pipeline, which includes fusion and expression detection. 
