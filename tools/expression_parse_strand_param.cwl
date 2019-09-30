@@ -5,10 +5,8 @@ requirements:
   - class: InlineJavascriptRequirement
 
 inputs:
-  strand:
-    type: ['null', string]
-    doc: "use 'default' for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript"
-
+  wf_strand_param: {type: [{type: enum, name: wf_strand_param, symbols: ["default", "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript"}
+    
 outputs:
   rsem_std: string
   kallisto_std: string
@@ -18,8 +16,8 @@ outputs:
 expression:
   "${
       var strand = 'default';
-      if (inputs.strand != null){
-        strand = inputs.strand;
+      if (inputs.wf_strand_param != null){
+        strand = inputs.wf_strand_param;
       }
       var parse_dict = {
           'default': {'rsem_std': 'none', 'kallisto_std': 'default', 'rnaseqc_std': 'default', 'arriba_std': 'auto'},
