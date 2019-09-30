@@ -65,12 +65,12 @@ inputs:
 
 ### Run:
 
-1) For FASTQ or BAM input, run `kfdrc-rnaseq-wf` as this can accept both file types.
-For fastq input, please enter the reads 1 file in reads1 and the reads 2 file in reads2.
-For bam input, please enter the reads file in reads1 and leave reads2 empty as it is optional. 
+1) For fastq or bam input, run `kfdrc-rnaseq-wf` as this can accept both file types.
+For fastq input, please enter the reads 1 file in `reads1` and the reads 2 file in `reads2`.
+For bam input, please enter the reads file in `reads1` and leave `reads2` empty as it is optional. 
 
-2) r1_adapter and r2_adapter are OPTIONAL.  
-If the input reads have already been trimmed, leave these as null and cutadapt step will simple pass on the fastq files to STAR.  
+2) `r1_adapter` and `r2_adapter` are OPTIONAL. 
+If the input reads have already been trimmed, leave these as null and cutadapt step will simple pass on the fastq files to STAR. 
 If they do need trimming, supply the adapters and the cutadapt step will trim, and pass trimmed fastqs along.
 
 3) `wf_strand_param` is a workflow convenience param so that, if you input the following, the equivalent will propagate to the four tools that use that parameter:
