@@ -1,4 +1,6 @@
-![data service logo](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9BnbvIsTkK3QlSGMDvlgu0tZQJ1q4crMvA-S3fcWfIq6y2d2Y)
+<p align="center">
+  <img width="1200" height="434" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9BnbvIsTkK3QlSGMDvlgu0tZQJ1q4crMvA-S3fcWfIq6y2d2Y">
+</p>
 
 # Kids First RNA-Seq Workflow
 This is the Kids First RNA-Seq pipeline, which includes fusion and expression detection. 
