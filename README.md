@@ -1,8 +1,8 @@
-<p align="center">
-  <img width="600" height="315" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9BnbvIsTkK3QlSGMDvlgu0tZQJ1q4crMvA-S3fcWfIq6y2d2Y">
-</p>
-
 # Kids First RNA-Seq Workflow
+
+![data service logo]("https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png")
+
+
 This is the Kids First RNA-Seq pipeline, which includes fusion and expression detection. 
 
 ## Introduction
@@ -84,15 +84,14 @@ If they do need trimming, supply the adapters and the cutadapt step will trim, a
     
     `ID:sample_name LB:aliquot_id   PL:platform SM:BSID` for example `ID:7316-242   LB:750189 PL:ILLUMINA SM:BS_W72364MN`
 5) Suggested inputs are:
-```text
-FusionGenome: GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
-gtf_anno: gencode.v27.primary_assembly.annotation.gtf
-RNAseQC_GTF: gencode.v27.primary_assembly.RNAseQC.gtf
-RSEMgenome: RSEM_GENCODE27.tar.gz
-STARgenome: STAR_GENCODE27.tar.gz
-reference_fasta: GRCh38.primary_assembly.genome.fa
-kallisto_idx: gencode.v27.kallisto.index
-```
+
+    - `FusionGenome`: [GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz](https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/__genome_libs_StarFv1.3/GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz)
+    - `gtf_anno`: gencode.v27.primary_assembly.annotation.gtf, location: ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.primary_assembly.annotation.gtf.gz, will need to unzip
+    - `RNAseQC_GTF`: gencode.v27.primary_assembly.RNAseQC.gtf, built using `gtf_anno` and following build instructions [here](https://github.com/broadinstitute/rnaseqc#usage)
+    - `RSEMgenome`: RSEM_GENCODE27.tar.gz, built using the `reference_fasta` and `gtf_anno`, following `GENCODE` instructions from [here](https://deweylab.github.io/RSEM/README.html), then creating a tar ball of the results.
+    - `STARgenome`: STAR_GENCODE27.tar.gz, created using the star_genomegenerate.cwl tool, using the `reference_fasta`, `gtf_anno`, and setting `sjdbOverhang` to 100
+    - `reference_fasta`: [GRCh38.primary_assembly.genome.fa](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/GRCh38.primary_assembly.genome.fa.gz), will need to unzip 
+    - `kallisto_idx`: gencode.v27.kallisto.index, built from gencode 27 trascript fasta: ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.transcripts.fa.gz, following instructions from [here](https://pachterlab.github.io/kallisto/manual)
 
 ### Outputs:
 ```yaml
