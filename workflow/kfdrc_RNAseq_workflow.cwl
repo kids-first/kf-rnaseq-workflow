@@ -1,7 +1,7 @@
 cwlVersion: v1.0
 class: Workflow
 doc: >-
-  ![data service logo](../docs/dataservice.png) 
+  ![data service logo](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9BnbvIsTkK3QlSGMDvlgu0tZQJ1q4crMvA-S3fcWfIq6y2d2Y) 
   
   
   This is the Kids First Data Resource Center RNA-Seq Workflow, which includes fusion and expression detection. 
@@ -46,20 +46,20 @@ doc: >-
 
   4) Suggested `STAR_outSAMattrRGline`, with **TABS SEPARATING THE TAGS**,  format is:
 
-    - `ID:sample_name LB:aliquot_id   PL:platform SM:BSID`
-    - for example: `ID:7316-242   LB:750189 PL:ILLUMINA SM:BS_W72364MN`
+    - `ID:sample_name LB:aliquot_id   PL:platform SM:BSID`, for example:
+    - `ID:7316-242   LB:750189 PL:ILLUMINA SM:BS_W72364MN`
 
   5) Suggested inputs are:
   
-    ```
-    FusionGenome: GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz
-    gtf_anno: gencode.v27.primary_assembly.annotation.gtf
-    RNAseQC_GTF: gencode.v27.primary_assembly.RNAseQC.gtf
-    RSEMgenome: RSEM_GENCODE27.tar.gz
-    STARgenome: STAR_GENCODE27.tar.gz
-    reference_fasta: GRCh38.primary_assembly.genome.fa
-    kallisto_idx: gencode.v27.kallisto.index
-    ```
+  
+    * FusionGenome: [GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz](https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/)
+    * gtf_anno: gencode.v27.primary_assembly.annotation.gtf
+    * RNAseQC_GTF: gencode.v27.primary_assembly.RNAseQC.gtf
+    * RSEMgenome: RSEM_GENCODE27.tar.gz
+    * STARgenome: STAR_GENCODE27.tar.gz
+    * reference_fasta: GRCh38.primary_assembly.genome.fa
+    * kallisto_idx: gencode.v27.kallisto.index
+
     
   ### Links/Resources:
   
