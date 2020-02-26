@@ -1,8 +1,10 @@
 # Kids First RNA-Seq Workflow
 
+This is the Kids First RNA-Seq pipeline, which includes fusion and expression detection.
+
 ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
 
-This is the Kids First RNA-Seq pipeline, which includes fusion and expression detection.
+
 
 
 
