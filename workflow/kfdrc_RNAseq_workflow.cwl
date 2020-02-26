@@ -182,7 +182,7 @@ steps:
     run: ../tools/star_fusion.cwl
     in:
       Chimeric_junction: star/chimeric_junctions
-      genomeDir: FusionGenome
+      genome_tar: FusionGenome
       SampleID: sample_name
     out:
       [abridged_coding, chimeric_junction_compressed]
