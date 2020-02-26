@@ -1,8 +1,10 @@
 # Kids First RNA-Seq Workflow
 
+![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
+
 This is the Kids First RNA-Seq pipeline, which includes fusion and expression detection.
 
-![data service logo]("https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png")
+
 
 ## Introduction
 This pipeline utilizes cutadapt to trim adapters from the raw reads, if necessary, and passes the reads to STAR for alignment.
