@@ -10,12 +10,12 @@ requirements:
     coresMin: 4
     ramMin: 8000
 
-baseCommand: [Rscripts]
+baseCommand: [Rscript]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      /rocker-build/formatFusionCalls.R
+      /rocker-build/annoFusePerSample.R
       --fusionfileArriba $(inputs.arriba_formatted_fusions.path)
       --fusionfileStarFusion $(inputs.starfusion_formatted_fusions.path)
       --outputfile $(inputs.output_basename)_annoFuse_filter.tsv

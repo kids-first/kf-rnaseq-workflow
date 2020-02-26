@@ -25,7 +25,6 @@ inputs:
   input_caller_fusion_file: File
   sample_name: string
   caller: {type: [{type: enum, name: caller, symbols: ["arriba", "starfusion"]}], doc: "Source of calls, currently support algorithms: arriba and STARFusion"}
-  col_num: {type: int, doc: "column number in file of fusion name"}
 
 outputs:
   formatted_fusion_tsv:
