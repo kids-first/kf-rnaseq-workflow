@@ -15,9 +15,9 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      -zxf $(inputs.genomeDir.path) &&
+      -zxf $(inputs.genome_tar.path) &&
       /usr/local/STAR-Fusion/STAR-Fusion
-      --genome_lib_dir ./GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir
+      --genome_lib_dir ./$(inputs.genome_untar_path)
       -J $(inputs.Chimeric_junction.path)
       --output_dir STAR-Fusion_outdir
       --examine_coding_effect
@@ -28,7 +28,8 @@ arguments:
 
 inputs:
   Chimeric_junction: File
-  genomeDir: File
+  genome_tar: File
+  genome_untar_path: {type: ['null', string], doc: "This is what the path will be when genome_tar is unpackaged", default: "GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir"}
   SampleID: string
 
 outputs:
