@@ -140,10 +140,10 @@ inputs:
 
 ### Run
 In this workflow annoFuse performs standardization of StarFusion and arriba output files to retain information regarding fused genes,breakpoints, reading frame information as well as annotation from FusionAnnotator, output format description [here](https://github.com/d3b-center/annoFuse/wiki#1-standardize-calls-from-fusion-callers-to-retain-information-regarding-fused-genesbreakpoints-reading-frame-information-as-well-as-annotation-from-fusionannotator)
-Basic artifact filtering to remove fusions among gene paralogs, conjoined genes and fused genes found in normal samples is also performed by filtering fusions annotated by [FusionAnnotator](https://github.com/d3b-center/FusionAnnotator) with "GTEx_Recurrent|DGD_PARALOGS|Normal|BodyMap|ConjoinG".
-Each fusion call needs atleast 1 junction reads support to be retained as true call.
-Additionally, if a fusion call has large number of spanning fragment reads compared to junction reads (spanning fragment minus junction read greater than ten), we remove these calls as potential false positives.
-Please refer to [annoFuse](https://github.com/d3b-center/annoFuse) R package for additional applications like expression based filtering and putative oncogene annotations.
+. Basic artifact filtering to remove fusions among gene paralogs, conjoined genes and fused genes found in normal samples is also performed by filtering fusions annotated by [FusionAnnotator](https://github.com/d3b-center/FusionAnnotator) with "GTEx_Recurrent|DGD_PARALOGS|Normal|BodyMap|ConjoinG".
+ Each fusion call needs atleast 1 junction reads support to be retained as true call.
+ Additionally, if a fusion call has large number of spanning fragment reads compared to junction reads (spanning fragment minus junction read greater than ten), we remove these calls as potential false positives.
+ Please refer to [annoFuse](https://github.com/d3b-center/annoFuse) R package for additional applications like expression based filtering and putative oncogene annotations.
 
 1) Outputs from the arriba and STAR Fusion runs are required ahead of time (main RNAseq worflow output)
 2) `FusionGenome` shoould match what was used to run STAR Fusion
