@@ -19,7 +19,7 @@ arguments:
       --fusionfile $(inputs.input_caller_fusion_file.path)
       --tumorid $(inputs.sample_name)
       --caller $(inputs.caller)
-      --outputfile $(inputs.sample_name)_$(inputs.caller)_formatted.tsv
+      --outputfile $(inputs.sample_name).$(inputs.caller)_formatted.tsv
 
 inputs:
   input_caller_fusion_file: File
