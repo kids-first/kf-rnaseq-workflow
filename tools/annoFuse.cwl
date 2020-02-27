@@ -18,7 +18,7 @@ arguments:
       /rocker-build/annoFusePerSample.R
       --fusionfileArriba $(inputs.arriba_formatted_fusions.path)
       --fusionfileStarFusion $(inputs.starfusion_formatted_fusions.path)
-      --outputfile $(inputs.output_basename)_annoFuse_filter.tsv
+      --outputfile $(inputs.output_basename).annoFuse_filter.tsv
 
 inputs:
   arriba_formatted_fusions: {type: File, doc: "arriba fusion file formatted by format_fusion_file.cwl, and annotated by fusion_annotator.cwl"}
