@@ -18,11 +18,15 @@ arguments:
       /rocker-build/annoFusePerSample.R
       --fusionfileArriba $(inputs.arriba_formatted_fusions.path)
       --fusionfileStarFusion $(inputs.starfusion_formatted_fusions.path)
+      --expressionFile $(inputs.rsem_expr_file.path)
+      --tumorID $(inputs.sample_name)
       --outputfile $(inputs.output_basename).annoFuse_filter.tsv
 
 inputs:
   arriba_formatted_fusions: {type: File, doc: "arriba fusion file formatted by format_fusion_file.cwl, and annotated by fusion_annotator.cwl"}
   starfusion_formatted_fusions: {type: File, doc: "STARFusion file formatted by format_fusion_file.cwl"}
+  rsem_expr_file: {type: File, doc: "gzipped rsem gene expression file"}
+  sample_name: string
   output_basename: string
 
 outputs:
