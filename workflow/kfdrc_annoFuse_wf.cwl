@@ -55,6 +55,7 @@ steps:
       arriba_formatted_fusions: annotate_arriba/annotated_tsv
       starfusion_formatted_fusions: format_starfusion_output/formatted_fusion_tsv
       rsem_expr_file: rsem_expr_file
+      sample_name: sample_name
       output_basename: output_basename
     out:
       [filtered_fusions_tsv]
