@@ -10,12 +10,21 @@ requirements:
     coresMin: 4
     ramMin: 8000
 
-baseCommand: [Rscript]
+baseCommand: []
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      /rocker-build/annoFusePerSample.R
+      A_CT=`wc -l $(inputs.arriba_formatted_fusions.path) | cut -f 1 -d " "`
+
+      S_CT=`wc -l $(inputs.starfusion_formatted_fusions.path) | cut -f 1 -d " "`
+
+      if [ $A_CT -eq 1 ] && [ $S_CT -eq 1 ]; then
+        echo "Both inputs are empty, will skip processing as there no fusions." >&2;
+        exit 0;
+      fi
+
+      Rscript /rocker-build/annoFusePerSample.R
       --fusionfileArriba $(inputs.arriba_formatted_fusions.path)
       --fusionfileStarFusion $(inputs.starfusion_formatted_fusions.path)
       --expressionFile $(inputs.rsem_expr_file.path)
@@ -31,6 +40,6 @@ inputs:
 
 outputs:
   filtered_fusions_tsv:
-    type: File
+    type: ['null', File]
     outputBinding:
       glob: '*.tsv'
