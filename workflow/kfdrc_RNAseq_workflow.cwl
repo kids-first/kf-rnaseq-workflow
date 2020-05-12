@@ -65,8 +65,8 @@ doc: >-
   
   The related Github branch for this app is located [here](https://github.com/kids-first/kf-rnaseq-workflow/tree/be-publish).
     
-id: kfdrc-rnaseq-wf
-label: Kids First DRC RNA-Seq Workflow
+id: kfdrc-rnaseq-single-fq-modified-wf
+label: Kids First DRC RNA-Seq Single FASTQ Modified Workflow
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
@@ -88,6 +88,8 @@ inputs:
   kallisto_idx: {type: File, doc: "gencode.v27.kallisto.index", sbg:suggestedValue: {class: 'File', path: '5d8bb21fe4b0950c4028f850', name: 'gencode.v27.kallisto.index'}}
   wf_strand_param: {type: [{type: enum, name: wf_strand_param, symbols: ["default", "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto, 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the transcript, 'fr-stranded' if read1 same sense as transcript"}
   input_type: {type: [{type: enum, name: input_type, symbols: ["BAM", "FASTQ"]}], doc: "Please select one option for input file type, BAM or FASTQ."}
+  kallisto_avg_frag_len: {type: ['null', int], doc: "Optional input. Average fragment length for Kallisto only if single end input."}
+  kallisto_std_dev: {type: ['null', long], doc: "Optional input. Standard Deviation of the average fragment length for Kallisto only needed if single end input."}
 
 outputs:
   cutadapt_stats: {type: File, outputSource: cutadapt/cutadapt_stats, doc: "Cutadapt stats output, only if adapter is supplied."}
@@ -108,10 +110,11 @@ outputs:
   RNASeQC_counts: {type: File, outputSource: supplemental/RNASeQC_counts, doc: "Contains gene tpm, gene read, and exon counts"}
   kallisto_Abundance: {type: File, outputSource: kallisto/abundance_out, doc: "Gene abundance output from STAR genomic bam file"}
 
+
 steps:
 
   bam2fastq:
-    run: ../tools/samtools_fastq.cwl
+    run: ../new_tools/samtools_fastq.cwl
     in:
       input_reads_1: reads1
       input_reads_2: reads2
@@ -124,7 +127,7 @@ steps:
     ]
 
   cutadapt:
-    run: ../tools/cutadapter.cwl
+    run: ../new_tools/cutadapter.cwl
     in:
       readFilesIn1: bam2fastq/fq1
       readFilesIn2: bam2fastq/fq2
@@ -138,7 +141,7 @@ steps:
     ]
 
   star:
-    run: ../tools/star_align.cwl
+    run: ../new_tools/star_align.cwl
     in:
       outSAMattrRGline: STAR_outSAMattrRGline
       readFilesIn1: cutadapt/trimmedReadsR1
@@ -159,7 +162,7 @@ steps:
     ]
 
   samtools_sort:
-    run: ../tools/samtools_sort.cwl
+    run: ../new_tools/samtools_sort.cwl
     in:
       unsorted_bam: star/genomic_bam_out
       chimeric_sam_out: star/chimeric_sam_out
@@ -167,7 +170,7 @@ steps:
       [sorted_bam, sorted_bai, chimeric_bam_out]
 
   strand_parse:
-    run: ../tools/expression_parse_strand_param.cwl
+    run: ../new_tools/expression_parse_strand_param.cwl
     in:
       wf_strand_param: wf_strand_param
     out:
@@ -179,7 +182,7 @@ steps:
       ]
 
   star_fusion:
-    run: ../tools/star_fusion.cwl
+    run: ../new_tools/star_fusion.cwl
     in:
       Chimeric_junction: star/chimeric_junctions
       genome_tar: FusionGenome
@@ -188,7 +191,7 @@ steps:
       [abridged_coding, chimeric_junction_compressed]
 
   arriba_fusion:
-    run: ../tools/arriba_fusion.cwl
+    run: ../new_tools/arriba_fusion.cwl
     in:
       genome_aligned_bam: samtools_sort/sorted_bam
       genome_aligned_bai: samtools_sort/sorted_bai
@@ -204,9 +207,10 @@ steps:
       ]
 
   rsem:
-    run: ../tools/rsem_calc_expression.cwl
+    run: ../new_tools/rsem_calc_expression.cwl
     in:
       bam: star/transcriptome_bam_out
+      input_reads_2: reads2
       genomeDir: RSEMgenome
       outFileNamePrefix: sample_name
       strandedness: strand_parse/rsem_std
@@ -216,7 +220,7 @@ steps:
     ]
 
   rna_seqc:
-    run: ../tools/RNAseQC.cwl
+    run: ../new_tools/RNAseQC.cwl
     in:
       Aligned_sorted_bam: samtools_sort/sorted_bam
       collapsed_gtf: RNAseQC_GTF
@@ -229,7 +233,7 @@ steps:
     ]
 
   supplemental:
-    run: ../tools/supplemental_tar_gz.cwl
+    run: ../new_tools/supplemental_tar_gz.cwl
     in:
       outFileNamePrefix: sample_name
       Gene_TPM: rna_seqc/Gene_TPM
@@ -240,13 +244,15 @@ steps:
     ]
 
   kallisto:
-    run: ../tools/kallisto_calc_expression.cwl
+    run: ../new_tools/kallisto_calc_expression.cwl
     in:
       transcript_idx: kallisto_idx
       strand: strand_parse/kallisto_std
       reads1: cutadapt/trimmedReadsR1
       reads2: cutadapt/trimmedReadsR2
       SampleID: sample_name
+      avg_frag_len: kallisto_avg_frag_len
+      std_dev: kallisto_std_dev
     out: [
       abundance_out
     ]
