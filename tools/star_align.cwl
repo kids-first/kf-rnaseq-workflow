@@ -15,42 +15,25 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      $(inputs.genomeDir.path) &&
-      STAR --outSAMattrRGline $(inputs.outSAMattrRGline)
-      --genomeDir ./$(inputs.genomeDir.nameroot.split('.')[0])/
-      --readFilesIn $(inputs.readFilesIn1.path) $(inputs.readFilesIn2.path)
-      --readFilesCommand zcat
-      --runThreadN $(inputs.runThreadN)
-      --twopassMode Basic
-      --outFilterMultimapNmax 20
-      --alignSJoverhangMin 8
-      --alignSJDBoverhangMin 10
-      --alignSJstitchMismatchNmax 5 -1 5 5
-      --outFilterMismatchNmax 999
-      --outFilterMismatchNoverLmax 0.1
-      --alignIntronMax 100000
-      --chimSegmentReadGapMax 3
-      --chimOutJunctionFormat 1
-      --alignMatesGapMax 100000
-      --outFilterType BySJout
-      --outFilterScoreMinOverLread 0.33
-      --outFilterMatchNminOverLread 0.33
-      --outReadsUnmapped None
-      --limitSjdbInsertNsj 1200000
-      --outFileNamePrefix $(inputs.outFileNamePrefix).
-      --outSAMstrandField intronMotif
-      --outFilterIntronMotifs None
-      --alignSoftClipAtReferenceEnds Yes
-      --quantMode TranscriptomeSAM GeneCounts
-      --outSAMtype BAM Unsorted
-      --outSAMunmapped Within
-      --genomeLoad NoSharedMemory
-      --chimSegmentMin 12
-      --chimJunctionOverhangMin 12
-      --chimOutType Junctions SeparateSAMold WithinBAM SoftClip
-      --chimMainSegmentMultNmax 1
-      --outSAMattributes NH HI AS nM NM ch &&
-      gzip *ReadsPerGene.out.tab  *SJ.out.tab
+      ${
+        var cmd = inputs.genomeDir.path + " && STAR --outSAMattrRGline ";
+        cmd += inputs.outSAMattrRGline + " --genomeDir ./" + inputs.genomeDir.nameroot.split('.')[0];   
+        cmd += "/ --readFilesIn " + inputs.readFilesIn1.path;
+        if (inputs.readFilesIn2 != null){
+          cmd += " " + inputs.readFilesIn2.path;
+        }
+        cmd += " --runThreadN " + inputs.runThreadN + " --twopassMode Basic";
+        cmd += " --outFilterMultimapNmax 20 --alignSJoverhangMin 8 --alignSJDBoverhangMin 10";
+        cmd += " --alignSJstitchMismatchNmax 5 -1 5 5 --outFilterMismatchNmax 999 --outFilterMismatchNoverLmax 0.1";
+        cmd += " --alignIntronMax 100000 --chimSegmentReadGapMax 3 --chimOutJunctionFormat 1";
+        cmd += " --alignMatesGapMax 100000 --outFilterType BySJout --outFilterScoreMinOverLread 0.33"; 
+        cmd += " --outFilterMatchNminOverLread 0.33 --outReadsUnmapped None --limitSjdbInsertNsj 1200000 --outFileNamePrefix " + inputs.outFileNamePrefix + ". --outSAMstrandField intronMotif --outFilterIntronMotifs None";
+        cmd += " --alignSoftClipAtReferenceEnds Yes --quantMode TranscriptomeSAM GeneCounts --outSAMtype BAM Unsorted --outSAMunmapped Within --genomeLoad NoSharedMemory --chimSegmentMin 12";
+        cmd += " --chimJunctionOverhangMin 12 --chimOutType Junctions SeparateSAMold WithinBAM SoftClip --chimMainSegmentMultNmax 1 --outSAMattributes NH HI AS nM NM ch && gzip *ReadsPerGene.out.tab  *SJ.out.tab";
+        return cmd;
+      }
+      
+      
 
 inputs:
   outSAMattrRGline: string

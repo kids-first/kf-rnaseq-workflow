@@ -23,8 +23,12 @@ arguments:
               return command
           }
           
-          if(inputs.input_type == "FASTQ"){
+          if(inputs.input_type == "FASTQ" && inputs.input_reads_2 != null){
               var command =  "cp " + inputs.input_reads_1.path + " " + inputs.input_reads_1.nameroot + ".converted_1.fastq.gz && cp " + inputs.input_reads_2.path + " " + inputs.input_reads_2.nameroot + ".converted_2.fastq.gz"
+              return command
+          }
+          if(inputs.input_type == "FASTQ" && inputs.input_reads_2 == null){
+              var command =  "cp " + inputs.input_reads_1.path + " " + inputs.input_reads_1.nameroot + ".converted_1.fastq.gz"
               return command
           }
       }

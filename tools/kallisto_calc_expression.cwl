@@ -20,7 +20,13 @@ arguments:
         if (inputs.strand != null && inputs.strand != "default"){
           cmd += " --" + inputs.strand;
         }
-        cmd += " " + inputs.reads1.path + " " + inputs.reads2.path;
+        if (inputs.reads2 == null){
+          cmd += " --single -l " + inputs.avg_frag_len + " -s " + inputs.std_dev
+        }
+        cmd += " " + inputs.reads1.path;
+        if (inputs.reads2){
+          cmd += " " + inputs.reads2.path;
+        }
         return cmd;
       }
 
@@ -33,6 +39,8 @@ inputs:
   reads1: File
   reads2: File
   SampleID: string
+  std_dev: long
+  avg_frag_len: int
 
 outputs:
   abundance_out:
