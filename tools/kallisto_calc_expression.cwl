@@ -10,26 +10,18 @@ requirements:
     coresMin: 8
     ramMin: 10000
 
-baseCommand: [kallisto]
+baseCommand: []
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      ${
-        var cmd = "quant -i " + inputs.transcript_idx.path + " -o output -b 10 -t 8";
-        if (inputs.strand != null && inputs.strand != "default"){
-          cmd += " --" + inputs.strand;
-        }
-        if (inputs.reads2 == null){
-          cmd += " --single -l " + inputs.avg_frag_len + " -s " + inputs.std_dev
-        }
-        cmd += " " + inputs.reads1.path;
-        if (inputs.reads2){
-          cmd += " " + inputs.reads2.path;
-        }
-        return cmd;
-      }
-
+      kallisto quant
+      -i $(inputs.transcript_idx.path)
+      -o output
+      -b 10
+      -t 8
+      $(inputs.strand ? inputs.strand == "default" ? "" : "--"+inputs.strand : "")
+      $(inputs.reads2 ? inputs.reads1.path+" "+inputs.reads2.path : "--single -l "+inputs.avg_frag_len+" -s "+inputs.std_dev+" "+inputs.reads1.path) &&
       mv output/abundance.tsv $(inputs.SampleID).kallisto.abundance.tsv &&
       gzip $(inputs.SampleID).kallisto.abundance.tsv
 
@@ -37,10 +29,10 @@ inputs:
   transcript_idx: File
   strand: {type: ['null', string], doc: "input none if unstranded, otherwise rf-stranded or fr-stranded"}
   reads1: File
-  reads2: File
+  reads2: File?
   SampleID: string
-  std_dev: long
-  avg_frag_len: int
+  std_dev: long?
+  avg_frag_len: int?
 
 outputs:
   abundance_out:

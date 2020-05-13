@@ -22,12 +22,11 @@ arguments:
               var command = "samtools sort -m 1G -n -O SAM -@ " + inputs.runThreadN + " " + inputs.input_reads_1.path + " | samtools fastq -c 2 -1 " + inputs.SampleID + ".converted_1.fastq.gz -2 " + inputs.SampleID + ".converted_2.fastq.gz -@ " + inputs.runThreadN+ " -"
               return command
           }
-          
-          if(inputs.input_type == "FASTQ" && inputs.input_reads_2 != null){
+          else if(inputs.input_type == "FASTQ" && inputs.input_reads_2 != null){
               var command =  "cp " + inputs.input_reads_1.path + " " + inputs.input_reads_1.nameroot + ".converted_1.fastq.gz && cp " + inputs.input_reads_2.path + " " + inputs.input_reads_2.nameroot + ".converted_2.fastq.gz"
               return command
           }
-          if(inputs.input_type == "FASTQ" && inputs.input_reads_2 == null){
+          else if(inputs.input_type == "FASTQ" && inputs.input_reads_2 == null){
               var command =  "cp " + inputs.input_reads_1.path + " " + inputs.input_reads_1.nameroot + ".converted_1.fastq.gz"
               return command
           }
@@ -49,6 +48,6 @@ outputs:
       glob: '*.converted_1.fastq.gz'
 
   fq2:
-    type: File
+    type: File?
     outputBinding:
       glob: '*.converted_2.fastq.gz'
