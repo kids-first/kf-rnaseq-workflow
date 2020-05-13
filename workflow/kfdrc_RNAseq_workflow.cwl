@@ -30,7 +30,7 @@ doc: >-
   
   ### Tips To Run:
 
-  1) For fastq input, please enter the reads 1 file in reads1 and the reads 2 file in reads2. For bam input, please enter the reads file in reads1 and leave reads2 empty as it is optional.
+  1) For fastq input, please enter the reads 1 file in reads1 and, optionally, the reads 2 file in reads2. For bam input, please enter the reads file in reads1 and leave reads2 empty as it is optional.
   
   
   2) r1_adapter and r2_adapter are OPTIONAL.  If the input reads have already been trimmed, leave these as null and
@@ -65,8 +65,8 @@ doc: >-
   
   The related Github branch for this app is located [here](https://github.com/kids-first/kf-rnaseq-workflow/tree/be-publish).
     
-id: kfdrc-rnaseq-single-fq-modified-wf
-label: Kids First DRC RNA-Seq Single FASTQ Modified Workflow
+id: kfdrc-rnaseq-wf
+label: Kids First DRC RNA-Seq Workflow
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
@@ -92,7 +92,7 @@ inputs:
   kallisto_std_dev: {type: ['null', long], doc: "Optional input. Standard Deviation of the average fragment length for Kallisto only needed if single end input."}
 
 outputs:
-  cutadapt_stats: {type: File, outputSource: cutadapt/cutadapt_stats, doc: "Cutadapt stats output, only if adapter is supplied."}
+  cutadapt_stats: {type: File?, outputSource: cutadapt/cutadapt_stats, doc: "Cutadapt stats output, only if adapter is supplied."}
   STAR_transcriptome_bam: {type: File, outputSource: star/transcriptome_bam_out, doc: "STAR bam of transcriptome reads"}
   STAR_sorted_genomic_bam: {type: File, outputSource: samtools_sort/sorted_bam, doc: "STAR sorted alignment bam"}
   STAR_sorted_genomic_bai: {type: File, outputSource: samtools_sort/sorted_bai, doc: "STAR index for sorted aligned bam"}
@@ -114,7 +114,7 @@ outputs:
 steps:
 
   bam2fastq:
-    run: ../new_tools/samtools_fastq.cwl
+    run: ../tools/samtools_fastq.cwl
     in:
       input_reads_1: reads1
       input_reads_2: reads2
@@ -127,7 +127,7 @@ steps:
     ]
 
   cutadapt:
-    run: ../new_tools/cutadapter.cwl
+    run: ../tools/cutadapter.cwl
     in:
       readFilesIn1: bam2fastq/fq1
       readFilesIn2: bam2fastq/fq2
@@ -141,7 +141,7 @@ steps:
     ]
 
   star:
-    run: ../new_tools/star_align.cwl
+    run: ../tools/star_align.cwl
     in:
       outSAMattrRGline: STAR_outSAMattrRGline
       readFilesIn1: cutadapt/trimmedReadsR1
@@ -162,7 +162,7 @@ steps:
     ]
 
   samtools_sort:
-    run: ../new_tools/samtools_sort.cwl
+    run: ../tools/samtools_sort.cwl
     in:
       unsorted_bam: star/genomic_bam_out
       chimeric_sam_out: star/chimeric_sam_out
@@ -170,7 +170,7 @@ steps:
       [sorted_bam, sorted_bai, chimeric_bam_out]
 
   strand_parse:
-    run: ../new_tools/expression_parse_strand_param.cwl
+    run: ../tools/expression_parse_strand_param.cwl
     in:
       wf_strand_param: wf_strand_param
     out:
@@ -182,7 +182,7 @@ steps:
       ]
 
   star_fusion:
-    run: ../new_tools/star_fusion.cwl
+    run: ../tools/star_fusion.cwl
     in:
       Chimeric_junction: star/chimeric_junctions
       genome_tar: FusionGenome
@@ -191,7 +191,7 @@ steps:
       [abridged_coding, chimeric_junction_compressed]
 
   arriba_fusion:
-    run: ../new_tools/arriba_fusion.cwl
+    run: ../tools/arriba_fusion.cwl
     in:
       genome_aligned_bam: samtools_sort/sorted_bam
       genome_aligned_bai: samtools_sort/sorted_bai
@@ -207,7 +207,7 @@ steps:
       ]
 
   rsem:
-    run: ../new_tools/rsem_calc_expression.cwl
+    run: ../tools/rsem_calc_expression.cwl
     in:
       bam: star/transcriptome_bam_out
       input_reads_2: reads2
@@ -220,7 +220,7 @@ steps:
     ]
 
   rna_seqc:
-    run: ../new_tools/RNAseQC.cwl
+    run: ../tools/RNAseQC.cwl
     in:
       Aligned_sorted_bam: samtools_sort/sorted_bam
       collapsed_gtf: RNAseQC_GTF
@@ -233,7 +233,7 @@ steps:
     ]
 
   supplemental:
-    run: ../new_tools/supplemental_tar_gz.cwl
+    run: ../tools/supplemental_tar_gz.cwl
     in:
       outFileNamePrefix: sample_name
       Gene_TPM: rna_seqc/Gene_TPM
@@ -244,7 +244,7 @@ steps:
     ]
 
   kallisto:
-    run: ../new_tools/kallisto_calc_expression.cwl
+    run: ../tools/kallisto_calc_expression.cwl
     in:
       transcript_idx: kallisto_idx
       strand: strand_parse/kallisto_std
