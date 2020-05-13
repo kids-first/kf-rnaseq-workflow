@@ -110,7 +110,6 @@ outputs:
   RNASeQC_counts: {type: File, outputSource: supplemental/RNASeQC_counts, doc: "Contains gene tpm, gene read, and exon counts"}
   kallisto_Abundance: {type: File, outputSource: kallisto/abundance_out, doc: "Gene abundance output from STAR genomic bam file"}
 
-
 steps:
 
   bam2fastq:
