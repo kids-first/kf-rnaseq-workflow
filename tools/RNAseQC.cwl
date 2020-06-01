@@ -23,6 +23,9 @@ arguments:
         if (inputs.strand != null && inputs.strand != "default"){
           cmd += " --stranded=" + inputs.strand;
         }
+        if (inputs.input_reads2 == null) {
+          cmd += " --unpaired";
+        }
         return cmd;
       }
 
@@ -30,6 +33,7 @@ inputs:
   Aligned_sorted_bam: File
   collapsed_gtf: File
   strand: {type: ['null', string]}
+  input_reads2: File?
 
 outputs:
   Metrics:
