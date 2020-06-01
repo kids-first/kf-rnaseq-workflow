@@ -29,7 +29,7 @@ doc: >-
 
   ### Tips To Run:
 
-  1. For fastq input, please enter the reads 1 file in reads1 for both PE and SE analysis and, if doing PE, 
+  1. For fastq input, please enter the reads 1 file in reads1 for both PE and SE analysis and, if doing PE,
      the reads 2 file in reads2. For bam input, please enter the reads file in reads1 and leave reads2 empty as it is
      optional. For single read analysis, kallisto_avg_frag_len and kallisto_std_dev must also be provided.
   1. r1_adapter and r2_adapter are OPTIONAL.  If the input reads have already been trimmed, leave these as null and
@@ -214,6 +214,7 @@ steps:
       Aligned_sorted_bam: samtools_sort/sorted_bam
       collapsed_gtf: RNAseQC_GTF
       strand: strand_parse/rnaseqc_std
+      input_reads2: reads2
     out: [
       Metrics,
       Gene_TPM,
