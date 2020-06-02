@@ -37,6 +37,10 @@ There are additional filtering capabilities provided beyond the lightweight work
 
 ## Usage
 
+### Runtime Estimates:
+- 8 GB single end FASTQ input: 66 Minutes & $2.00
+- 17 GB single end FASTQ input: 58 Minutes & $2.00
+
 ### Inputs common:
 ```yaml
 inputs:
