@@ -16,25 +16,25 @@ arguments:
     shellQuote: false
     valueFrom: >-
       ${
-      if (inputs.r1_adapter == null){
-        var cmd = "cp " + inputs.readFilesIn1.path + " ./UNTRIMMED." + inputs.readFilesIn1.basename
-        if (inputs.readFilesIn2 != null){
-          cmd += ";cp " + inputs.readFilesIn2.path + " ./UNTRIMMED." + inputs.readFilesIn2.basename;
+        if (inputs.r1_adapter == null){
+          var cmd = "cp " + inputs.readFilesIn1.path + " ./UNTRIMMED." + inputs.readFilesIn1.basename
+          if (inputs.readFilesIn2 != null){
+            cmd += ";cp " + inputs.readFilesIn2.path + " ./UNTRIMMED." + inputs.readFilesIn2.basename;
         }
         return cmd;
-      }
-      else{
-        var cmd = "cutadapt -j 16 -m 20 --quality-base=33 -q 20 -a " + inputs.r1_adapter
-        if (inputs.r2_adapter && inputs.readFilesIn2){
-          cmd += " -A " + inputs.r2_adapter + " -p TRIMMED." + inputs.readFilesIn2.basename
         }
-        cmd += " -o TRIMMED." + inputs.readFilesIn1.basename + " " + inputs.readFilesIn1.path + " "
-        if (inputs.readFilesIn2){
-          cmd =+ inputs.readFilesIn2.path
+        else{
+          var cmd = "cutadapt -j 16 -m 20 --quality-base=33 -q 20 -a " + inputs.r1_adapter;
+          if (inputs.r2_adapter && inputs.readFilesIn2){
+            cmd += " -A " + inputs.r2_adapter + " -p TRIMMED." + inputs.readFilesIn2.basename;
+          }
+          cmd += " -o TRIMMED." + inputs.readFilesIn1.basename + " " + inputs.readFilesIn1.path + " ";
+          if (inputs.readFilesIn2){
+            cmd += inputs.readFilesIn2.path
+          }
+          cmd += " > " + inputs.sample_name + ".cutadapt_results.txt";
+          return cmd;
         }
-        + " > " + inputs.sample_name + ".cutadapt_results.txt";
-        return cmd;
-      }
       }
 
 inputs:
