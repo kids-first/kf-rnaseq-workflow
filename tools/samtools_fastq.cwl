@@ -23,11 +23,14 @@ arguments:
               return command
           }
           else if(inputs.input_type == "FASTQ" && inputs.input_reads_2 != null){
-              var command =  "cp " + inputs.input_reads_1.path + " " + inputs.input_reads_1.nameroot + ".converted_1.fastq.gz && cp " + inputs.input_reads_2.path + " " + inputs.input_reads_2.nameroot + ".converted_2.fastq.gz"
+              var extr1 = (inputs.input_reads_1.nameext == '.gz' ? 'fastq.gz' : inputs.input_reads_1.nameext)
+              var extr2 = (inputs.input_reads_2.nameext == '.gz' ? 'fastq.gz' : inputs.input_reads_2.nameext)
+              var command =  "cp " + inputs.input_reads_1.path + " " + inputs.input_reads_1.nameroot + ".converted_1" + extr1 + " && cp " + inputs.input_reads_2.path + " " + inputs.input_reads_2.nameroot + ".converted_2" + extr2
               return command
           }
           else if(inputs.input_type == "FASTQ" && inputs.input_reads_2 == null){
-              var command =  "cp " + inputs.input_reads_1.path + " " + inputs.input_reads_1.nameroot + ".converted_1.fastq.gz"
+              var extr1 = (inputs.input_reads_1.nameext == '.gz' ? 'fastq.gz' : inputs.input_reads_1.nameext)
+              var command =  "cp " + inputs.input_reads_1.path + " " + inputs.input_reads_1.nameroot + ".converted_1" + extr1
               return command
           }
       }
@@ -45,9 +48,9 @@ outputs:
   fq1:
     type: File
     outputBinding:
-      glob: '*.converted_1.fastq.gz'
+      glob: '*.converted_1.*'
 
   fq2:
     type: File?
     outputBinding:
-      glob: '*.converted_2.fastq.gz'
+      glob: '*.converted_2.*'
