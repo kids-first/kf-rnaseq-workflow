@@ -54,13 +54,12 @@ outputs:
     outputBinding:
       glob: ${
           if (inputs.readFilesIn2){
-              "*TRIMMED." + inputs.readFilesIn2.basename
+              return "*TRIMMED." + inputs.readFilesIn2.basename
           }
           else{
-              "placeholder"
+              return "placeholder"
           }
         }
-#$("*TRIMMED." + inputs.readFilesIn2.basename)
   cutadapt_stats:
     type: ['null', File]
     outputBinding:
