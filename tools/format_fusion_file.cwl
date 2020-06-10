@@ -4,7 +4,7 @@ id: format_fusion_file
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'gaonkark/annofuse:latest'
+    dockerPull: 'kfdrc/annofuse:0.1.8'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 4
