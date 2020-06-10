@@ -15,7 +15,7 @@ inputs:
   output_basename: string
 
 outputs:
-  annofuse_filtered_fusions_tsv: {type: File, outputSource: annoFuse_filter/filtered_fusions_tsv, doc: "Filtred output of formatted and annotated Star Fusion and arriba results"}
+  annofuse_filtered_fusions_tsv: {type: File?, outputSource: annoFuse_filter/filtered_fusions_tsv, doc: "Filtred output of formatted and annotated Star Fusion and arriba results"}
 
 steps:
   format_arriba_output:
