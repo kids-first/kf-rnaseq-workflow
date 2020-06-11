@@ -4,7 +4,7 @@ id: fusion_annotator
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/annofuse:0.1.8'
+    dockerPull: 'gaonkark/fusionanno:latest'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 4
