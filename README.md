@@ -130,6 +130,7 @@ In this workflow, annoFuse performs standardization of StarFusion and arriba out
  Each fusion call needs at least one junction reads support to be retained as true call.
  Additionally, if a fusion call has large number of spanning fragment reads compared to junction reads (spanning fragment minus junction read greater than ten), we remove these calls as potential false positives. An expression based filter is also applied, requiring a min FPKM value of 1 for the fusion genes in question.
  Please refer to [annoFuse](https://github.com/d3b-center/annoFuse) R package for additional applications like putative oncogene annotations.
+ Current version is 0.1.8, docker pull tag: `kfdrc/annofuse:0.1.8`
 
 ## Usage
 
