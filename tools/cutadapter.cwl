@@ -29,7 +29,7 @@ arguments:
             cmd += " -A " + inputs.r2_adapter + " -p TRIMMED." + inputs.readFilesIn2.basename;
           }
           cmd += " -o TRIMMED." + inputs.readFilesIn1.basename + " " + inputs.readFilesIn1.path + " ";
-          if (inputs.readFilesIn2){
+          if (inputs.r2_adapter && inputs.readFilesIn2){
             cmd += inputs.readFilesIn2.path
           }
           cmd += " > " + inputs.sample_name + ".cutadapt_results.txt";
