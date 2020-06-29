@@ -77,7 +77,7 @@ inputs:
   RNAseQC_GTF: {type: 'File', doc: "gencode.v27.primary_assembly.RNAseQC.gtf", sbg:suggestedValue: {class: 'File', path: '5d8bb21fe4b0950c4028f852', name: 'gencode.v27.primary_assembly.RNAseQC.gtf'}}
   kallisto_idx: {type: 'File', doc: "gencode.v27.kallisto.index", sbg:suggestedValue: {class: 'File', path: '5d8bb21fe4b0950c4028f850', name: 'gencode.v27.kallisto.index'}}
   wf_strand_param: {type: [{type: 'enum', name: wf_strand_param, symbols: ["default", "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto, 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the transcript, 'fr-stranded' if read1 same sense as transcript"}
-  input_type: {type: [{type: 'enum', name: input_type, symbols: ["BAM", "FASTQ"]}], doc: "Please select one option for input file type, BAM or FASTQ."}
+  input_type: {type: [{type: 'enum', name: input_type, symbols: ["PEBAM", "SEBAM", "FASTQ"]}], doc: "Please select one option for input file type, PEBAM (paired-end BAM), SEBAM (single-end BAM) or FASTQ."}
   kallisto_avg_frag_len: {type: 'int?', doc: "Optional input. Average fragment length for Kallisto only if single end input."}
   kallisto_std_dev: {type: 'long?', doc: "Optional input. Standard Deviation of the average fragment length for Kallisto only needed if single end input."}
 
@@ -199,7 +199,7 @@ steps:
     run: ../tools/rsem_calc_expression.cwl
     in:
       bam: star/transcriptome_bam_out
-      input_reads_2: reads2
+      input_reads_2: cutadapt/trimmedReadsR2
       genomeDir: RSEMgenome
       outFileNamePrefix: sample_name
       strandedness: strand_parse/rsem_std
@@ -214,7 +214,7 @@ steps:
       Aligned_sorted_bam: samtools_sort/sorted_bam
       collapsed_gtf: RNAseQC_GTF
       strand: strand_parse/rnaseqc_std
-      input_reads2: reads2
+      input_reads2: cutadapt/trimmedReadsR2
     out: [
       Metrics,
       Gene_TPM,
