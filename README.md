@@ -4,10 +4,6 @@ This is the Kids First RNA-Seq pipeline, which includes fusion and expression de
 
 ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
 
-
-
-
-
 ## Introduction
 This pipeline utilizes cutadapt to trim adapters from the raw reads, if necessary, and passes the reads to STAR for alignment.
 The alignment output is used by RSEM for gene expression abundance estimation.
@@ -34,7 +30,6 @@ There are additional filtering capabilities provided beyond the lightweight work
 ### RNA-SeQC
 [RNA-SeQC v2.3.4](https://github.com/broadinstitute/rnaseqc) Generate metrics such as gene and transcript counts, sense/antisene mapping, mapping rates, etc
 
-
 ## Usage
 
 ### Runtime Estimates:
@@ -58,14 +53,12 @@ inputs:
   kallisto_idx: File
   wf_strand_param: {type: [{type: enum, name: wf_strand_param, symbols: ["default", "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto, 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the transcript, 'fr-stranded' if read1 same sense as transcript"}
   input_type: {type: [{type: enum, name: input_type, symbols: ["BAM", "FASTQ"]}], doc: "Please select one option for input file type, BAM or FASTQ."}
-
 ```
 
 ### Bam input-specific:
 ```yaml
 inputs:
-    reads1: File
-
+  reads1: File
 ```
 
 ### PE Fastq input-specific:
@@ -73,14 +66,12 @@ inputs:
 inputs:
   reads1: File
   reads2: File
-
 ```
 
 ### SE Fastq input-specific:
 ```yaml
 inputs:
   reads1: File
-
 ```
 
 ### Run:
@@ -132,18 +123,17 @@ outputs:
   RNASeQC_Metrics: {type: File, outputSource: rna_seqc/Metrics}
   RNASeQC_counts: {type: File, outputSource: supplemental/RNASeQC_counts} # contains gene tpm, gene read, and exon counts
   kallisto_Abundance: {type: File, outputSource: kallisto/abundance_out}
-  ```
+```
 
 # D3b annoFuse Workflow
 
 ## Introduction
 
-In this workflow, annoFuse performs standardization of StarFusion and arriba output files to retain information regarding fused genes, breakpoints, reading frame information as well as annotation from FusionAnnotator, output format description [here](https://github.com/d3b-center/annoFuse/wiki#1-standardize-calls-from-fusion-callers-to-retain-information-regarding-fused-genesbreakpoints-reading-frame-information-as-well-as-annotation-from-fusionannotator)
-. Basic artifact filtering to remove fusions among gene paralogs, conjoined genes and fused genes found in normal samples is also performed by filtering fusions annotated by [FusionAnnotator](https://github.com/d3b-center/FusionAnnotator) with "GTEx_Recurrent|DGD_PARALOGS|Normal|BodyMap|ConjoinG".
- Each fusion call needs at least one junction reads support to be retained as true call.
- Additionally, if a fusion call has large number of spanning fragment reads compared to junction reads (spanning fragment minus junction read greater than ten), we remove these calls as potential false positives. An expression based filter is also applied, requiring a min FPKM value of 1 for the fusion genes in question.
- Please refer to [annoFuse](https://github.com/d3b-center/annoFuse) R package for additional applications like putative oncogene annotations.
- Current version is 0.1.8, docker pull tag: `kfdrc/annofuse:0.1.8`
+In this workflow, annoFuse performs standardization of StarFusion and arriba output files to retain information regarding fused genes, breakpoints, reading frame information as well as annotation from FusionAnnotator, output format description [here](https://github.com/d3b-center/annoFuse/wiki#1-standardize-calls-from-fusion-callers-to-retain-information-regarding-fused-genesbreakpoints-reading-frame-information-as-well-as-annotation-from-fusionannotator). Basic artifact filtering to remove fusions among gene paralogs, conjoined genes and fused genes found in normal samples is also performed by filtering fusions annotated by [FusionAnnotator](https://github.com/d3b-center/FusionAnnotator) with "GTEx_Recurrent|DGD_PARALOGS|Normal|BodyMap|ConjoinG". Each fusion call needs at least one junction reads support to be retained as true call. Additionally, if a fusion call has large number of spanning fragment reads compared to junction reads (spanning fragment minus junction read greater than ten), we remove these calls as potential false positives. An expression based filter is also applied, requiring a min FPKM value of 1 for the fusion genes in question.
+
+Please refer to [annoFuse](https://github.com/d3b-center/annoFuse) R package for additional applications like putative oncogene annotations.
+
+Current version is 0.1.8, docker pull tag: `kfdrc/annofuse:0.1.8`
 
 ## Usage
 
