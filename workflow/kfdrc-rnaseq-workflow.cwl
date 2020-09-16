@@ -1,5 +1,7 @@
 cwlVersion: v1.0
 class: Workflow
+id: kfdrc-rnaseq-workflow
+label: Kids First DRC RNAseq Workflow
 doc: |
   # Kids First RNA-Seq Workflow
 
@@ -16,6 +18,7 @@ doc: |
 
   If you would like to run this workflow using the cavatica public app, a basic primer on running public apps can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-Cavatica-af5ebb78c38a4f3190e32e67b4ce12bb).
   Alternatively, if you'd like to run it locally using `cwltool`, a basic primer on that can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-CWLtool-b8dbbde2dc7742e4aff290b0a878344d) and combined with app-specific info from the readme below.
+  This workflow is the current production workflow, equivalent to this [Cavatica public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-rnaseq-workflow).
 
   ### Cutadapt
   [Cutadapt v2.5](https://github.com/marcelm/cutadapt) Cut adapter sequences from raw reads if needed.
@@ -127,8 +130,8 @@ doc: |
     kallisto_Abundance: {type: File, outputSource: kallisto/abundance_out}
   ```
 
-id: kfdrc-rnaseq-workflow
-label: Kids First DRC RNAseq Workflow
+  ![pipeline flowchart](./docs/kfdrc-rnaseq-workflow.png)
+
 requirements:
 - class: ScatterFeatureRequirement
 - class: MultipleInputFeatureRequirement
@@ -144,23 +147,23 @@ inputs:
   reads2: {type: 'File?', doc: "For FASTQ input, please enter reads 2 here. For BAM\
       \ input, leave empty."}
   STARgenome: {type: 'File', doc: "STAR_GENCODE27.tar.gz", sbg:suggestedValue: {class: File,
-      path: 5d8bb21fe4b0950c4028f853, name: STAR_GENCODE27.tar.gz}}
+      path: 5d9c8d04e4b0950cce147f92, name: STAR_GENCODE27.tar.gz}}
   RSEMgenome: {type: 'File', doc: "RSEM_GENCODE27.tar.gz", sbg:suggestedValue: {class: File,
-      path: 5d8bb21fe4b0950c4028f851, name: RSEM_GENCODE27.tar.gz}}
+      path: 5d9c8d04e4b0950cce147f93, name: RSEM_GENCODE27.tar.gz}}
   reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", sbg:suggestedValue: {
-      class: File, path: 5d8bb21fe4b0950c4028f855, name: GRCh38.primary_assembly.genome.fa}}
+      class: File, path: 5d9c8d04e4b0950cce147f8c, name: GRCh38.primary_assembly.genome.fa}}
   gtf_anno: {type: 'File', doc: "gencode.v27.primary_assembly.annotation.gtf", sbg:suggestedValue: {
-      class: File, path: 5d8bb21fe4b0950c4028f84f, name: gencode.v27.primary_assembly.annotation.gtf}}
+      class: File, path: 5d9c8d04e4b0950cce147f95, name: gencode.v27.primary_assembly.annotation.gtf}}
   FusionGenome: {type: 'File', doc: "GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz",
-    sbg:suggestedValue: {class: File, path: 5d8bb21fe4b0950c4028f854, name: GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz}}
+    sbg:suggestedValue: {class: File, path: 5d9c8d04e4b0950cce147f94, name: GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz}}
   runThread: {type: 'int', doc: "Amount of threads for analysis."}
   STAR_outSAMattrRGline: {type: 'string', doc: "Suggested setting, with TABS SEPARATING\
       \ THE TAGS, format is: ID:sample_name LB:aliquot_id PL:platform SM:BSID for\
       \ example ID:7316-242 LB:750189 PL:ILLUMINA SM:BS_W72364MN"}
   RNAseQC_GTF: {type: 'File', doc: "gencode.v27.primary_assembly.RNAseQC.gtf", sbg:suggestedValue: {
-      class: File, path: 5d8bb21fe4b0950c4028f852, name: gencode.v27.primary_assembly.RNAseQC.gtf}}
+      class: File, path: 5d9c8d04e4b0950cce147f91, name: gencode.v27.primary_assembly.RNAseQC.gtf}}
   kallisto_idx: {type: 'File', doc: "gencode.v27.kallisto.index", sbg:suggestedValue: {
-      class: File, path: 5d8bb21fe4b0950c4028f850, name: gencode.v27.kallisto.index}}
+      class: File, path: 5d9c8d04e4b0950cce147f90, name: gencode.v27.kallisto.index}}
   wf_strand_param: {type: [{type: 'enum', name: wf_strand_param, symbols: ["default",
           "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto,\
       \ 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the\
@@ -337,5 +340,5 @@ sbg:categories:
 - SE
 - STAR
 sbg:links:
-  - id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v2.2.0'
-    label: github-release
+- id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v2.2.1'
+  label: github-release
