@@ -163,3 +163,5 @@ inputs:
 outputs:
   annofuse_filtered_fusions_tsv: {type: File, outputSource: annoFuse_filter/filtered_fusions_tsv, doc: "Filtred output of formatted and annotated Star Fusion and arriba results"}
 ```
+
+![pipeline flowchart](./docs/kfdrc-rnaseq-workflow.png)
