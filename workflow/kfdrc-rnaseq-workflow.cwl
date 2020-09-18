@@ -130,7 +130,7 @@ doc: |
     kallisto_Abundance: {type: File, outputSource: kallisto/abundance_out}
   ```
 
-  ![pipeline flowchart](./docs/kfdrc-rnaseq-workflow.png)
+  ![pipeline flowchart](https://github.com/kids-first/kf-rnaseq-workflow/blob/master/docs/kfdrc-rnaseq-workflow.png?raw=true)
 
 requirements:
 - class: ScatterFeatureRequirement
