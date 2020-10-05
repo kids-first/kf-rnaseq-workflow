@@ -4,7 +4,7 @@ id: annoFuse
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/annofuse:0.1.8'
+    dockerPull: 'kfdrc/annofuse:0.90.0'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 4
