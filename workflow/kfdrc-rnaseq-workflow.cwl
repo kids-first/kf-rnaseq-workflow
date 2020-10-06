@@ -33,8 +33,8 @@ doc: |
   [STAR-Fusion v1.5.0](https://doi:10.1101/120295) Fusion detection for `STAR` chimeric reads.
   ### Arriba
   [Arriba v1.1.0](https://github.com/suhrig/arriba/) Fusion caller that uses `STAR` aligned reads and chimeric reads output.
-  ### AnnoFuse
-  [AnnoFuse 0.90.0](https://github.com/d3b-center/annoFuse/releases/tag/v0.90.0) Filter and prioritize fusion calls.
+  ### annoFuse
+  [annoFuse 0.90.0](https://github.com/d3b-center/annoFuse/releases/tag/v0.90.0) Filter and prioritize fusion calls. For more information, please see the following [paper](https://www.biorxiv.org/content/10.1101/839738v3).
   ### RNA-SeQC
   [RNA-SeQC v2.3.4](https://github.com/broadinstitute/rnaseqc) Generate metrics such as gene and transcript counts, sense/antisene mapping, mapping rates, etc
 
@@ -131,10 +131,8 @@ doc: |
     RNASeQC_Metrics: {type: File, outputSource: rna_seqc/Metrics}
     RNASeQC_counts: {type: File, outputSource: supplemental/RNASeQC_counts} # contains gene tpm, gene read, and exon counts
     kallisto_Abundance: {type: File, outputSource: kallisto/abundance_out}
-    annofuse_filtered_fusions_tsv: { type: 'File?', outputSource: annoFuse_filter/filtered_fusions_tsv, doc: "Filtred output of formatted and annotated Star Fusion and arriba results" }
+    annofuse_filtered_fusions_tsv: { type: 'File?', outputSource: annoFuse_filter/filtered_fusions_tsv, doc: "Filtered output of formatted and annotated Star Fusion and arriba results" }
   ```
-
-  ![pipeline flowchart](https://github.com/kids-first/kf-rnaseq-workflow/blob/master/docs/kfdrc-rnaseq-workflow.png?raw=true)
 
 requirements:
 - class: ScatterFeatureRequirement
