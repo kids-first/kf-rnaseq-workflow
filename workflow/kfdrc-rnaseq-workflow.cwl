@@ -140,7 +140,8 @@ requirements:
 - class: SubworkflowFeatureRequirement
 
 inputs:
-  sample_name: {type: 'string', doc: "Sample name used for file base name of all outputs"}
+  sample_name: {type: 'string', doc: "Sample ID of the input reads"}
+  output_basename: {type: 'string', doc: "String to use as basename for outputs"}
   r1_adapter: {type: 'string?', doc: "Optional input. If the input reads have already\
       \ been trimmed, leave these as null. If they do need trimming, supply the adapters."}
   r2_adapter: {type: 'string?', doc: "Optional input. If the input reads have already\
@@ -181,7 +182,6 @@ inputs:
   annofuse_genome_untar_path: {type: 'string?', doc: "This is what the path will be\
       \ when genome_tar is unpackaged", default: "GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir"}
   annofuse_col_num: {type: 'int?', doc: "column number in file of fusion name."}
-  output_basename: {type: 'string', doc: "String to use as basename for outputs"}
 
 outputs:
   cutadapt_stats: {type: 'File?', outputSource: cutadapt/cutadapt_stats, doc: "Cutadapt\
@@ -228,7 +228,7 @@ steps:
     in:
       input_reads_1: reads1
       input_reads_2: reads2
-      SampleID: sample_name
+      SampleID: output_basename
       runThreadN: runThread
       input_type: input_type
     out: [fq1, fq2]
@@ -240,7 +240,7 @@ steps:
       readFilesIn2: bam2fastq/fq2
       r1_adapter: r1_adapter
       r2_adapter: r2_adapter
-      sample_name: sample_name
+      sample_name: output_basename
     out: [trimmedReadsR1, trimmedReadsR2, cutadapt_stats]
 
   star:
@@ -251,7 +251,7 @@ steps:
       readFilesIn2: cutadapt/trimmedReadsR2
       genomeDir: STARgenome
       runThreadN: runThread
-      outFileNamePrefix: sample_name
+      outFileNamePrefix: output_basename
     out: [chimeric_junctions, chimeric_sam_out, gene_counts, genomic_bam_out, junctions_out,
       log_final_out, log_out, log_progress_out, transcriptome_bam_out]
 
@@ -273,7 +273,7 @@ steps:
     in:
       Chimeric_junction: star/chimeric_junctions
       genome_tar: FusionGenome
-      SampleID: sample_name
+      SampleID: output_basename
     out: [abridged_coding, chimeric_junction_compressed]
 
   arriba_fusion:
@@ -284,7 +284,7 @@ steps:
       chimeric_sam_out: star/chimeric_sam_out
       reference_fasta: reference_fasta
       gtf_anno: gtf_anno
-      outFileNamePrefix: sample_name
+      outFileNamePrefix: output_basename
       arriba_strand_flag: strand_parse/arriba_std
     out: [arriba_fusions, arriba_pdf]
 
@@ -294,7 +294,7 @@ steps:
       bam: star/transcriptome_bam_out
       input_reads_2: cutadapt/trimmedReadsR2
       genomeDir: RSEMgenome
-      outFileNamePrefix: sample_name
+      outFileNamePrefix: output_basename
       strandedness: strand_parse/rsem_std
     out: [gene_out, isoform_out]
 
@@ -310,7 +310,7 @@ steps:
   supplemental:
     run: ../tools/supplemental_tar_gz.cwl
     in:
-      outFileNamePrefix: sample_name
+      outFileNamePrefix: output_basename
       Gene_TPM: rna_seqc/Gene_TPM
       Gene_count: rna_seqc/Gene_count
       Exon_count: rna_seqc/Exon_count
@@ -323,7 +323,7 @@ steps:
       strand: strand_parse/kallisto_std
       reads1: cutadapt/trimmedReadsR1
       reads2: cutadapt/trimmedReadsR2
-      SampleID: sample_name
+      SampleID: output_basename
       avg_frag_len: kallisto_avg_frag_len
       std_dev: kallisto_std_dev
     out: [abundance_out]
@@ -363,5 +363,5 @@ sbg:categories:
 - SE
 - STAR
 sbg:links:
-- id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v2.3.0'
+- id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v2.3.1'
   label: github-release
