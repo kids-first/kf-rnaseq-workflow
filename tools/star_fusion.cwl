@@ -4,7 +4,7 @@ id: star_fusion
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/star-fusion:1.5.0'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/star-fusion:1.5.0'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 16

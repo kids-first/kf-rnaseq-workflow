@@ -4,7 +4,7 @@ id: format_fusion_file
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/annofuse:0.90.0'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/annofuse:0.90.0'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 4
