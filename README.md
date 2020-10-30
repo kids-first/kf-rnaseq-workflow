@@ -139,8 +139,6 @@ In this workflow, annoFuse performs standardization of StarFusion and arriba out
 
 Please refer to [annoFuse](https://github.com/d3b-center/annoFuse) R package for additional applications like putative oncogene annotations.
 
-Current version is 0.90.0, docker pull tag: `kfdrc/annofuse:0.90.0`
-
 ## Usage
 
 ### Inputs
