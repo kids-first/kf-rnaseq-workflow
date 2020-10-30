@@ -4,7 +4,7 @@ id: cutadapter
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/cutadapt:latest'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/cutadapt:latest'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 16

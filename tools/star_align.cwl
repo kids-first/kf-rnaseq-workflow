@@ -4,7 +4,7 @@ id: star_alignReads
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/star:latest'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/star:2.6.1d'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 16

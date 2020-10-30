@@ -4,7 +4,7 @@ id: pizzly
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/pizzly:latest'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/pizzly:latest'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8

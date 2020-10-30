@@ -4,7 +4,7 @@ id: arriba_fusion
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'kfdrc/arriba:1.1.0'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/arriba:1.1.0'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 1
