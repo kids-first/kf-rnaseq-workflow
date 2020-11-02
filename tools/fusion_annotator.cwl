@@ -4,7 +4,7 @@ id: fusion_annotator
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'gaonkark/fusionanno:latest'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/fusionanno:latest'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 4
