@@ -4,7 +4,7 @@ id: supplemental_tar_gz
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'ubuntu:18.04'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/ubuntu:18.04'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 4
