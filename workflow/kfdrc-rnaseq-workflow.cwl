@@ -182,6 +182,7 @@ inputs:
   annofuse_genome_untar_path: {type: 'string?', doc: "This is what the path will be\
       \ when genome_tar is unpackaged", default: "GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir"}
   annofuse_col_num: {type: 'int?', doc: "column number in file of fusion name."}
+  wgs_sv_file: { type: 'File?', doc: "Tab-separated file with coordinates of structural variants found using whole-genome sequencing data. These coordinates serve to increase sensitivity towards weakly expressed fusions and to eliminate fusions with low evidence." }
 
 outputs:
   cutadapt_stats: {type: 'File?', outputSource: cutadapt/cutadapt_stats, doc: "Cutadapt\
@@ -284,6 +285,7 @@ steps:
       chimeric_sam_out: star/chimeric_sam_out
       reference_fasta: reference_fasta
       gtf_anno: gtf_anno
+      wgs_sv_file: wgs_sv_file
       outFileNamePrefix: output_basename
       arriba_strand_flag: strand_parse/arriba_std
     out: [arriba_fusions, arriba_pdf]

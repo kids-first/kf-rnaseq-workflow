@@ -31,7 +31,8 @@ arguments:
         else{
           return "-s " + inputs.arriba_strand_flag;
         }
-      } &&
+      }
+      $(inputs.wgs_sv_file ? '-d '+inputs.wgs_sv_file.path : '') &&
       /arriba_v1.1.0/draw_fusions.R
       --annotation=$(inputs.gtf_anno.path)
       --fusions=$(inputs.outFileNamePrefix).arriba.fusions.tsv
@@ -46,6 +47,7 @@ inputs:
   chimeric_sam_out: File
   reference_fasta: File
   gtf_anno: File
+  wgs_sv_file: File?
   outFileNamePrefix: string
   arriba_strand_flag: ['null', string]
 
