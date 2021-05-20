@@ -31,6 +31,7 @@ inputs:
   genome_tar: File
   genome_untar_path: {type: ['null', string], doc: "This is what the path will be when genome_tar is unpackaged", default: "GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir"}
   SampleID: string
+  disable_fusion: { type: 'boolean?' }
 
 outputs:
   abridged_coding:

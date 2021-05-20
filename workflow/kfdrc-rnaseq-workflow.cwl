@@ -1,4 +1,4 @@
-cwlVersion: v1.0
+cwlVersion: v1.2
 class: Workflow
 id: kfdrc-rnaseq-workflow
 label: Kids First DRC RNAseq Workflow
@@ -150,23 +150,23 @@ inputs:
       \ input, please enter reads here."}
   reads2: {type: 'File?', doc: "For FASTQ input, please enter reads 2 here. For BAM\
       \ input, leave empty."}
-  STARgenome: {type: 'File', doc: "STAR_GENCODE27.tar.gz", sbg:suggestedValue: {class: File,
+  STARgenome: {type: 'File', doc: "STAR_GENCODE27.tar.gz", 'sbg:suggestedValue': {class: File,
       path: 5f5001a6e4b054958bc8d2ec, name: STAR_GENCODE27.tar.gz}}
-  RSEMgenome: {type: 'File', doc: "RSEM_GENCODE27.tar.gz", sbg:suggestedValue: {class: File,
+  RSEMgenome: {type: 'File', doc: "RSEM_GENCODE27.tar.gz", 'sbg:suggestedValue': {class: File,
       path: 5f500135e4b0370371c051be, name: RSEM_GENCODE27.tar.gz}}
-  reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", sbg:suggestedValue: {
+  reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", 'sbg:suggestedValue': {
       class: File, path: 5f500135e4b0370371c051b4, name: GRCh38.primary_assembly.genome.fa}}
-  gtf_anno: {type: 'File', doc: "gencode.v27.primary_assembly.annotation.gtf", sbg:suggestedValue: {
+  gtf_anno: {type: 'File', doc: "gencode.v27.primary_assembly.annotation.gtf", 'sbg:suggestedValue': {
       class: File, path: 5f500135e4b0370371c051c3, name: gencode.v27.primary_assembly.annotation.gtf}}
-  FusionGenome: {type: 'File', doc: "GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz",
-    sbg:suggestedValue: {class: File, path: 5f500135e4b0370371c051b0, name: GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz}}
+  FusionGenome: {type: 'File?', doc: "GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz",
+    'sbg:suggestedValue': {class: File, path: 5f500135e4b0370371c051b0, name: GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz}}
   runThread: {type: 'int', doc: "Amount of threads for analysis."}
   STAR_outSAMattrRGline: {type: 'string', doc: "Suggested setting, with TABS SEPARATING\
       \ THE TAGS, format is: ID:sample_name LB:aliquot_id PL:platform SM:BSID for\
       \ example ID:7316-242 LB:750189 PL:ILLUMINA SM:BS_W72364MN"}
-  RNAseQC_GTF: {type: 'File', doc: "gencode.v27.primary_assembly.RNAseQC.gtf", sbg:suggestedValue: {
+  RNAseQC_GTF: {type: 'File', doc: "gencode.v27.primary_assembly.RNAseQC.gtf", 'sbg:suggestedValue': {
       class: File, path: 5f500135e4b0370371c051c8, name: gencode.v27.primary_assembly.RNAseQC.gtf}}
-  kallisto_idx: {type: 'File', doc: "gencode.v27.kallisto.index", sbg:suggestedValue: {
+  kallisto_idx: {type: 'File', doc: "gencode.v27.kallisto.index", 'sbg:suggestedValue': {
       class: File, path: 5f500135e4b0370371c051bd, name: gencode.v27.kallisto.index}}
   wf_strand_param: {type: [{type: 'enum', name: wf_strand_param, symbols: ["default",
           "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto,\
@@ -182,6 +182,7 @@ inputs:
   annofuse_genome_untar_path: {type: 'string?', doc: "This is what the path will be\
       \ when genome_tar is unpackaged", default: "GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir"}
   annofuse_col_num: {type: 'int?', doc: "column number in file of fusion name."}
+  disable_fusion: {type: 'boolean?', doc: "Disable all fusion steps and outputs."}
 
 outputs:
   cutadapt_stats: {type: 'File?', outputSource: cutadapt/cutadapt_stats, doc: "Cutadapt\
@@ -194,7 +195,7 @@ outputs:
     doc: "STAR index for sorted aligned bam"}
   STAR_chimeric_bam_out: {type: 'File', outputSource: samtools_sort/chimeric_bam_out,
     doc: "STAR bam output of chimeric reads"}
-  STAR_chimeric_junctions: {type: 'File', outputSource: star_fusion/chimeric_junction_compressed,
+  STAR_chimeric_junctions: {type: 'File?', outputSource: star_fusion/chimeric_junction_compressed,
     doc: "STAR chimeric junctions"}
   STAR_gene_count: {type: 'File', outputSource: star/gene_counts, doc: "STAR gene\
       \ counts"}
@@ -202,11 +203,11 @@ outputs:
       \ junction reads"}
   STAR_final_log: {type: 'File', outputSource: star/log_final_out, doc: "STAR metrics\
       \ log file of unique, multi-mapping, unmapped, and chimeric reads"}
-  STAR-Fusion_results: {type: 'File', outputSource: star_fusion/abridged_coding, doc: "STAR\
+  STAR-Fusion_results: {type: 'File?', outputSource: star_fusion/abridged_coding, doc: "STAR\
       \ fusion detection from chimeric reads"}
-  arriba_fusion_results: {type: 'File', outputSource: arriba_fusion/arriba_fusions,
+  arriba_fusion_results: {type: 'File?', outputSource: arriba_fusion/arriba_fusions,
     doc: "Fusion output from Arriba"}
-  arriba_fusion_viz: {type: 'File', outputSource: arriba_fusion/arriba_pdf, doc: "pdf\
+  arriba_fusion_viz: {type: 'File?', outputSource: arriba_fusion/arriba_pdf, doc: "pdf\
       \ output from Arriba"}
   RSEM_isoform: {type: 'File', outputSource: rsem/isoform_out, doc: "RSEM isoform\
       \ expression estimates"}
@@ -270,14 +271,17 @@ steps:
 
   star_fusion:
     run: ../tools/star_fusion.cwl
+    when: $(!inputs.disable_fusion)
     in:
       Chimeric_junction: star/chimeric_junctions
       genome_tar: FusionGenome
       SampleID: output_basename
+      disable_fusion: disable_fusion
     out: [abridged_coding, chimeric_junction_compressed]
 
   arriba_fusion:
     run: ../tools/arriba_fusion.cwl
+    when: $(!inputs.disable_fusion)
     in:
       genome_aligned_bam: samtools_sort/sorted_bam
       genome_aligned_bai: samtools_sort/sorted_bai
@@ -286,6 +290,7 @@ steps:
       gtf_anno: gtf_anno
       outFileNamePrefix: output_basename
       arriba_strand_flag: strand_parse/arriba_std
+      disable_fusion: disable_fusion
     out: [arriba_fusions, arriba_pdf]
 
   rsem:
@@ -330,6 +335,7 @@ steps:
 
   annofuse:
     run: ../workflow/kfdrc_annoFuse_wf.cwl
+    when: $(!inputs.disable_fusion)
     in:
       sample_name: sample_name
       FusionGenome: FusionGenome
@@ -339,6 +345,7 @@ steps:
       star_fusion_output_file: star_fusion/abridged_coding
       col_num: annofuse_col_num
       output_basename: output_basename
+      disable_fusion: disable_fusion
     out: [annofuse_filtered_fusions_tsv]
 
 $namespaces:

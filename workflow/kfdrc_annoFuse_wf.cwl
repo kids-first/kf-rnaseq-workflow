@@ -6,13 +6,14 @@ requirements:
 
 inputs:
   sample_name: { type: 'string', doc: "Sample name used for file base name of all outputs" }
-  FusionGenome: { type: 'File', doc: "GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz", sbg:suggestedValue: { class: 'File', path: '5d9c8d04e4b0950cce147f94', name: 'GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz' }}
+  FusionGenome: { type: 'File', doc: "GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz", 'sbg:suggestedValue': { class: 'File', path: '5d9c8d04e4b0950cce147f94', name: 'GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz' }}
   genome_untar_path: { type: 'string?', doc: "This is what the path will be when genome_tar is unpackaged", default: "GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir" }
   rsem_expr_file: { type: 'File', doc: "gzipped rsem gene expression file" }
-  arriba_output_file: { type: 'File', doc: "Output from arriba, usually extension arriba.fusions.tsv" }
+  arriba_output_file: { type: 'File?', doc: "Output from arriba, usually extension arriba.fusions.tsv" }
   col_num: { type: 'int?', doc: "column number in file of fusion name." }
-  star_fusion_output_file: { type: 'File', doc: "Output from arriba, usually extension STAR.fusion_predictions.abridged.coding_effect.tsv" }
+  star_fusion_output_file: { type: 'File?', doc: "Output from arriba, usually extension STAR.fusion_predictions.abridged.coding_effect.tsv" }
   output_basename: { type: 'string', doc: "String to use as basename for outputs" }
+  disable_fusion: { type: 'boolean?' }
 
 outputs:
   annofuse_filtered_fusions_tsv: { type: 'File?', outputSource: annoFuse_filter/filtered_fusions_tsv, doc: "Filtered output of formatted and annotated Star Fusion and arriba results" }

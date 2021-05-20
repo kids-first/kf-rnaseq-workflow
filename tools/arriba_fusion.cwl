@@ -48,6 +48,7 @@ inputs:
   gtf_anno: File
   outFileNamePrefix: string
   arriba_strand_flag: ['null', string]
+  disable_fusion: { type: 'boolean?' }
 
 outputs:
   arriba_fusions:
