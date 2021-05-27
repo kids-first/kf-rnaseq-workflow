@@ -6,33 +6,23 @@ requirements:
 
 inputs:
   wf_strand_param: {type: [{type: enum, name: wf_strand_param, symbols: ["default", "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript"}
-    
+
 outputs:
-  rsem_std: 
+  rsem_std:
     type: string
-  kallisto_std: 
+  kallisto_std:
     type: string
-  rnaseqc_std: 
+  rnaseqc_std:
     type: string
-  arriba_std: 
+  arriba_std:
     type: string
 
 expression:
   "${
-      var strand = 'default';
-      if (inputs.wf_strand_param != null){
-        strand = inputs.wf_strand_param;
-      }
       var parse_dict = {
           'default': {'rsem_std': 'none', 'kallisto_std': 'default', 'rnaseqc_std': 'default', 'arriba_std': 'auto'},
           'rf-stranded': {'rsem_std': 'reverse', 'kallisto_std': 'rf-stranded', 'rnaseqc_std': 'rf', 'arriba_std': 'reverse'},
           'fr-stranded': {'rsem_std': 'forward', 'kallisto_std': 'fr-stranded', 'rnaseqc_std': 'fr', 'arriba_std': 'yes'}
           };
-      if (strand in parse_dict){
-        return parse_dict[strand];
-        
-      }
-      else{
-        throw new Error(strand + ' is a not a valid strand param. Use one of default, rf-stranded, fr-stranded');
-      }
+      return parse_dict[inputs.wf_strand_param];
   }"
