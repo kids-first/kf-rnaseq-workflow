@@ -7,8 +7,7 @@ requirements:
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/star:2.6.1d'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    coresMin: 16
-    ramMin: 60000
+    coresMin: $(inputs.runThreadN)
 
 baseCommand: []
 arguments:
@@ -29,6 +28,7 @@ arguments:
       --alignSJstitchMismatchNmax 5 -1 5 5
       --outFilterMismatchNmax 999
       --outFilterMismatchNoverLmax 0.1
+      --alignIntronMin 10
       --alignIntronMax 100000
       --chimSegmentReadGapMax 3
       --chimOutJunctionFormat 1

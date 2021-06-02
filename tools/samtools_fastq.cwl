@@ -7,8 +7,7 @@ requirements:
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    coresMin: 36
-    ramMin: 30000
+    coresMin: $(inputs.runThreadN)
 
 baseCommand: ["/bin/bash", "-c"]
 arguments:
@@ -38,13 +37,13 @@ arguments:
               return command
           }
       }
-      
+
 
 inputs:
   input_reads_1: {type: File, doc: "For FASTQ input, please enter reads 1 here. For BAM input, please enter reads here."}
   input_reads_2: {type: 'File?', doc: "For FASTQ input, please enter reads 2 here. For BAM input, leave empty."}
   SampleID: string
-  runThreadN: int 
+  runThreadN: int
   input_type: {type: [{type: enum, name: input_type, symbols: ["PEBAM", "SEBAM", "FASTQ"]}], doc: "Please select one option for input file type, PEBAM (paired-end BAM), SEBAM (single-end BAM), or FASTQ."}
 
 
