@@ -182,6 +182,13 @@ inputs:
   annofuse_genome_untar_path: {type: 'string?', doc: "This is what the path will be\
       \ when genome_tar is unpackaged", default: "GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir"}
   annofuse_col_num: {type: 'int?', doc: "column number in file of fusion name."}
+  rmats_read_length: { type: 'int', doc: "Input read length for sample reads." }
+  rmats_variable_read_length: { type: 'boolean?', doc: "Allow reads with lengths that differ from --readLength to be processed. --readLength will still be used to determine IncFormLen and SkipFormLen." }
+  rmats_novel_splice_sites: { type: 'boolean?', doc: "Select for novel splice site detection or unannotated splice sites. 'true' to detect or add this parameter, 'false' to disable denovo detection. Tool Default: false" }
+  rmats_stat_off: { type: 'boolean?', doc: "Select to skip statistical analysis, either between two groups or on single sample group. 'true' to add this parameter. Tool default: false" }
+  rmats_allow_clipping: { type: 'boolean?', doc: "Allow alignments with soft or hard clipping to be used." }
+  rmats_threads: { type: 'int?', doc: "Threads to allocate to RMATs." }
+  rmats_ram: { type: 'int?', doc: "GB of RAM to allocate to RMATs." }
 
 outputs:
   cutadapt_stats: {type: 'File?', outputSource: cutadapt/cutadapt_stats, doc: "Cutadapt\
@@ -220,6 +227,11 @@ outputs:
       \ abundance output from STAR genomic bam file"}
   annofuse_filtered_fusions_tsv: {type: 'File?', outputSource: annofuse/annofuse_filtered_fusions_tsv,
     doc: "Filtered fusions called by annoFuse."}
+  rmats_filtered_alternative_3_prime_splice_sites_jc: {type: 'File', outputSource: rmats/filtered_alternative_3_prime_splice_sites_jc, doc: "Alternative 3 prime splice sites JC.txt output from RMATs containing only those calls with 10 or more read counts of support" }
+  rmats_filtered_alternative_5_prime_splice_sites_jc: {type: 'File', outputSource: rmats/filtered_alternative_5_prime_splice_sites_jc, doc: "Alternative 5 prime splice sites JC.txt output from RMATs containing only those calls with 10 or more read counts of support" }
+  rmats_filtered_mutually_exclusive_exons_jc: {type: 'File', outputSource: rmats/filtered_mutually_exclusive_exons_jc, doc: "Mutually exclusive exons JC.txt output from RMATs containing only those calls with 10 or more read counts of support" }
+  rmats_filtered_retained_introns_jc: {type: 'File', outputSource: rmats/filtered_retained_introns_jc, doc: "Retained introns JC.txt output from RMATs containing only those calls with 10 or more read counts of support" }
+  rmats_filtered_skipped_exons_jc: {type: 'File', outputSource: rmats/filtered_skipped_exons_jc, doc: "Skipped exons JC.txt output from RMATs containing only those calls with 10 or more read counts of support" }
 
 steps:
 
@@ -261,6 +273,32 @@ steps:
       unsorted_bam: star/genomic_bam_out
       chimeric_sam_out: star/chimeric_sam_out
     out: [sorted_bam, sorted_bai, chimeric_bam_out]
+
+  rmats:
+    run: ../workflow/rmats_wf.cwl
+    in:
+      gtf_annotation: gtf_anno
+      sample_1_bams:
+        source: samtools_sort/sorted_bam
+        valueFrom: |
+          $([self])
+      read_length: rmats_read_length
+      variable_read_length: rmats_variable_read_length
+      read_type:
+        source: bam2fastq/fq2
+        valueFrom: |
+          $(self == null ? "single" : "paired")
+      strandedness:
+        source: wf_strand_param
+        valueFrom: |
+          $(switch(self) { case "rf-stranded": "fr-firststrand"; break; case "fr-stranded": "fr-secondstrand"; break; case "default": "unstranded"; })
+      novel_splice_sites: rmats_novel_splice_sites
+      stat_off: rmats_stat_off
+      allow_clipping: rmats_allow_clipping
+      output_basename: output_basename
+      rmats_threads: rmats_threads
+      rmats_ram: rmats_ram
+    out: [filtered_alternative_3_prime_splice_sites_jc, filtered_alternative_5_prime_splice_sites_jc, filtered_mutually_exclusive_exons_jc, filtered_retained_introns_jc, filtered_skipped_exons_jc]
 
   strand_parse:
     run: ../tools/expression_parse_strand_param.cwl
