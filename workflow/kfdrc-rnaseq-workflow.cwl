@@ -1,4 +1,4 @@
-cwlVersion: v1.0
+cwlVersion: v1.2
 class: Workflow
 id: kfdrc-rnaseq-workflow
 label: Kids First DRC RNAseq Workflow
@@ -150,23 +150,23 @@ inputs:
       \ input, please enter reads here."}
   reads2: {type: 'File?', doc: "For FASTQ input, please enter reads 2 here. For BAM\
       \ input, leave empty."}
-  STARgenome: {type: 'File', doc: "STAR_GENCODE27.tar.gz", sbg:suggestedValue: {class: File,
+  STARgenome: {type: 'File', doc: "STAR_GENCODE27.tar.gz", "sbg:suggestedValue": {class: File,
       path: 5f5001a6e4b054958bc8d2ec, name: STAR_GENCODE27.tar.gz}}
-  RSEMgenome: {type: 'File', doc: "RSEM_GENCODE27.tar.gz", sbg:suggestedValue: {class: File,
+  RSEMgenome: {type: 'File', doc: "RSEM_GENCODE27.tar.gz", "sbg:suggestedValue": {class: File,
       path: 5f500135e4b0370371c051be, name: RSEM_GENCODE27.tar.gz}}
-  reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", sbg:suggestedValue: {
+  reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", "sbg:suggestedValue": {
       class: File, path: 5f500135e4b0370371c051b4, name: GRCh38.primary_assembly.genome.fa}}
-  gtf_anno: {type: 'File', doc: "gencode.v27.primary_assembly.annotation.gtf", sbg:suggestedValue: {
+  gtf_anno: {type: 'File', doc: "gencode.v27.primary_assembly.annotation.gtf", "sbg:suggestedValue": {
       class: File, path: 5f500135e4b0370371c051c3, name: gencode.v27.primary_assembly.annotation.gtf}}
   FusionGenome: {type: 'File', doc: "GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz",
-    sbg:suggestedValue: {class: File, path: 5f500135e4b0370371c051b0, name: GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz}}
+    "sbg:suggestedValue": {class: File, path: 5f500135e4b0370371c051b0, name: GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz}}
   runThread: {type: 'int', doc: "Amount of threads for analysis."}
   STAR_outSAMattrRGline: {type: 'string', doc: "Suggested setting, with TABS SEPARATING\
       \ THE TAGS, format is: ID:sample_name LB:aliquot_id PL:platform SM:BSID for\
       \ example ID:7316-242 LB:750189 PL:ILLUMINA SM:BS_W72364MN"}
-  RNAseQC_GTF: {type: 'File', doc: "gencode.v27.primary_assembly.RNAseQC.gtf", sbg:suggestedValue: {
+  RNAseQC_GTF: {type: 'File', doc: "gencode.v27.primary_assembly.RNAseQC.gtf", "sbg:suggestedValue": {
       class: File, path: 5f500135e4b0370371c051c8, name: gencode.v27.primary_assembly.RNAseQC.gtf}}
-  kallisto_idx: {type: 'File', doc: "gencode.v27.kallisto.index", sbg:suggestedValue: {
+  kallisto_idx: {type: 'File', doc: "gencode.v27.kallisto.index", "sbg:suggestedValue": {
       class: File, path: 5f500135e4b0370371c051bd, name: gencode.v27.kallisto.index}}
   wf_strand_param: {type: [{type: 'enum', name: wf_strand_param, symbols: ["default",
           "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto,\
@@ -344,11 +344,11 @@ steps:
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
-- class: 'sbg:maxNumberOfParallelInstances'
+- class: "sbg:maxNumberOfParallelInstances"
   value: 3
-sbg:license: Apache License 2.0
-sbg:publisher: KFDRC
-sbg:categories:
+"sbg:license": Apache License 2.0
+"sbg:publisher": KFDRC
+"sbg:categories":
 - ALIGNMENT
 - ANNOFUSE
 - ARRIBA
@@ -362,6 +362,6 @@ sbg:categories:
 - RSEM
 - SE
 - STAR
-sbg:links:
+"sbg:links":
 - id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v2.4.2'
   label: github-release
