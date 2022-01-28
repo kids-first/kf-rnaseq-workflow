@@ -20,7 +20,7 @@ arguments:
       --outSAMattrRGline $(inputs.outSAMattrRGline)
       --genomeDir ./$(inputs.genomeDir.nameroot.split('.')[0])/
       --readFilesIn $(inputs.readFilesIn1.path) $(inputs.readFilesIn2 ? inputs.readFilesIn2.path : '')
-      --readFilesCommand zcat
+      --readFilesCommand $(inputs.readFilesIn1.nameext == 'gz' ? 'zcat' : '-')
       --runThreadN $(inputs.runThreadN)
       --twopassMode Basic
       --outFilterMultimapNmax 20

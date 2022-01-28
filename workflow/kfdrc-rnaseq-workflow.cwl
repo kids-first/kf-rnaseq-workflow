@@ -291,7 +291,7 @@ steps:
       strandedness:
         source: wf_strand_param
         valueFrom: |
-          $(switch(self) { case "rf-stranded": "fr-firststrand"; break; case "fr-stranded": "fr-secondstrand"; break; case "default": "unstranded"; })
+          $(self == "rf-stranded" ? "fr-firststrand" : self == "fr-stranded" ? "fr-secondstrand" : "fr-unstranded")
       novel_splice_sites: rmats_novel_splice_sites
       stat_off: rmats_stat_off
       allow_clipping: rmats_allow_clipping
