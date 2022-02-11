@@ -59,6 +59,13 @@ inputs:
   kallisto_idx: File
   wf_strand_param: {type: [{type: enum, name: wf_strand_param, symbols: ["default", "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto, 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the transcript, 'fr-stranded' if read1 same sense as transcript"}
   input_type: {type: [{type: enum, name: input_type, symbols: ["BAM", "FASTQ"]}], doc: "Please select one option for input file type, BAM or FASTQ."}
+  rmats_read_length: {type: 'int', doc: "Input read length for sample reads."}
+  rmats_variable_read_length: {type: 'boolean?', doc: "Allow reads with lengths that differ from --readLength to be processed. --readLength will still be used to determine IncFormLen and SkipFormLen."}
+  rmats_novel_splice_sites: {type: 'boolean?', doc: "Select for novel splice site detection or unannotated splice sites. 'true' to detect or add this parameter, 'false' to disable denovo detection. Tool Default: false"}
+  rmats_stat_off: {type: 'boolean?', doc: "Select to skip statistical analysis, either between two groups or on single sample group. 'true' to add this parameter. Tool default: false"}
+  rmats_allow_clipping: {type: 'boolean?', doc: "Allow alignments with soft or hard clipping to be used."}
+  rmats_threads: {type: 'int?', doc: "Threads to allocate to RMATs."}
+  rmats_ram: {type: 'int?', doc: "GB of RAM to allocate to RMATs."}
 ```
 
 ### Bam input-specific:
@@ -108,6 +115,8 @@ If they do need trimming, supply the adapters and the cutadapt step will trim, a
     - `STARgenome`: STAR_GENCODE27.tar.gz, created using the star_genomegenerate.cwl tool, using the `reference_fasta`, `gtf_anno`, and setting `sjdbOverhang` to 100
     - `reference_fasta`: [GRCh38.primary_assembly.genome.fa](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/GRCh38.primary_assembly.genome.fa.gz), will need to unzip
     - `kallisto_idx`: gencode.v27.kallisto.index, built from gencode 27 trascript fasta: ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.transcripts.fa.gz, following instructions from [here](https://pachterlab.github.io/kallisto/manual)
+
+6) rMATS requires you provide the length of the reads in the sample. If you are unsure of the length, you can set `rmats_variable_read_length` to true which will allow reads with a length other than the value you provided to be processed.
 
 ### Outputs:
 ```yaml
