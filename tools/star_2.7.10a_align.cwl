@@ -1,4 +1,4 @@
-cwlVersion: v1.0
+cwlVersion: v1.2
 class: CommandLineTool
 id: star_2.7.10a_alignReads
 requirements:
@@ -41,13 +41,13 @@ inputs:
   outFileNamePrefix: { type: string, doc: "output files name prefix (including full or relative path). Can only be defined on the command line. \
   Tool will add '.' after prefix to easily delineate between file name and suffix" }
   runThreadN: { type: 'int?', default: 16, doc: "Adjust this value to change number of cores used.", inputBinding: { position: 3, prefix: '--runThreadN' } }
-  twopassMode: { type: [{type: enum, name: twopassMode, symbols: ["Basic", "None"]}], default: "Basic",
+  twopassMode: { type: ['null', {type: enum, name: twopassMode, symbols: ["Basic", "None"]}], default: "Basic",
   doc: "Enable two pass mode to detect novel splice events. Default is basic (on).", inputBinding: { position: 3, prefix: '--twopassMode' } }
   alignSJoverhangMin: { type: 'int?', default: 8, doc: "minimum overhang for unannotated junctions. ENCODE default used.",
   inputBinding: { position: 3, prefix: '--alignSJoverhangMin' } }
   outFilterMismatchNoverLmax: { type: 'float?', default: 0.1, doc: "alignment will be output only if its ratio of mismatches to *mapped* \
   length is less than or equal to this value", inputBinding: { position: 3, prefix: '--outFilterMismatchNoverLmax' } }
-  outFilterType: { type: [{type: enum, name: outFilterType, symbols: ["BySJout", "Normal"]}], default: "BySJout",
+  outFilterType: { type: [ 'null', {type: enum, name: outFilterType, symbols: ["BySJout", "Normal"]}], default: "BySJout",
   doc: "type of filtering. Normal: standard filtering using only current alignment. BySJout (default): keep only those reads that contain junctions \
   that passed filtering into SJ.out.tab.",
   inputBinding: { position: 3, prefix: '--outFilterType' } }
@@ -56,43 +56,43 @@ inputs:
   outFilterMatchNminOverLread: { type: 'float?', default: 0.33, doc: "alignment will be output only if the number of matched bases is higher than or \
   equal to this value., normalized to the read length (sum of mates' lengths for paired-end reads)",
   inputBinding: { position: 3, prefix: '--outFilterMatchNminOverLread' } }
-  outReadsUnmapped: { type: [{type: enum, name: outReadsUnmapped, symbols: ["None", "Fastx"]}], default: "None",
+  outReadsUnmapped: { type: [ 'null', {type: enum, name: outReadsUnmapped, symbols: ["None", "Fastx"]}], default: "None",
   doc: "output of unmapped and partially mapped (i.e. mapped only one mate of a paired end read) reads in separate file(s). \
   none (default): no output. Fastx: output in separate fasta/fastq files, Unmapped.out.mate1/2.",
   inputBinding: { position: 3, prefix: '--outReadsUnmapped' } }
   limitSjdbInsertNsj: { type: 'int?', default: 1200000, doc: "maximum number of junction to be inserted to the genome on the fly \
   at the mapping stage, including those from annotations and those detected in the 1st step of the 2-pass run",
   inputBinding: { position: 3, prefix: '--limitSjdbInsertNsj' } }
-  outSAMstrandField: { type: [{type: enum, name: outSAMstrandField, symbols: ["intronMotif", "None"]}], default: "intronMotif",
+  outSAMstrandField: { type: [ 'null', {type: enum, name: outSAMstrandField, symbols: ["intronMotif", "None"]}], default: "intronMotif",
   doc: "Cufflinks-like strand field flag. None: not used. intronMotif (default): strand derived from the intron motif. This option changes the output \
   alignments: reads with inconsistent and/or non-canonical introns are filtered out.",
   inputBinding: { position: 3, prefix: '--outSAMstrandField' } }
-  outFilterIntronMotifs: { type: [{type: enum, name: outFilterIntronMotifs, symbols: ["None", "RemoveNoncanonical", "RemoveNoncanonicalUnannotated"]}],
+  outFilterIntronMotifs: { type: [ 'null', {type: enum, name: outFilterIntronMotifs, symbols: ["None", "RemoveNoncanonical", "RemoveNoncanonicalUnannotated"]}],
   default: "None",
   doc: "filter alignment using their motifs. None (default): no filtering. RemoveNoncanonical: filter out alignments that contain non-canonical junctions \
   RemoveNoncanonicalUnannotated: filter out alignments that contain non-canonical unannotated junctions when using annotated splice junctions database. \
   The annotated non-canonical junctions will be kept.",
   inputBinding: { position: 3, prefix: '--outFilterIntronMotifs' } }
-  alignSoftClipAtReferenceEnds:  { type: [{type: enum, name: alignSoftClipAtReferenceEnds, symbols: ["Yes", "No"]}], default: "Yes",
+  alignSoftClipAtReferenceEnds:  { type: [ 'null', {type: enum, name: alignSoftClipAtReferenceEnds, symbols: ["Yes", "No"]}], default: "Yes",
   doc: "allow the soft-clipping of the alignments past the end of the chromosomes. Yes (default): allow. \
   No: prohibit, useful for compatibility with Cufflinks",
   inputBinding: { position: 3, prefix: '--alignSoftClipAtReferenceEnds' } }
-  quantMode: { type: [{type: enum, name: quantMode, symbols: ["TranscriptomeSAM GeneCounts", "-", "TranscriptomeSAM", "GeneCounts"]}],
+  quantMode: { type: [ 'null', {type: enum, name: quantMode, symbols: ["TranscriptomeSAM GeneCounts", "-", "TranscriptomeSAM", "GeneCounts"]}],
   default: "TranscriptomeSAM GeneCounts",
   doc: "types of quantification requested. -: none. TranscriptomeSAM: output SAM/BAM alignments to transcriptome into a separate file \
   GeneCounts: count reads per gene. Choices are additive, so default is 'TranscriptomeSAM GeneCounts'",
   inputBinding: { position: 3, prefix: '--quantMode' } }
-  outSAMtype: { type: [{type: enum, name: outSAMtype, symbols: ["BAM Unsorted", "None", "BAM SortedByCoordinate", "SAM Unsorted", "SAM SortedByCoordinate"]}],
+  outSAMtype: { type: [ 'null', {type: enum, name: outSAMtype, symbols: ["BAM Unsorted", "None", "BAM SortedByCoordinate", "SAM Unsorted", "SAM SortedByCoordinate"]}],
   default: "BAM Unsorted",
   doc: "type of SAM/BAM output. None: no SAM/BAM output. Otherwise, first word is output type (BAM or SAM), second is sort type (Unsorted or SortedByCoordinate)",
   inputBinding: { position: 3, prefix: '--outSAMtype' } }
-  outSAMunmapped: { type: [{type: enum, name: outSAMunmapped, symbols: ["Within", "None", "Within KeepPairs"]}],
+  outSAMunmapped: { type: [ 'null', {type: enum, name: outSAMunmapped, symbols: ["Within", "None", "Within KeepPairs"]}],
   default: "Within",
   doc: "output of unmapped reads in the SAM format. None: no output. Within (default): output unmapped reads within the main SAM file (i.e. Aligned.out.sam) \
   Within KeepPairs: record unmapped mate for each alignment, and, in case of unsorted output, keep it adjacent to its mapped mate. Only affects \
   multi-mapping reads",
   inputBinding: { position: 3, prefix: '--outSAMunmapped' } }
-  genomeLoad: { type: [{type: enum, name: genomeLoad, symbols: ["NoSharedMemory", "LoadAndKeep", "LoadAndRemove", "LoadAndExit"]}],
+  genomeLoad: { type: [ 'null', {type: enum, name: genomeLoad, symbols: ["NoSharedMemory", "LoadAndKeep", "LoadAndRemove", "LoadAndExit"]}],
   default: "NoSharedMemory",
   doc: "mode of shared memory usage for the genome file. In this context, the default value makes the most sense, the others are their as a courtesy.",
   inputBinding: { position: 3, prefix: '--genomeLoad' } }
@@ -102,7 +102,7 @@ inputs:
   Please refer to the STAR manual, as there are numerous combinations: https://raw.githubusercontent.com/alexdobin/STAR/master/doc/STARmanual.pdf",
   inputBinding: { position: 3, prefix: '--outSAMattributes' } }
   # fusion specific
-  alignInsertionFlush: { type: [{type: enum, name: alignInsertionFlush, symbols: ["None", "Right"]}], default: "None",
+  alignInsertionFlush: { type: [ 'null', {type: enum, name: alignInsertionFlush, symbols: ["None", "Right"]}], default: "None",
   doc: "how to flush ambiguous insertion positions. None (default): insertions not flushed. Right: insertions flushed to the right.
   STAR Fusion recommended (SF)",
   inputBinding: { position: 3, prefix: '--alignInsertionFlush' } }
@@ -134,7 +134,7 @@ inputs:
   inputBinding: { position: 3, prefix: '--chimNonchimScoreDropMin' } }
   chimOutJunctionFormat: { type: 'int?', default: 1, doc: "formatting type for the Chimeric.out.junction file, value 1 REQUIRED for SF",
   inputBinding: { position: 3, prefix: '--chimOutJunctionFormat' } }
-  chimOutType: { type: [{type: enum, name: chimOutType, symbols: [
+  chimOutType: { type: [ 'null', {type: enum, name: chimOutType, symbols: [
       "Junctions SeparateSAMold WithinBAM SoftClip",
       "Junctions", "SeparateSAMold",
       "WithinBAM SoftClip",
