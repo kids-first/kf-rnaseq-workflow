@@ -24,7 +24,7 @@ arguments:
         if (inputs.input_reads_2 != null){
             cmd += " --paired-end";
         }
-        cmd += " " + inputs.bam.path + " ./" + inputs.genomeDir.nameroot.split('.')[0] + "/" + inputs.genomeDir.nameroot.split('.')[0] + " " +  inputs.outFileNamePrefix + ".rsem";
+        cmd += " " + inputs.bam.path + " ./" + inputs.genomeDir.nameroot.replace(".tar", "") + "/" + inputs.genomeDir.nameroot.replace(".tar", "") + " " +  inputs.outFileNamePrefix + ".rsem";
         return cmd
       } &&
       gzip *results
