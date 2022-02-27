@@ -20,7 +20,6 @@ arguments:
       && mv $(inputs.reference_name).* $(inputs.reference_name)/
       && tar -czf $(inputs.reference_name).tar.gz $(inputs.reference_name)
 
-
 inputs:
   reference_fasta: { type: File, doc: "Reference fasta file", inputBinding: { position: 3} }
   reference_name: { type: string, doc: "Output file prefix. Recommend format: RSEM_<SOURCE><Version>/", inputBinding: { position: 3}}
