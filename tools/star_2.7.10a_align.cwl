@@ -1,10 +1,11 @@
 cwlVersion: v1.2
 class: CommandLineTool
 id: star_2.7.10a_alignReads
+label: "STAR Aligner v2.7.10a"
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'migbro/star:2.7.10a'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/star:2.7.10a'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 16

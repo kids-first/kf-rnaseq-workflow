@@ -1,17 +1,17 @@
 cwlVersion: v1.2
 class: CommandLineTool
 id: star_fusion_1.10.1_gen_reference
+doc: "Generate star fusion reference. Recommend to run locally as tool will take at least 12 hours to run"
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'migbro/star_fusion:1.10.1'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/star:fusion-1.10.1'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: $(inputs.cores)
     ramMin: ${ return inputs.ram * 1000 }
   - class: InitialWorkDirRequirement
     listing: [$(inputs.ctat_source)]
-
 
 baseCommand: [tar, -I pigz, -xvf]
 arguments:
@@ -40,7 +40,7 @@ inputs:
   inputBinding: { position: 3, prefix: "--fusion_annot_lib"} }
   annot_filter_rule: {type: File, doc: "target AnnotFilterRule.pm, from https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB",
   inputBinding: { position: 3, prefix: "--annot_filter_rule"} }
-  pfam_db: { type: File, doc: "pfam database obtained from ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz",
+  pfam_db: { type: 'string?', doc: "pfam database. If given will simply pull from current, and run hmmpress", default: 'current'
   inputBinding: { position: 3, prefix: '--pfam_db' } }
   dfam_db: { type: 'File[]',
   doc: "DNA transposable element database (Dfam.hmm), required for repeat masking. Obtain from http://dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/" }

@@ -1,6 +1,7 @@
 cwlVersion: v1.2
 class: CommandLineTool
 id: arriba_fusion
+label: "Arriba Fusion Caller v1.1.0"
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
