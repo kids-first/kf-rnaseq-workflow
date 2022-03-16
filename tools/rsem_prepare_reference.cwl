@@ -1,6 +1,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: rsem-prepare-reference
+label: "RSEM v1.3.1 Prepare Reference"
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement

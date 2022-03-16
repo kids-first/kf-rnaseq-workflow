@@ -27,7 +27,9 @@ inputs:
   reference_fasta: { type: File, doc: "Fasta reference file used for alignment", inputBinding: { prefix: '-a', position: 1 } }
   gtf_anno: { type: File, doc: "GTF file used for alignment indexing",  inputBinding: { prefix: '-g', position: 1 } }
   outFileNamePrefix: string
-  arriba_strand_flag: { type: 'string?', default: 'auto', doc: "input strandedness flag", inputBinding: { prefix: '-s', position: 1 } }
+  arriba_strand_flag: {  type: ['null', {type: enum, name: arriba_strand_flag, symbols: ["auto", "yes", "no", "reverse"]}],
+  default: 'auto', doc: "input strandedness flag",
+  inputBinding: { prefix: '-s', position: 1 } }
   blacklist: { type: [ 'null', {type: enum, name: blacklist, symbols: ['/arriba_v2.2.1/database/blacklist_hg38_GRCh38_v2.2.1.tsv.gz',
   '/arriba_v2.2.1/database/blacklist_hg19_hs37d5_GRCh37_v2.2.1.tsv.gz', '/arriba_v2.2.1/database/blacklist_mm10_GRCm38_v2.2.1.tsv.gz', '/arriba_v2.2.1/database/blacklist_mm39_GRCm39_v2.2.1.tsv.gz']}],
   default: '/arriba_v2.2.1/database/blacklist_hg38_GRCh38_v2.2.1.tsv.gz',

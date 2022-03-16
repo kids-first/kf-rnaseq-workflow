@@ -40,8 +40,9 @@ inputs:
   doc: "'none' refers to non-strand-specific protocols. 'forward' means all (upstream) reads are derived from the forward strand. 'reverse' means all (upstream) reads
   are derived from the reverse strand",
   inputBinding: { position: 1, prefix: '--strandedness', shellQuote: false } }
-  append_names: { type: 'boolean?', doc: "If available, append gene/tx name to gene/tx id", default: true, inputBinding: {position: 1, prefix: '--append-names'} }
+  append_names: { type: 'boolean?', doc: "If available, append gene/tx name to gene/tx id", default: true, inputBinding: { position: 1, prefix: '--append-names'} }
   estimate_rspd: { type: 'boolean?', doc: "Set this option if you want to estimate the read start position distribution (RSPD) from data", default: false, inputBinding: {position: 1, prefix: '--estimate-rspd'} }
+  fragment_length_max: { type: 'int?', doc: "Maximum read/insert length allowed", default: 1000, inputBinding: { position: 1, prefix: '--fragment-length-max'} }
   bam: { type: File, doc: "Aligned transcriptome bam", inputBinding: { position: 2 } }
   genomeDir: { type: File, doc: "RSEM reference tar ball" }
   outFileNamePrefix: {type: string, doc: "String to prepend output file names with" }
