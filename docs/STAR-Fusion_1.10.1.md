@@ -9,6 +9,7 @@ We have already pre-built this library for GENCODE38 and it is strongly recommen
 See [Genome Generate](#genome-generate) section if you really must create one.
 
 ### STAR-Fusion
+`tools/star_fusion_1.10.1_call.cwl` <br>
 This tool uses chimeric junction output from STAR aligner to predict fusions from RNA data.
 Estimated run time range: 7-25 minutes.
 Estimated spot instance cost: $0.06 - $0.21
@@ -30,7 +31,7 @@ This tool has just two outputs:
  - `chimeric_junction_compressed`: compressed input junction file, if flag was given
 
 ### Genome Generate
-`tools/star_2.7.10a_genome_generate.cwl`
+`tools/star_fusion_1.10.1_gen_reference.cwl`
 
 ```yaml
 inputs:

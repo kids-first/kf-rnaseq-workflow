@@ -107,7 +107,7 @@ inputs:
   STAR Fusion recommended (SF)",
   inputBinding: { position: 3, prefix: '--alignInsertionFlush', shellQuote: false } }
   alignIntronMax: { type: 'int?', default: 1000000, doc: "maximum intron size. SF recommends 100000", inputBinding: { position: 3, prefix: '--alignIntronMax' } }
-  alignMatesGapMax: { type: 'int?', default: 1000000, doc: "maximum genomic distance between mates, SF recoomends 100000 \
+  alignMatesGapMax: { type: 'int?', default: 1000000, doc: "maximum genomic distance between mates, SF recommends 100000 \
   to avoid readthru fusions within 100k",
   inputBinding: { position: 3, prefix: '--alignMatesGapMax' } }
   alignSJDBoverhangMin: { type: 'int?', default: 1, doc: "minimum overhang for annotated junctions. SF recommends 10",

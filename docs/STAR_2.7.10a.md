@@ -1,4 +1,5 @@
 # STAR Aligner v2.7.10a
+`tools/star_2.7.10a_align.cwl` <br>
 STAR is a parameter-rich RNAseq aligner.
 This tool is based on this release: https://github.com/alexdobin/STAR/tree/2.7.10a.
 Depending on the parameters used, run time is typically around 5-10 hours, with spot instance cost of $2.50 - $8.00
@@ -77,6 +78,7 @@ Below is a table of params and values we set by default, as well as suggested ch
  - `gene_counts`: STAR-generated read counts by gene
 
 ## Reference generation tool
+`tools/star_2.7.10a_genome_generate.cwl` <br>
 This tool is used to create the necessary genome indices for STAR.
 You should only need to do this once for each gene model, fasta reference, and possibly read length of input files (STAR author says values of 100 should work for most cases)
 
