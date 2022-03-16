@@ -8,7 +8,7 @@ requirements:
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/star:2.7.10a'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    coresMin: 16
+    coresMin: $(inputs.runThreadN)
     ramMin: 60000
 
 baseCommand: [tar, -I pigz, -xvf]
@@ -177,12 +177,12 @@ inputs:
   inputBinding: { position: 3, prefix: '--peOverlapNbasesMin' } }
 
 outputs:
-  log_progress_out: {type: File, outputBinding: {glob: '*Log.progress.out'}}
-  log_out: {type: File, outputBinding: {glob: '*Log.out'}}
-  log_final_out: {type: File, outputBinding: {glob: '*Log.final.out'}}
-  genomic_bam_out: {type: File, outputBinding: {glob: '*Aligned.out.bam'}}
-  junctions_out: {type: File, outputBinding: {glob: '*SJ.out.tab.gz'}}
-  transcriptome_bam_out: {type: File, outputBinding: {glob: '*Aligned.toTranscriptome.out.bam'}}
-  chimeric_sam_out: {type: File, outputBinding: {glob: '*Chimeric.out.sam'}}
-  chimeric_junctions: {type: File, outputBinding: {glob: '*Chimeric.out.junction'}}
-  gene_counts: {type: File, outputBinding: {glob: '*ReadsPerGene.out.tab.gz'}}
+  log_progress_out: { type: File, doc: "Simple progress output. Can use to gauge speed and run time", outputBinding: {glob: '*Log.progress.out'} }
+  log_out: { type: File, doc: "Contains a summary of all params used and reference files", outputBinding: {glob: '*Log.out'} }
+  log_final_out: { type: File, doc: "Overall summary of read mapping statistics", outputBinding: {glob: '*Log.final.out'} }
+  genomic_bam_out: { type: File, doc: "UNSORTED read mapping to genomic coordinates", outputBinding: {glob: '*Aligned.out.bam'} }
+  junctions_out: { type: File, doc: "high confidence collapsed splice junctions in tab-delimited form", outputBinding: {glob: '*SJ.out.tab.gz'} }
+  transcriptome_bam_out: { type: File, doc: "Read mapping to transcriptome", outputBinding: {glob: '*Aligned.toTranscriptome.out.bam'} }
+  chimeric_sam_out: { type: 'File?', doc: "Deprecated output. Incompatible with certain options, has chimeric read alignments", outputBinding: {glob: '*Chimeric.out.sam'} }
+  chimeric_junctions: { type: File, doc: "Chimeric junctions output file. May be used for downstream tools for fusion analysis", outputBinding: {glob: '*Chimeric.out.junction'} }
+  gene_counts: { type: File, doc: "STAR-generated read counts by gene", outputBinding: {glob: '*ReadsPerGene.out.tab.gz'} }
