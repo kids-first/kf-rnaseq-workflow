@@ -29,7 +29,7 @@ arguments:
       ${
         var cmd = "echo skip sorting chimeric bam";
         if (inputs.chimeric_sam_out !== null){
-          var cmd = "samtools view -bh -@ 16 " + inputs.chimeric_sam_out.path + " -o inputs.chimeric_sam_out.nameroot.bam";
+          var cmd = "samtools view -bh -@ 16 " + inputs.chimeric_sam_out.path + " -o " + inputs.chimeric_sam_out.nameroot + ".bam";
         }
 
         return cmd;

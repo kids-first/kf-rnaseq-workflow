@@ -42,7 +42,7 @@ inputs:
       prefix: '--proteinDomains='
       separate: false
       valueFrom: >-
-        '/arriba_v2.2.1/database/protein_domains_'$(self)'_v2.2.1.tsv.gz'
+        /arriba_v2.2.1/database/protein_domains_$(self)_v2.2.1.gff3
       shellQuote: false
   cytobands:
     type:
@@ -61,7 +61,7 @@ inputs:
       prefix: '--cytobands='
       separate: false
       valueFrom: >-
-        '/arriba_v2.2.1/database/cytobands_'$(self)'_v2.2.1.tsv.gz'
+        /arriba_v2.2.1/database/cytobands_$(self)_v2.2.1.tsv
       shellQuote: false
 
 outputs:

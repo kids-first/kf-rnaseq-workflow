@@ -46,7 +46,7 @@ inputs:
       position: 1
       prefix: '-b'
       valueFrom: >-
-        '/arriba_v2.2.1/database/blacklist_'$(self)'_v2.2.1.tsv.gz'
+        /arriba_v2.2.1/database/blacklist_$(self)_v2.2.1.tsv.gz
       shellQuote: false
   known:
     type:
@@ -64,7 +64,7 @@ inputs:
       position: 1
       prefix: '-k'
       valueFrom: >-
-        '/arriba_v2.2.1/database/known_fusions_'$(self)'_v2.2.1.tsv.gz'
+        /arriba_v2.2.1/database/known_fusions_$(self)_v2.2.1.tsv.gz
       shellQuote: false
   tags:
     type:
@@ -82,7 +82,7 @@ inputs:
       position: 1
       prefix: '-t'
       valueFrom: >-
-        '/arriba_v2.2.1/database/known_fusions_'$(self)'_v2.2.1.tsv.gz'
+        /arriba_v2.2.1/database/known_fusions_$(self)_v2.2.1.tsv.gz
       shellQuote: false
   protein_domains:
     type:
@@ -100,7 +100,7 @@ inputs:
       position: 1
       prefix: '-p'
       valueFrom: >-
-        '/arriba_v2.2.1/database/protein_domains_'$(self)'_v2.2.1.tsv.gz'
+        /arriba_v2.2.1/database/protein_domains_$(self)_v2.2.1.gff3
       shellQuote: false
 
 outputs:
