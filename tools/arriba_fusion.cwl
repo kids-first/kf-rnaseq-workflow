@@ -1,6 +1,7 @@
-cwlVersion: v1.0
+cwlVersion: v1.2
 class: CommandLineTool
 id: arriba_fusion
+label: "Arriba Fusion Caller v1.1.0"
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
@@ -12,10 +13,9 @@ requirements:
 
 baseCommand: [/arriba_v1.1.0/arriba]
 arguments:
-  - position: 1
+  - position: 0
     shellQuote: false
     valueFrom: >-
-      -c $(inputs.chimeric_sam_out.path)
       -x $(inputs.genome_aligned_bam.path)
       -a $(inputs.reference_fasta.path)
       -g $(inputs.gtf_anno.path)
@@ -31,7 +31,11 @@ arguments:
         else{
           return "-s " + inputs.arriba_strand_flag;
         }
-      } &&
+      } 
+  - position: 2
+    shellQuote: false
+    valueFrom: >-
+      &&
       /arriba_v1.1.0/draw_fusions.R
       --annotation=$(inputs.gtf_anno.path)
       --fusions=$(inputs.outFileNamePrefix).arriba.fusions.tsv
@@ -41,9 +45,9 @@ arguments:
       --output=$(inputs.outFileNamePrefix).arriba.fusions.pdf
 
 inputs:
-  genome_aligned_bam: File
-  genome_aligned_bai: File
-  chimeric_sam_out: File
+  genome_aligned_bam: { type: File, secondaryFiles: [ { pattern: ".bai", required: false },  { pattern: "^.bai", required: false } ] }
+  genome_aligned_bai: 'File?'
+  chimeric_sam_out: { type: 'File?', doc: "If older version of STAR used, separate sam/bam file might exist", inputBinding: { prefix: '-c', position: 1 } }
   reference_fasta: File
   gtf_anno: File
   outFileNamePrefix: string
