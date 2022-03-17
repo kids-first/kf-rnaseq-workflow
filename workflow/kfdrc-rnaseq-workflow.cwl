@@ -274,7 +274,7 @@ inputs:
       class: File, path: 5f500135e4b0370371c051c3, name: gencode.v27.primary_assembly.annotation.gtf}}
   FusionGenome: {type: 'File', doc: "GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz",
     "sbg:suggestedValue": {class: File, path: 5f500135e4b0370371c051b0, name: GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz}}
-  runThread: {type: 'int?', doc: "Amount of threads for analysis.", default: 16}
+  runThread: {type: 'int?', doc: "Amount of threads for STAR to use.", default: 16}
   STAR_outSAMattrRGline: {type: 'string', doc: "Suggested setting, with TABS SEPARATING\
       \ THE TAGS, format is: ID:sample_name LB:aliquot_id PL:platform SM:BSID for\
       \ example ID:7316-242 LB:750189 PL:ILLUMINA SM:BS_W72364MN"}
@@ -296,6 +296,7 @@ inputs:
   annofuse_genome_untar_path: {type: 'string?', doc: "This is what the path will be\
       \ when genome_tar is unpackaged", default: "GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir"}
   annofuse_col_num: {type: 'int?', doc: "column number in file of fusion name."}
+  samtools_fastq_cores: { type: 'int?', doc: "Num cores for bam2fastq conversion, if input is bam", default: 36 }
   rmats_read_length: {type: 'int', doc: "Input read length for sample reads."}
   rmats_variable_read_length: {type: 'boolean?', doc: "Allow reads with lengths that\
       \ differ from --readLength to be processed. --readLength will still be used\
@@ -372,7 +373,7 @@ steps:
       input_reads_1: reads1
       input_reads_2: reads2
       SampleID: output_basename
-      runThreadN: runThread
+      cores: samtools_fastq_cores
       input_type: input_type
     out: [fq1, fq2]
 

@@ -7,7 +7,7 @@ requirements:
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    coresMin: $(inputs.runThreadN)
+    coresMin: $(inputs.cores)
     ramMin: 30000
 
 baseCommand: ["/bin/bash", "-c"]
@@ -19,11 +19,11 @@ arguments:
 
       ${
           if(inputs.input_type == "PEBAM"){
-              var command = "samtools sort -m 1G -n -O SAM -@ " + inputs.runThreadN + " " + inputs.input_reads_1.path + " | samtools fastq -c 2 -1 " + inputs.SampleID + ".converted_1.fastq.gz -2 " + inputs.SampleID + ".converted_2.fastq.gz -@ " + inputs.runThreadN+ " -"
+              var command = "samtools sort -m 1G -n -O SAM -@ " + inputs.cores + " " + inputs.input_reads_1.path + " | samtools fastq -c 2 -1 " + inputs.SampleID + ".converted_1.fastq.gz -2 " + inputs.SampleID + ".converted_2.fastq.gz -@ " + inputs.cores+ " -"
               return command
           }
           else if(inputs.input_type == "SEBAM"){
-              var command = "samtools sort -m 1G -n -O SAM -@ " + inputs.runThreadN + " " + inputs.input_reads_1.path + " | samtools fastq -c 2 -@ " + inputs.runThreadN + " - > " + inputs.SampleID + ".converted_1.fastq && bgzip " + inputs.SampleID + ".converted_1.fastq"
+              var command = "samtools sort -m 1G -n -O SAM -@ " + inputs.cores + " " + inputs.input_reads_1.path + " | samtools fastq -c 2 -@ " + inputs.cores + " - > " + inputs.SampleID + ".converted_1.fastq && bgzip " + inputs.SampleID + ".converted_1.fastq"
               return command
           }
           else if(inputs.input_type == "FASTQ" && inputs.input_reads_2 != null){
@@ -44,7 +44,7 @@ inputs:
   input_reads_1: {type: File, doc: "For FASTQ input, please enter reads 1 here. For BAM input, please enter reads here."}
   input_reads_2: {type: "File?", doc: "For FASTQ input, please enter reads 2 here. For BAM input, leave empty."}
   SampleID: string
-  runThreadN: { type: 'int?', default: 16 } 
+  cores: { type: 'int?', default: 36 } 
   input_type: {type: [{type: enum, name: input_type, symbols: ["PEBAM", "SEBAM", "FASTQ"]}], doc: "Please select one option for input file type, PEBAM (paired-end BAM), SEBAM (single-end BAM), or FASTQ."}
 
 

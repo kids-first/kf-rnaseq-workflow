@@ -25,17 +25,44 @@ inputs:
   inputBinding: { prefix: '--alignments=', separate: false, position: 1 } }
   memory: { type: 'int?', doc: "Mem intensive tool. Set in GB", default: 16 }
   gtf_anno: { type: File, doc: "GTF file used for alignment indexing",  inputBinding: { prefix: '--annotation=', separate: false, position: 1 } }
-  protein_domains: { type: [ 'null', {type: enum, name: tags, symbols: ['/arriba_v2.2.1/database/protein_domains_hg38_GRCh38_v2.2.1.gff3',
-  '/arriba_v2.2.1/database/protein_domains_hg19_hs37d5_GRCh37_v2.2.1.gff3', '/arriba_v2.2.1/database/protein_domains_mm10_GRCm38_v2.2.1.gff3', '/arriba_v2.2.1/database/known_fusions_mm39_GRCm39_v2.2.1.tsv.gz']}],
-  default: '/arriba_v2.2.1/database/protein_domains_hg38_GRCh38_v2.2.1.gff3',
-  doc: "Path to built-in protein domain annotation",
-  inputBinding: { position: 1, prefix: '--proteinDomains=', separate: false, shellQuote: false } }
-  cytobands: { type: [ 'null', {type: enum, name: tags, symbols: ['/arriba_v2.2.1/database/cytobands_hg38_GRCh38_v2.2.1.tsv',
-  '/arriba_v2.2.1/database/cytobands_hg19_hs37d5_GRCh37_v2.2.1.tsv', '/arriba_v2.2.1/database/cytobands_mm10_GRCm38_v2.2.1.tsv', '/arriba_v2.2.1/database/cytobands_mm39_GRCm39_v2.2.1.tsv']}],
-  default: '/arriba_v2.2.1/database/cytobands_hg38_GRCh38_v2.2.1.tsv',
-  doc: "Path to built-in coordinates of the Giemsa staining bands to draw ideograms",
-  inputBinding: { position: 1, prefix: '--cytobands=', separate: false, shellQuote: false } }
-
+  protein_domains:
+    type:
+      - 'null'
+      - type: enum
+        name: protein_domains
+        symbols:
+          - 'hg38_GRCh38'
+          - 'hg19_hs37d5_GRCh37'
+          - 'mm10_GRCm38'
+          - 'mm39_GRCm39'
+    default: 'hg38_GRCh38'
+    doc: "Path to built-in protein domain annotation"
+    inputBinding:
+      position: 1
+      prefix: '--proteinDomains='
+      separate: false
+      valueFrom: >-
+        '/arriba_v2.2.1/database/protein_domains_'$(self)'_v2.2.1.tsv.gz'
+      shellQuote: false
+  cytobands:
+    type:
+      - 'null'
+      - type: enum
+        name: cytobands
+        symbols:
+          - 'hg38_GRCh38'
+          - 'hg19_hs37d5_GRCh37'
+          - 'mm10_GRCm38'
+          - 'mm39_GRCm39'
+    default: 'hg38_GRCh38'
+    doc: "Path to built-in coordinates of the Giemsa staining bands to draw ideograms"
+    inputBinding:
+      position: 1
+      prefix: '--cytobands='
+      separate: false
+      valueFrom: >-
+        '/arriba_v2.2.1/database/cytobands_'$(self)'_v2.2.1.tsv.gz'
+      shellQuote: false
 
 outputs:
   arriba_pdf:

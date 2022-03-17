@@ -12,7 +12,7 @@ It runs in about 30 minutes - 2 hours costing about $0.17 - $0.86 on a `r5.2xlar
 ### Required inputs:
  - `genome_aligned_bam`: STAR-aligned, **coordinate sorted** bam file
  - `outFileNamePrefix`: String to prepend output file names with
-## Optional inputs:
+### Optional inputs:
  - `memory`: Amount of ram to dedicate to run the tool
  - `arriba_strand_flag`: auto means auto-detect whether the library is stranded and the type of strandedness.
 yes means the library is stranded and the strand of the read designated as first-in-pair matches the transcribed strand.
@@ -25,7 +25,7 @@ reverse means the library is stranded and the strand of the read designated as f
  - `tags`: Path to built-in tag files. Typically same as known input
  - `protein_domains`: Path to built-in protein domain annotation. Choices are 'protein_domains_hg38_GRCh38_v2.2.1.gff3',
   'protein_domains_hg19_hs37d5_GRCh37_v2.2.1.gff3', 'protein_domains_mm10_GRCm38_v2.2.1.gff3', 'known_fusions_mm39_GRCm39_v2.2.1.tsv.gz']}].
-## Output files:
+### Output files:
  - `arriba_fusions`: Fusion results that pass Arriba filters
 
 ## Fusion drawing
