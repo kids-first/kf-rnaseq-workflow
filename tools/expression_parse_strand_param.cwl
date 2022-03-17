@@ -8,8 +8,7 @@ inputs:
   wf_strand_param: {type: [{type: enum, name: wf_strand_param, symbols: ["default", "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript"}
 
 outputs:
-  rsem_std:
-    type: string
+  rsem_std: { type: [ 'null', {type: enum, name: strandedness, symbols: ["none", "forward", "reverse"]}] }
   kallisto_std:
     type: string
   rnaseqc_std:

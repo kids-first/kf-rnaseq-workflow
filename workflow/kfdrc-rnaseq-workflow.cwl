@@ -274,7 +274,7 @@ inputs:
       class: File, path: 5f500135e4b0370371c051c3, name: gencode.v27.primary_assembly.annotation.gtf}}
   FusionGenome: {type: 'File', doc: "GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz",
     "sbg:suggestedValue": {class: File, path: 5f500135e4b0370371c051b0, name: GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz}}
-  runThread: {type: 'int', doc: "Amount of threads for analysis."}
+  runThread: {type: 'int?', doc: "Amount of threads for analysis.", default: 16}
   STAR_outSAMattrRGline: {type: 'string', doc: "Suggested setting, with TABS SEPARATING\
       \ THE TAGS, format is: ID:sample_name LB:aliquot_id PL:platform SM:BSID for\
       \ example ID:7316-242 LB:750189 PL:ILLUMINA SM:BS_W72364MN"}
