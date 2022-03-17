@@ -34,7 +34,7 @@ arguments:
       && gzip *results
 
 inputs:
-  paired-end: {type: 'boolean?', doc: "If input is paired-end, add this flag", default: true, inputBinding: {position: 1, prefix: '--paired-end'} }
+  paired_end: {type: 'boolean?', doc: "If input is paired-end, add this flag", default: true, inputBinding: {position: 1, prefix: '--paired-end'} }
   num_threads: { type: 'int?', doc: "Num threads to use", default: 16, inputBinding: { position: 1, prefix: '--num-threads'} }
   strandedness: { type: [ 'null', {type: enum, name: strandedness, symbols: ["none", "forward", "reverse"]}], default: "none",
   doc: "'none' refers to non-strand-specific protocols. 'forward' means all (upstream) reads are derived from the forward strand. 'reverse' means all (upstream) reads
