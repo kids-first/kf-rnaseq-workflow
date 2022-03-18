@@ -35,7 +35,7 @@ inputs:
       THE TAGS, format is: ID:sample_name LB:aliquot_id PL:platform SM:BSID for \
       example ID:7316-242 LB:750189 PL:ILLUMINA SM:BS_W72364MN",
       inputBinding: { position: 3, prefix: '--outSAMattrRGline', shellQuote: false }}
-  genomeDir: { type: File, doc: "Tar gzipped reference that will be nuipped at run time" }
+  genomeDir: { type: File, doc: "Tar gzipped reference that will be unzipped at run time" }
   readFilesIn1: { type: File, doc: "Input fastq file, gzipped or uncompressed" }
   readFilesIn2: { type: 'File?', doc: "If paired end, R2 reads files, gzipped or uncompressed" }
   outFileNamePrefix: { type: string, doc: "output files name prefix (including full or relative path). Can only be defined on the command line. \
