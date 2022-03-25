@@ -8,8 +8,8 @@ requirements:
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    coresMin: 16
-    ramMin: 24000
+    coresMin: $(inputs.cores)
+    ramMin: ${ return inputs.cores * 1000 }
 
 baseCommand: [samtools]
 arguments:
@@ -17,25 +17,25 @@ arguments:
     shellQuote: false
     valueFrom: >-
       sort $(inputs.unsorted_bam.path)
-      -@ 16
+      -@ $(inputs.cores)
       -m 1G
       -O bam
       > $(inputs.unsorted_bam.nameroot).sorted.bam &&
       samtools
       index
-      -@ 16
+      -@ $(inputs.cores)
       $(inputs.unsorted_bam.nameroot).sorted.bam
       $(inputs.unsorted_bam.nameroot).sorted.bai &&
       ${
         var cmd = "echo skip sorting chimeric bam";
         if (inputs.chimeric_sam_out !== null){
-          var cmd = "samtools view -bh -@ 16 " + inputs.chimeric_sam_out.path + " -o " + inputs.chimeric_sam_out.nameroot + ".bam";
+          var cmd = "samtools view -bh -@ " + inputs.cores + " " + inputs.chimeric_sam_out.path + " -o " + inputs.chimeric_sam_out.nameroot + ".bam";
         }
-
         return cmd;
       }
 
 inputs:
+  cores: { type: 'int?', doc: "Num cores to use for sorting", default: 16}
   unsorted_bam: { type: File, doc: "Bam to sort, likely from STAR" }
   chimeric_sam_out: { type: 'File?', doc: "chimeric bam file - created using v2.6 STAR, probably not in 2.7 STAR" }
 

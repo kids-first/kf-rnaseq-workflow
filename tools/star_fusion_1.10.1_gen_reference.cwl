@@ -40,7 +40,7 @@ inputs:
   inputBinding: { position: 3, prefix: "--fusion_annot_lib"} }
   annot_filter_rule: {type: File, doc: "target AnnotFilterRule.pm, from https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB",
   inputBinding: { position: 3, prefix: "--annot_filter_rule"} }
-  pfam_db: { type: 'string?', doc: "pfam database. If given will simply pull from current, and run hmmpress", default: 'current'
+  pfam_db: { type: 'string?', doc: "pfam database. If given will simply pull from current, and run hmmpress", default: 'current',
   inputBinding: { position: 3, prefix: '--pfam_db' } }
   dfam_db: { type: 'File[]',
   doc: "DNA transposable element database (Dfam.hmm), required for repeat masking. Obtain from http://dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/" }

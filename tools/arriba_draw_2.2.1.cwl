@@ -23,7 +23,7 @@ inputs:
   genome_aligned_bam: { type: File, doc: "STAR-aligned, coordinate sorted bam file",
   secondaryFiles: [ { pattern: ".bai", required: false },  { pattern: "^.bai", required: false } ],
   inputBinding: { prefix: '--alignments=', separate: false, position: 1 } }
-  memory: { type: 'int?', doc: "Mem intensive tool. Set in GB", default: 16 }
+  memory: { type: 'int?', doc: "Adjust memory, set in GB", default: 16 }
   gtf_anno: { type: File, doc: "GTF file used for alignment indexing",  inputBinding: { prefix: '--annotation=', separate: false, position: 1 } }
   protein_domains:
     type:

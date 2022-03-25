@@ -16,10 +16,9 @@ inputs:
           "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto,\
       \ 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the\
       \ transcript, 'fr-stranded' if read1 same sense as transcript" }
-  gtf_anno: { type: 'File', doc: "gencode.v27.primary_assembly.annotation.gtf", "sbg:suggestedValue": {
-      class: File, path: 5f500135e4b0370371c051c3, name: gencode.v27.primary_assembly.annotation.gtf} }
+  gtf_anno: { type: 'File', doc: "General transfer format (gtf) file with gene models corresponding to fasta reference" }
   star_fusion_genome_untar_path: {type: 'string?', doc: "This is what the path will be\
-      \ when genome_tar is unpackaged", default: "GRCh38_v38_CTAT_lib_Mar072022.CUSTOM"}
+      \ when genome_tar is unpackaged", default: "GRCh38_v39_CTAT_lib_Mar242022.CUSTOM"}
 
   # samtools fastq
   samtools_fastq_cores: { type: 'int?', doc: "Num cores for bam2fastq conversion, if input is bam", default: 36 }
@@ -141,16 +140,14 @@ inputs:
   # arriba
   reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", "sbg:suggestedValue": {
       class: File, path: 5f500135e4b0370371c051b4, name: GRCh38.primary_assembly.genome.fa}}
+  arriba_memory: { type: 'int?', doc: "Mem intensive tool. Set in GB", default: 64 }
   # STAR Fusion
-  FusionGenome: { type: 'File', doc: "STAR-Fusion CTAT Genome lib",
-    "sbg:suggestedValue": {class: File, path: 5f500135e4b0370371c051b0, name: GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz}}
+  FusionGenome: { type: 'File', doc: "STAR-Fusion CTAT Genome lib" }
   compress_chimeric_junction: { type: 'boolean?', default: true,
   doc: 'If part of a workflow, recommend compressing this file as final output' }
-  RNAseQC_GTF: {type: 'File', doc: "gencode.v27.primary_assembly.RNAseQC.gtf", "sbg:suggestedValue": {
-      class: File, path: 5f500135e4b0370371c051c8, name: gencode.v27.primary_assembly.RNAseQC.gtf}}
+  RNAseQC_GTF: {type: 'File', doc: "gtf file from `gtf_anno` that has been collapsed GTEx-style"}
   # kallisto
-  kallisto_idx: { type: 'File', doc: "gencode.v27.kallisto.index", "sbg:suggestedValue": {
-      class: File, path: 5f500135e4b0370371c051bd, name: gencode.v27.kallisto.index} }
+  kallisto_idx: { type: 'File', doc: "Specialized index of a **transcriptome** fasta file for kallisto" }
   kallisto_avg_frag_len:  {type: 'int?', doc: "Optional input. Average fragment length\
       \ for Kallisto only if single end input." }
   kallisto_std_dev: { type: 'long?', doc: "Optional input. Standard Deviation of the\
@@ -233,7 +230,9 @@ outputs:
 
 steps:
   bam2fastq:
+    # Skip if input is FASTQ already
     run: ../tools/samtools_fastq.cwl
+    when: $(inputs.input_type != "FASTQ")
     in:
       input_reads_1: reads1
       input_reads_2: reads2
@@ -243,22 +242,33 @@ steps:
     out: [fq1, fq2]
 
   cutadapt:
+    # Skip if no adapter given, get fastq from prev step if not null or wf input
     run: ../tools/cutadapter.cwl
+    when: $(inputs.r1_adapter != null)
     in:
-      readFilesIn1: bam2fastq/fq1
-      readFilesIn2: bam2fastq/fq2
+      readFilesIn1: 
+        source: [bam2fastq/fq1, reads1]
+        pickValue: first_non_null
+      readFilesIn2:
+        source: [bam2fastq/fq2, reads2]
+        pickValue: first_non_null
       r1_adapter: r1_adapter
       r2_adapter: r2_adapter
       sample_name: output_basename
     out: [trimmedReadsR1, trimmedReadsR2, cutadapt_stats]
 
   star_2.7.10a:
+    # will get fastq from first non-null in this order - cutadapt, bam2fastq, wf input
     run: ../tools/star_2.7.10a_align.cwl
     in:
       outSAMattrRGline: outSAMattrRGline
       genomeDir: STARgenome
-      readFilesIn1: cutadapt/trimmedReadsR1
-      readFilesIn2: cutadapt/trimmedReadsR2
+      readFilesIn1:
+        source: [cutadapt/trimmedReadsR1, bam2fastq/fq1, reads1]
+        pickValue: first_non_null
+      readFilesIn2:
+        source: [cutadapt/trimmedReadsR1, bam2fastq/fq2, reads2]
+        pickValue: first_non_null
       outFileNamePrefix: output_basename
       runThreadN: runThreadN
       twopassMode: twopassMode
@@ -321,7 +331,8 @@ steps:
       read_length: rmats_read_length
       variable_read_length: rmats_variable_read_length
       read_type:
-        source: bam2fastq/fq2
+        source: [cutadapt/trimmedReadsR1, bam2fastq/fq2, reads2]
+        pickValue: first_non_null
         valueFrom: |
           $(self == null ? "single" : "paired")
       strandedness:
@@ -356,8 +367,14 @@ steps:
   arriba_fusion_2.2.1:
     run: ../tools/arriba_fusion_2.2.1.cwl
     in:
-      genome_aligned_bam: samtools_sort/sorted_bam
-      genome_aligned_bai: samtools_sort/sorted_bai
+      genome_aligned_bam:
+        source: [samtools_sort/sorted_bam, samtools_sort/sorted_bai]
+        valueFrom: "${
+          var bundle = self[0];
+          bundle.secondaryFiles = [self[1]];
+          return bundle;
+        }"
+      memory: arriba_memory
       reference_fasta: reference_fasta
       gtf_anno: gtf_anno
       outFileNamePrefix: output_basename
