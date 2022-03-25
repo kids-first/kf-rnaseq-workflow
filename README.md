@@ -240,3 +240,11 @@ outputs:
   filtered_retained_introns_jc: {type: 'File', outputSource: filter_retained_introns/output, doc: "Retained introns JC.txt output from RMATs containing only those calls with 10 or more read counts of support" }
   filtered_skipped_exons_jc: {type: 'File', outputSource: filter_skipped_exons/output, doc: "Skipped exons JC.txt output from RMATs containing only those calls with 10 or more read counts of support" }
 ```
+
+## Coming soon: RNAseq workflow V4!
+### Reference build notes:
+ - STAR-Fusion reference built with command `/usr/local/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl --gtf gencode.v39.primary_assembly.annotation.gtf --annot_filter_rule ../AnnotFilterRule.pm --CPU 36 --fusion_annot_lib ../fusion_lib.Mar2021.dat.gz --genome_fa ../GRCh38.primary_assembly.genome.fa --output_dir GRCh38_v39_CTAT_lib_Mar242022.CUSTOM --human_gencode_filter --pfam_db current --dfam_db human 2> build.errs > build.out &`
+ - kallisto index built using RSEM `RSEM_GENCODE39.transcripts.fa` file as transcriptome fasta, using command: `kallisto index -i RSEM_GENCODE39.transcripts.kallisto.idx RSEM_GENCODE39.transcripts.fa`
+ - RNA-SEQc reference built using [collapse gtf script](https://github.com/broadinstitute/gtex-pipeline/blob/master/gene_model/collapse_annotation.py)
+   - Two references needed if data are stranded vs. unstranded
+   - Flag `--collapse_only` used for stranded
