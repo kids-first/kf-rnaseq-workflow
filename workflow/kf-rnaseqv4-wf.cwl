@@ -423,8 +423,12 @@ steps:
     in:
       transcript_idx: kallisto_idx
       strand: strand_parse/kallisto_std
-      reads1: cutadapt/trimmedReadsR1
-      reads2: cutadapt/trimmedReadsR2
+      reads1:
+        source: [cutadapt/trimmedReadsR1, bam2fastq/fq1, reads1]
+        pickValue: first_non_null
+      reads2:
+        source: [cutadapt/trimmedReadsR2, bam2fastq/fq2, reads2]
+        pickValue: first_non_null
       SampleID: output_basename
       avg_frag_len: kallisto_avg_frag_len
       std_dev: kallisto_std_dev

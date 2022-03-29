@@ -1,10 +1,11 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: rnaseqc
+label: RNA-SeQC 2.4.2
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'gcr.io/broad-cga-aarong-gtex/rnaseqc:latest'
+    dockerPull: 'gcr.io/broad-cga-aarong-gtex/rnaseqc:2.4.2'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8

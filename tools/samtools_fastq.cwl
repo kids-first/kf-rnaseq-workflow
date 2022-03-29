@@ -1,6 +1,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: bam2fastq
+label: "Samtools bam-to-fastq"
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement

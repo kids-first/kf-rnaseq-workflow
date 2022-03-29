@@ -1,6 +1,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: cutadapter
+label: "Cutadapt Trim"
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
