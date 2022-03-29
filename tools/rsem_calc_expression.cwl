@@ -1,7 +1,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
 id: rsem-calculate-expression
-label: "RSEM v1.3.1 Calulate Expression"
+label: "RSEM v1.3.1 Calculate Expression"
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
