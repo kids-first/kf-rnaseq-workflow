@@ -1,6 +1,7 @@
 cwlVersion: v1.2
 class: Workflow
 id: rmats_wf
+label: "rMATS Turbo"
 doc: |-
   # RMATS Workflow
 

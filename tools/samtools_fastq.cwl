@@ -1,4 +1,4 @@
-cwlVersion: v1.0
+cwlVersion: v1.2
 class: CommandLineTool
 id: bam2fastq
 label: "Samtools bam-to-fastq"
