@@ -11,14 +11,13 @@ outputs:
   rsem_std: { type: [ 'null', {type: enum, name: rsem_std, symbols: ["none", "forward", "reverse"]}] }
   kallisto_std:
     type: string
-  rnaseqc_std:
-    type: string
+  rnaseqc_std: { type: [ 'null', {type: enum, name: rnaseqc_std, symbols: ["rf", "fr"]}] }
   arriba_std: { type: [ 'null', {type: enum, name: arriba_std, symbols: ["auto", "reverse", "yes"]}] }
 
 expression:
   "${
       var parse_dict = {
-          'default': {'rsem_std': 'none', 'kallisto_std': 'default', 'rnaseqc_std': 'default', 'arriba_std': 'auto'},
+          'default': {'rsem_std': 'none', 'kallisto_std': 'default', 'rnaseqc_std': null, 'arriba_std': 'auto'},
           'rf-stranded': {'rsem_std': 'reverse', 'kallisto_std': 'rf-stranded', 'rnaseqc_std': 'rf', 'arriba_std': 'reverse'},
           'fr-stranded': {'rsem_std': 'forward', 'kallisto_std': 'fr-stranded', 'rnaseqc_std': 'fr', 'arriba_std': 'yes'}
           };

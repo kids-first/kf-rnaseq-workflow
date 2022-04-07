@@ -18,23 +18,14 @@ arguments:
     valueFrom: >-
       $(inputs.collapsed_gtf.path)
       $(inputs.Aligned_sorted_bam.path)
-      output/
-      ${
-        var cmd = "--legacy";
-        if (inputs.strand != null && inputs.strand != "default"){
-          cmd += " --stranded=" + inputs.strand;
-        }
-        if (inputs.input_reads2 == null) {
-          cmd += " --unpaired";
-        }
-        return cmd;
-      }
 
 inputs:
   Aligned_sorted_bam: File
   collapsed_gtf: File
-  strand: {type: ['null', string]}
-  input_reads2: File?
+  unpaired: { type: 'boolean?', doc: "If single-end, set to true", default: false, inputBinding: { position: 1, prefix: "--unpaired"} }
+  legacy: { type: 'boolean?', doc: "If true, will output format compatible with version 1.1.9", default: true, inputBinding: { position: 1, prefix: "--legacy" } }
+  stranded: { type: [ 'null', {type: enum, name: rnaseqc_std, symbols: ["rf", "fr"]}],
+  doc: "If stranded, specify", default: "rf", inputBinding: { position: 1, prefix: "--stranded=", separate: false} }
 
 outputs:
   Metrics:
