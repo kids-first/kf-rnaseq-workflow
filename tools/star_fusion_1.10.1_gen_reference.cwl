@@ -1,6 +1,6 @@
 cwlVersion: v1.2
 class: CommandLineTool
-id: star_fusion_1.10.1_gen_reference
+id: star_fusion_1-10-1_gen_reference
 doc: "Generate star fusion reference. Recommend to run locally as tool will take at least 12 hours to run"
 requirements:
   - class: ShellCommandRequirement
