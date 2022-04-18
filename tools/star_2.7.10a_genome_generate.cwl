@@ -1,6 +1,6 @@
 cwlVersion: v1.2
 class: CommandLineTool
-id: star_2.7.10a_build_ref
+id: star_2-7-10a_build_ref
 label: "STAR Reference Genome Index Generator"
 requirements:
   - class: ShellCommandRequirement
