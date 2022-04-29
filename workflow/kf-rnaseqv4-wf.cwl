@@ -25,7 +25,7 @@ doc: |-
   ~~This workflow is the current production workflow, equivalent to this [Cavatica public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-rnaseq-workflow).~~
 
   ### Cutadapt
-  [Cutadapt v2.5](https://github.com/marcelm/cutadapt) Cut adapter sequences from raw reads if needed.
+  [Cutadapt v3.4](https://github.com/marcelm/cutadapt) Cut adapter sequences from raw reads if needed.
   ### [STAR](docs/STAR_2.7.10a.md) 
   [STAR v2.7.10a](https://doi.org/f4h523) RNA-Seq raw data alignment. See 
   ### [RSEM](docs/RSEM_1.3.1.md)
@@ -632,15 +632,14 @@ steps:
     when: $(inputs.input_type != "FASTQ")
     in:
       input_reads_1: reads1
-      input_reads_2: reads2
       SampleID: output_basename
       cores: samtools_fastq_cores
       input_type: input_type
     out: [fq1, fq2]
 
-  cutadapt:
+  cutadapt_3-4:
     # Skip if no adapter given, get fastq from prev step if not null or wf input
-    run: ../tools/cutadapter.cwl
+    run: ../tools/cutadapter_3.4.cwl
     when: $(inputs.r1_adapter != null)
     in:
       readFilesIn1:
@@ -661,10 +660,10 @@ steps:
       outSAMattrRGline: outSAMattrRGline
       genomeDir: STARgenome
       readFilesIn1:
-        source: [cutadapt/trimmedReadsR1, bam2fastq/fq1, reads1]
+        source: [cutadapt_3-4/trimmedReadsR1, bam2fastq/fq1, reads1]
         pickValue: first_non_null
       readFilesIn2:
-        source: [cutadapt/trimmedReadsR1, bam2fastq/fq2, reads2]
+        source: [cutadapt_3-4/trimmedReadsR1, bam2fastq/fq2, reads2]
         pickValue: first_non_null
       outFileNamePrefix: output_basename
       runThreadN: runThreadN
@@ -810,7 +809,7 @@ steps:
       unpaired:
         source: rmats_read_type
         valueFrom: |
-          $(self == "single" ? true : false)
+          $(self == "single")
     out: [Metrics, Gene_TPM, Gene_count, Exon_count]
 
   supplemental:
@@ -828,10 +827,10 @@ steps:
       transcript_idx: kallisto_idx
       strand: strand_parse/kallisto_std
       reads1:
-        source: [cutadapt/trimmedReadsR1, bam2fastq/fq1, reads1]
+        source: [cutadapt_3-4/trimmedReadsR1, bam2fastq/fq1, reads1]
         pickValue: first_non_null
       reads2:
-        source: [cutadapt/trimmedReadsR2, bam2fastq/fq2, reads2]
+        source: [cutadapt_3-4/trimmedReadsR2, bam2fastq/fq2, reads2]
         pickValue: first_non_null
       SampleID: output_basename
       avg_frag_len: kallisto_avg_frag_len

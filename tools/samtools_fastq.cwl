@@ -9,7 +9,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: $(inputs.cores)
-    ramMin: 30000
+    ramMin: $(inputs.cores * 1000)
 
 baseCommand: ["/bin/bash", "-c"]
 arguments:
@@ -27,26 +27,13 @@ arguments:
               var command = "samtools sort -m 1G -n -O SAM -@ " + inputs.cores + " " + inputs.input_reads_1.path + " | samtools fastq -c 2 -@ " + inputs.cores + " - > " + inputs.SampleID + ".converted_1.fastq && bgzip " + inputs.SampleID + ".converted_1.fastq"
               return command
           }
-          else if(inputs.input_type == "FASTQ" && inputs.input_reads_2 != null){
-              var extr1 = (inputs.input_reads_1.nameext == '.gz' ? '.fastq.gz' : inputs.input_reads_1.nameext)
-              var extr2 = (inputs.input_reads_2.nameext == '.gz' ? '.fastq.gz' : inputs.input_reads_2.nameext)
-              var command =  "cp " + inputs.input_reads_1.path + " " + inputs.input_reads_1.nameroot + ".converted_1" + extr1 + " && cp " + inputs.input_reads_2.path + " " + inputs.input_reads_2.nameroot + ".converted_2" + extr2
-              return command
-          }
-          else if(inputs.input_type == "FASTQ" && inputs.input_reads_2 == null){
-              var extr1 = (inputs.input_reads_1.nameext == '.gz' ? '.fastq.gz' : inputs.input_reads_1.nameext)
-              var command =  "cp " + inputs.input_reads_1.path + " " + inputs.input_reads_1.nameroot + ".converted_1" + extr1
-              return command
-          }
       }
-      
 
 inputs:
   input_reads_1: {type: File, doc: "For FASTQ input, please enter reads 1 here. For BAM input, please enter reads here."}
-  input_reads_2: {type: "File?", doc: "For FASTQ input, please enter reads 2 here. For BAM input, leave empty."}
   SampleID: string
   cores: { type: 'int?', default: 36 } 
-  input_type: {type: [{type: enum, name: input_type, symbols: ["PEBAM", "SEBAM", "FASTQ"]}], doc: "Please select one option for input file type, PEBAM (paired-end BAM), SEBAM (single-end BAM), or FASTQ."}
+  input_type: {type: [{type: enum, name: input_type, symbols: ["PEBAM", "SEBAM"]}], doc: "Please select one option for input file type, PEBAM (paired-end BAM), SEBAM (single-end BAM), or FASTQ."}
 
 
 outputs:
@@ -56,6 +43,6 @@ outputs:
       glob: '*.converted_1.*'
 
   fq2:
-    type: File?
+    type: 'File?'
     outputBinding:
       glob: '*.converted_2.*'

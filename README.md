@@ -20,7 +20,7 @@ Alternatively, if you would like to run it locally using `cwltool`, a basic prim
 ~~This workflow is the current production workflow, equivalent to this [Cavatica public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-rnaseq-workflow).~~
 
 ### Cutadapt
-[Cutadapt v2.5](https://github.com/marcelm/cutadapt) Cut adapter sequences from raw reads if needed.
+[Cutadapt v3.4](https://github.com/marcelm/cutadapt) Cut adapter sequences from raw reads if needed.
 ### [STAR](docs/STAR_2.7.10a.md) 
 [STAR v2.7.10a](https://doi.org/f4h523) RNA-Seq raw data alignment. See 
 ### [RSEM](docs/RSEM_1.3.1.md)
