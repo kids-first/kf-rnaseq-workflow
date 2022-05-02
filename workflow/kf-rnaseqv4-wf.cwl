@@ -295,7 +295,7 @@ doc: |-
   ### Outputs:
   ```yaml
   outputs:
-    cutadapt_stats: {type: 'File?', outputSource: cutadapt/cutadapt_stats, doc: "Cutadapt\
+    cutadapt_stats: {type: 'File?', outputSource: cutadapt_3-4/cutadapt_stats, doc: "Cutadapt\
         \ stats output, only if adapter is supplied."}
     STAR_transcriptome_bam: {type: 'File', outputSource: star_2-7-10a/transcriptome_bam_out,
       doc: "STAR bam of transcriptome reads"}
@@ -575,7 +575,7 @@ inputs:
       \ are single- or paired-end"}
 
 outputs:
-  cutadapt_stats: {type: 'File?', outputSource: cutadapt/cutadapt_stats, doc: "Cutadapt\
+  cutadapt_stats: {type: 'File?', outputSource: cutadapt_3-4/cutadapt_stats, doc: "Cutadapt\
       \ stats output, only if adapter is supplied."}
   STAR_transcriptome_bam: {type: 'File', outputSource: star_2-7-10a/transcriptome_bam_out,
     doc: "STAR bam of transcriptome reads"}
