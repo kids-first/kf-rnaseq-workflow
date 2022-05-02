@@ -5,7 +5,7 @@ label: "Cutadapt v3.4 Trim"
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'migbro/cutadapt:3.4'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/cutadapt:3.4'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8
