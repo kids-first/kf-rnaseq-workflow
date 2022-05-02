@@ -30,10 +30,10 @@ arguments:
       }
 
 inputs:
-  input_reads_1: {type: File, doc: "For FASTQ input, please enter reads 1 here. For BAM input, please enter reads here."}
+  input_reads_1: {type: File, doc: "Input bam file."}
   SampleID: string
   cores: { type: 'int?', default: 36 } 
-  input_type: {type: [{type: enum, name: input_type, symbols: ["PEBAM", "SEBAM"]}], doc: "Please select one option for input file type, PEBAM (paired-end BAM), SEBAM (single-end BAM), or FASTQ."}
+  input_type: {type: [{type: enum, name: input_type, symbols: ["PEBAM", "SEBAM"]}], doc: "Please select one option for input file type, PEBAM (paired-end BAM), SEBAM (single-end BAM)."}
 
 
 outputs:
