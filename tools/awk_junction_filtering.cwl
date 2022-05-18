@@ -15,10 +15,9 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      awk -F'\t' 'NR==1 { for (i=1; i<=NF; i++) { f[$i] = i } print $line } $f["IJC_SAMPLE_1"]+$f["IJC_SAMPLE_2"]+$f["SJC_SAMPLE_1"]+$f["SJC_SAMPLE_2"] >= 10 {print $line}' $(inputs.input_jc_file.path) > ${ var arr = inputs.input_jc_file.basename.split('.'); arr.splice(-4,0,inputs.sample_name); arr.splice(-4,0,'filtered'); return arr.join('.') }
+      awk -F'\t' 'NR==1 { for (i=1; i<=NF; i++) { f[$i] = i } print $line } $f["IJC_SAMPLE_1"]+$f["IJC_SAMPLE_2"]+$f["SJC_SAMPLE_1"]+$f["SJC_SAMPLE_2"] >= 10 {print $line}' $(inputs.input_jc_file.path) > ${ var arr = inputs.input_jc_file.basename.split('.'); arr.splice(-4,0,'filtered'); return arr.join('.') }
 inputs:
   input_jc_file: { type: 'File', doc: "JC.txt file output form rmats" }
-  sample_name: { type: 'string', doc: "Sample name to include in the output filename" }
   threads: { type: 'int?', default: 1, doc: "The number of threads. The optimal number of threads should be equal to the number of CPU cores." }
   ram: { type: 'int?', default: 2, doc: "GB of RAM to allocate to this task." }
 outputs:

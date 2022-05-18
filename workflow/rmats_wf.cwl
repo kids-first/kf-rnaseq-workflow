@@ -67,60 +67,28 @@ steps:
       threads: rmats_threads
       ram: rmats_ram
     out: [alternative_3_prime_splice_sites_jc, alternative_5_prime_splice_sites_jc, mutually_exclusive_exons_jc, retained_introns_jc, skipped_exons_jc]
-  samtools_get_bam_rgs:
-    run: ../tools/samtools_get_bam_rgs.cwl
-    in:
-      input_bam: sample_1_bams
-    scatter: [input_bam]
-    out: [output]
-  expression_getrgsm:
-    run: ../tools/expression_get_rg_sm.cwl
-    in:
-      rg: samtools_get_bam_rgs/output
-    scatter: [rg]
-    out: [output]
   filter_alt_3_prime:
     run: ../tools/awk_junction_filtering.cwl
     in:
       input_jc_file: rmats_both_bam/alternative_3_prime_splice_sites_jc 
-      sample_name:
-        source: expression_getrgsm/output
-        valueFrom: |
-          $(self.filter(function(v,i,a) { return a.indexOf(v) === i }).join('.'))
     out: [output]
   filter_alt_5_prime:
     run: ../tools/awk_junction_filtering.cwl
     in:
       input_jc_file: rmats_both_bam/alternative_5_prime_splice_sites_jc
-      sample_name:
-        source: expression_getrgsm/output
-        valueFrom: |
-          $(self.filter(function(v,i,a) { return a.indexOf(v) === i }).join('.'))
     out: [output]
   filter_me_exons:
     run: ../tools/awk_junction_filtering.cwl
     in:
       input_jc_file: rmats_both_bam/mutually_exclusive_exons_jc
-      sample_name:
-        source: expression_getrgsm/output
-        valueFrom: |
-          $(self.filter(function(v,i,a) { return a.indexOf(v) === i }).join('.'))
     out: [output]
   filter_retained_introns:
     run: ../tools/awk_junction_filtering.cwl
     in:
       input_jc_file: rmats_both_bam/retained_introns_jc
-      sample_name:
-        source: expression_getrgsm/output
-        valueFrom: |
-          $(self.filter(function(v,i,a) { return a.indexOf(v) === i }).join('.'))
     out: [output]
   filter_skipped_exons:
     run: ../tools/awk_junction_filtering.cwl
     in:
       input_jc_file: rmats_both_bam/skipped_exons_jc
-      sample_name:
-        source: expression_getrgsm/output
-        valueFrom: |
-          $(self.filter(function(v,i,a) { return a.indexOf(v) === i }).join('.'))
     out: [output]
