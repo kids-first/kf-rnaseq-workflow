@@ -93,7 +93,7 @@ Many defaults are set.
 Kids First favors setting/overriding defaults with "arriba-heavy" specified in [STAR docs](docs/STAR_2.7.10a.md), however if it is not a tumor sample, then GTEx is preferred
 ```yaml
   outSAMattrRGline: {type: string, doc: "Suggested setting, with TABS SEPARATING THE TAGS, format is: ID:sample_name LB:aliquot_id PL:platform SM:BSID for example ID:7316-242 LB:750189 PL:ILLUMINA SM:BS_W72364MN"}
-  STARgenome: {type: File, doc: "Tar gzipped reference that will be unzipped at run time", sbg:suggestedValue: {class: File, path: 62853e7ad63f7c6d8d7ae5a7, name: STAR_2.7.10a_GENCODE39.tar.gz}}
+  STARgenome: {type: File, doc: "Tar gzipped reference that will be unzipped at run time", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a7, name: STAR_2.7.10a_GENCODE39.tar.gz}}
   runThreadN: {type: 'int?', default: 16, doc: "Adjust this value to change number of cores used."}
   twopassMode: {type: ['null', {type: enum, name: twopassMode, symbols: ["Basic",
           "None"]}], default: "Basic", doc: "Enable two pass mode to detect novel splice events. Default is basic (on)."}
@@ -158,19 +158,19 @@ Kids First favors setting/overriding defaults with "arriba-heavy" specified in [
 ```
 ### STAR Fusion:
 ```yaml
-  FusionGenome: {type: 'File', doc: "STAR-Fusion CTAT Genome lib", sbg:suggestedValue: {
+  FusionGenome: {type: 'File', doc: "STAR-Fusion CTAT Genome lib", "sbg:suggestedValue": {
       class: File, path: 62853e7ad63f7c6d8d7ae5a8, name: GRCh38_v39_CTAT_lib_Mar242022.CUSTOM.tar.gz}}
   compress_chimeric_junction: {type: 'boolean?', default: true, doc: 'If part of a
       workflow, recommend compressing this file as final output'}
 ```
 ### RNAseQC:
 ```yaml
-  RNAseQC_GTF: {type: 'File', doc: "gtf file from `gtf_anno` that has been collapsed GTEx-style", sbg:suggestedValue: {class: File, path: 62853e7ad63f7c6d8d7ae5a3,
+  RNAseQC_GTF: {type: 'File', doc: "gtf file from `gtf_anno` that has been collapsed GTEx-style", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a3,
       name: gencode.v39.primary_assembly.rnaseqc.stranded.gtf}}
 ```
 ### kallisto
 ```yaml
-  kallisto_idx: {type: 'File', doc: "Specialized index of a **transcriptome** fasta file for kallisto", sbg:suggestedValue: {class: File, path: 62853e7ad63f7c6d8d7ae5a6,
+  kallisto_idx: {type: 'File', doc: "Specialized index of a **transcriptome** fasta file for kallisto", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a6,
       name: RSEM_GENCODE39.transcripts.kallisto.idx}}
   kallisto_avg_frag_len: {type: 'int?', doc: "Optional input. Average fragment length for Kallisto only if single end input."}
   kallisto_std_dev: {type: 'long?', doc: "Optional input. Standard Deviation of the average fragment length for Kallisto only needed if single end input."}
