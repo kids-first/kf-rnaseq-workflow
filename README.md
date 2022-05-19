@@ -93,7 +93,8 @@ Many defaults are set.
 Kids First favors setting/overriding defaults with "arriba-heavy" specified in [STAR docs](docs/STAR_2.7.10a.md), however if it is not a tumor sample, then GTEx is preferred
 ```yaml
   outSAMattrRGline: {type: string, doc: "Suggested setting, with TABS SEPARATING THE TAGS, format is: ID:sample_name LB:aliquot_id PL:platform SM:BSID for example ID:7316-242 LB:750189 PL:ILLUMINA SM:BS_W72364MN"}
-  STARgenome: {type: File, doc: "Tar gzipped reference that will be unzipped at run time", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a7, name: STAR_2.7.10a_GENCODE39.tar.gz}}
+  STARgenome: {type: File, doc: "Tar gzipped reference that will be unzipped at run time", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a7,
+      name: STAR_2.7.10a_GENCODE39.tar.gz}}
   runThreadN: {type: 'int?', default: 16, doc: "Adjust this value to change number of cores used."}
   twopassMode: {type: ['null', {type: enum, name: twopassMode, symbols: ["Basic",
           "None"]}], default: "Basic", doc: "Enable two pass mode to detect novel splice events. Default is basic (on)."}
@@ -132,23 +133,23 @@ Kids First favors setting/overriding defaults with "arriba-heavy" specified in [
   alignMatesGapMax: {type: 'int?', default: 1000000, doc: "maximum genomic distance between mates, SF recommends 100000 to avoid readthru fusions within 100k"}
   alignSJDBoverhangMin: {type: 'int?', default: 1, doc: "minimum overhang for annotated junctions. SF recommends 10"}
   outFilterMismatchNmax: {type: 'int?', default: 999, doc: "maximum number of mismatches per pair, large number switches off this filter"}
-  alignSJstitchMismatchNmax: {type: 'string?', default: "0 -1 0 0", doc: "maximum number of mismatches for stitching of the splice junctions. Value '5 -1 5 5' improves SF chimeric junctions, also recommended by arriba (AR)"}
+  alignSJstitchMismatchNmax: {type: 'string?', default: "5 -1 5 5", doc: "maximum number of mismatches for stitching of the splice junctions. Value '5 -1 5 5' improves SF chimeric junctions, also recommended by arriba (AR)"}
   alignSplicedMateMapLmin: {type: 'int?', default: 0, doc: "minimum mapped length for a read mate that is spliced. SF recommends 30"}
-  alignSplicedMateMapLminOverLmate: {type: 'float?', default: 0.66, doc: "alignSplicedMateMapLmin normalized to mate length. SF recommends 0, AR 0.5"}
-  chimJunctionOverhangMin: {type: 'int?', default: 15, doc: "minimum overhang for a chimeric junction. SF recommends 8, AR 10"}
-  chimMultimapNmax: {type: 'int?', default: 0, doc: "maximum number of chimeric multi-alignments. SF recommends 20, AR 50."}
+  alignSplicedMateMapLminOverLmate: {type: 'float?', default: 0.5, doc: "alignSplicedMateMapLmin normalized to mate length. SF recommends 0, AR 0.5"}
+  chimJunctionOverhangMin: {type: 'int?', default: 10, doc: "minimum overhang for a chimeric junction. SF recommends 8, AR 10"}
+  chimMultimapNmax: {type: 'int?', default: 50, doc: "maximum number of chimeric multi-alignments. SF recommends 20, AR 50."}
   chimMultimapScoreRange: {type: 'int?', default: 1, doc: "the score range for multi-mapping chimeras below the best chimeric score. Only works with chimMultimapNmax > 1. SF recommends 3"}
   chimNonchimScoreDropMin: {type: 'int?', default: 20, doc: "int>=0: to trigger chimeric detection, the drop in the best non-chimeric alignment score with respect to the read length has to be greater than this value. SF recommends 10"}
   chimOutJunctionFormat: {type: 'int?', default: 1, doc: "formatting type for the Chimeric.out.junction file, value 1 REQUIRED for SF"}
-  chimOutType: {type: ['null', {type: enum, name: chimOutType, symbols: ["Junctions SeparateSAMold WithinBAM SoftClip", "Junctions", "SeparateSAMold", "WithinBAM SoftClip", "WithinBAM HardClip", "Junctions SeparateSAMold", "Junctions WithinBAM SoftClip", "Junctions WithinBAM HardClip", "Junctions SeparateSAMold WithinBAM HardClip", "SeparateSAMold WithinBAM SoftClip", "SeparateSAMold WithinBAM HardClip"]}], default: "Junctions SeparateSAMold WithinBAM SoftClip", doc: "type of chimeric output. Args are additive, and defined as such - Junctions: Chimeric.out.junction. SeparateSAMold: output old SAM into separate Chimeric.out.sam file WithinBAM: output into main aligned BAM files (Aligned.*.bam). WithinBAM HardClip: hard-clipping in the CIGAR for supplemental chimeric alignments WithinBAM SoftClip:soft-clipping in the CIGAR for supplemental chimeric alignments"}
-  chimScoreDropMax: {type: 'int?', default: 20, doc: "max drop (difference) of chimeric score (the sum of scores of all chimeric segments) from the read length. AR recommends 30"}
+  chimOutType: {type: ['null', {type: enum, name: chimOutType, symbols: ["Junctions SeparateSAMold WithinBAM SoftClip", "Junctions", "SeparateSAMold", "WithinBAM SoftClip", "WithinBAM HardClip", "Junctions SeparateSAMold", "Junctions WithinBAM SoftClip", "Junctions WithinBAM HardClip", "Junctions SeparateSAMold WithinBAM HardClip", "SeparateSAMold WithinBAM SoftClip", "SeparateSAMold WithinBAM HardClip"]}], default: "Junctions WithinBAM SoftClip", doc: "type of chimeric output. Args are additive, and defined as such - Junctions: Chimeric.out.junction. SeparateSAMold: output old SAM into separate Chimeric.out.sam file WithinBAM: output into main aligned BAM files (Aligned.*.bam). WithinBAM HardClip: hard-clipping in the CIGAR for supplemental chimeric alignments WithinBAM SoftClip:soft-clipping in the CIGAR for supplemental chimeric alignments"}
+  chimScoreDropMax: {type: 'int?', default: 30, doc: "max drop (difference) of chimeric score (the sum of scores of all chimeric segments) from the read length. AR recommends 30"}
   chimScoreJunctionNonGTAG: {type: 'int?', default: -1, doc: "penalty for a non-GT/AG chimeric junction. default -1, SF recommends -4, AR -1"}
-  chimScoreSeparation: {type: 'int?', default: 10, doc: "int>=0: minimum difference (separation) between the best chimeric score and the next one. AR recommends 1"}
-  chimSegmentMin: {type: 'int?', default: 12, doc: "minimum length of chimeric segment length, if ==0, no chimeric output. REQUIRED for SF, 12 is their default, AR recommends 10"}
-  chimSegmentReadGapMax: {type: 'int?', default: 0, doc: "maximum gap in the read sequence between chimeric segments. AR recommends 3"}
-  outFilterMultimapNmax: {type: 'int?', default: 20, doc: "max number of multiple alignments allowed for a read: if exceeded, the read is considered unmapped. ENCODE value is default. AR recommends 50"}
+  chimScoreSeparation: {type: 'int?', default: 1, doc: "int>=0: minimum difference (separation) between the best chimeric score and the next one. AR recommends 1"}
+  chimSegmentMin: {type: 'int?', default: 10, doc: "minimum length of chimeric segment length, if ==0, no chimeric output. REQUIRED for SF, 12 is their default, AR recommends 10"}
+  chimSegmentReadGapMax: {type: 'int?', default: 3, doc: "maximum gap in the read sequence between chimeric segments. AR recommends 3"}
+  outFilterMultimapNmax: {type: 'int?', default: 50, doc: "max number of multiple alignments allowed for a read: if exceeded, the read is considered unmapped. ENCODE value is default. AR recommends 50"}
   peOverlapMMp: {type: 'float?', default: 0.01, doc: "maximum proportion of mismatched bases in the overlap area. SF recommends 0.1"}
-  peOverlapNbasesMin: {type: 'int?', default: 0, doc: "minimum number of overlap bases to trigger mates merging and realignment. Specify >0 value to switch on the 'merging of overlapping mates'algorithm. SF recommends 12,  AR recommends 10"}
+  peOverlapNbasesMin: {type: 'int?', default: 10, doc: "minimum number of overlap bases to trigger mates merging and realignment. Specify >0 value to switch on the 'merging of overlapping mates'algorithm. SF recommends 12,  AR recommends 10"}
 ```
 ### arriba:
 ```yaml
