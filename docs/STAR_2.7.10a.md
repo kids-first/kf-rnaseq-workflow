@@ -23,48 +23,49 @@ Try not to panic, but there are many options.
 We do set many defaults to make life easier, and should yield reasonable results.
 Below is a table of params and values we set by default, as well as suggested changes based on downstream fusion callers, which should have little effect on expression calculations, but potentially valuable increases in sensitivity for fusion calling.
 
-| Param/Description                | WF Default                                  | gtex                                              | min_fusion                                        | star_fusion_heavy                | arriba_heavy                     |
-| -------------------------------- | ------------------------------------------- | ------------------------------------------------- | ------------------------------------------------- | -------------------------------- | -------------------------------- |
-| runThreadN                       | 16                                          | 16                                                | 16                                                | 16                               | 16                               |
-| twopassMode                      | Basic                                       | Basic                                             | Basic                                             | Basic                            | Basic                            |
-| alignSJoverhangMin               | 8                                           | 8                                                 | 8                                                 | 8                                | 8                                |
-| outFilterMismatchNoverLmax       | 0.1                                         | 0.1                                               | 0.1                                               | 0.1                              | 0.1                              |
-| outFilterType                    | BySJout                                     | BySJout                                           | BySJout                                           | BySJout                          | BySJout                          |
-| outFilterScoreMinOverLread       | 0.33                                        | 0.33                                              | 0.33                                              | 0.33                             | 0.33                             |
-| outFilterMatchNminOverLread      | 0.33                                        | 0.33                                              | 0.33                                              | 0.33                             | 0.33                             |
-| outReadsUnmapped                 | None                                        | None                                              | None                                              | None                             | None                             |
-| limitSjdbInsertNsj               | 1200000                                     | 1200000                                           | 1200000                                           | 1200000                          | 1200000                          |
-| outSAMstrandField                | intronMotif                                 | intronMotif                                       | intronMotif                                       | intronMotif                      | intronMotif                      |
-| outFilterIntronMotifs            | None                                        | None                                              | None                                              | None                             | None                             |
-| alignSoftClipAtReferenceEnds     | Yes                                         | Yes                                               | Yes                                               | Yes                              | Yes                              |
-| quantMode                        | TranscriptomeSAM GeneCounts                 | TranscriptomeSAM   GeneCounts                     | TranscriptomeSAM   GeneCounts                     | TranscriptomeSAM   GeneCounts    | TranscriptomeSAM   GeneCounts    |
-| outSAMtype                       | BAM Unsorted                                | BAM   Unsorted                                    | BAM   Unsorted                                    | BAM   Unsorted                   | BAM   Unsorted                   |
-| outSAMunmapped                   | Within                                      | Within                                            | Within                                            | Within                           | Within                           |
-| genomeLoad                       | NoSharedMemory                              | NoSharedMemory                                    | NoSharedMemory                                    | NoSharedMemory                   | NoSharedMemory                   |
-| chimMainSegmentMultNmax          | 1                                           | 1                                                 | 1                                                 | 1                                | 1                                |
-| outSAMattributes                 | 'NH HI AS nM NM ch'                         | NH   HI   AS   nM   NM   ch                       | NH   HI   AS   nM   NM   ch                       | NH   HI   AS   nM   NM   ch      | NH   HI   AS   nM   NM   ch      |
-| alignInsertionFlush              | None                                        | None                                              | None                                              | Right                            | None                             |
-| alignIntronMax                   | 1000000                                     | 1000000                                           | 1000000                                           | 100000                           | 1000000                          |
-| alignMatesGapMax                 | 1000000                                     | 1000000                                           | 1000000                                           | 100000                           | 1000000                          |
-| alignSJDBoverhangMin             | 1                                           | 1                                                 | 1                                                 | 10                               | 1                                |
-| outFilterMismatchNmax            | 999                                         | 999                                               | 999                                               | 999                              | 999                              |
-| alignSJstitchMismatchNmax        | 0 -1 0 0                                    | 0   -1   0   0                                    | 5   -1   5   5                                    | 5   -1   5   5                   | 5   -1   5   5                   |
-| alignSplicedMateMapLmin          | 0                                           | 0                                                 | 0                                                 | 30                               | 0                                |
-| alignSplicedMateMapLminOverLmate | 0.66                                        | 0.66                                              | 0.66                                              | 0                                | 0.5                              |
-| chimJunctionOverhangMin          | 15                                          | 15                                                | 12                                                | 8                                | 10                               |
-| chimMultimapNmax                 | 0                                           | 0                                                 | 0                                                 | 20                               | 50                               |
-| chimMultimapScoreRange           | 1                                           | 1                                                 | 1                                                 | 3                                | 1                                |
-| chimNonchimScoreDropMin          | 20                                          | 20                                                | 20                                                | 10                               | 20                               |
-| chimOutJunctionFormat            | 1                                           | 1                                                 | 1                                                 | 1                                | 1                                |
-| chimOutType                      | Junctions SeparateSAMold WithinBAM SoftClip | Junctions   SeparateSAMold   WithinBAM   SoftClip | Junctions   SeparateSAMold   WithinBAM   SoftClip | Junctions   WithinBAM   SoftClip | Junctions   WithinBAM   SoftClip |
-| chimScoreDropMax                 | 20                                          | 20                                                | 20                                                | 20                               | 30                               |
-| chimScoreJunctionNonGTAG         | -1                                          | -1                                                | -1                                                | -4                               | -1                               |
-| chimScoreSeparation              | 10                                          | 10                                                | 10                                                | 10                               | 1                                |
-| chimSegmentMin                   | 12                                          | 15                                                | 15                                                | 12                               | 10                               |
-| chimSegmentReadGapMax            | 0                                           | 0                                                 | 0                                                 | 0                                | 3                                |
-| outFilterMultimapNmax            | 20                                          | 20                                                | 20                                                | 20                               | 50                               |
-| peOverlapMMp                     | 0.01                                        | 0.01                                              | 0.01                                              | 0                                | 0.01                             |
-| peOverlapNbasesMin               | 0                                           | 0                                                 | 0                                                 | 12                               | 10                               |
+| Param/Description                | WF Default (arriba recommended)  | GTEx/Broad                                        | STAR-Fusion Recommended          |
+|----------------------------------|----------------------------------|---------------------------------------------------|----------------------------------|
+| runThreadN                       | 16                               | 16                                                | 16                               |
+| twopassMode                      | Basic                            | Basic                                             | Basic                            |
+| alignSJoverhangMin               | 8                                | 8                                                 | 8                                |
+| outFilterMismatchNoverLmax       | 0.1                              | 0.1                                               | 0.1                              |
+| outFilterType                    | BySJout                          | BySJout                                           | BySJout                          |
+| outFilterScoreMinOverLread       | 0.33                             | 0.33                                              | 0.33                             |
+| outFilterMatchNminOverLread      | 0.33                             | 0.33                                              | 0.33                             |
+| outReadsUnmapped                 | None                             | None                                              | None                             |
+| limitSjdbInsertNsj               | 1200000                          | 1200000                                           | 1200000                          |
+| outSAMstrandField                | intronMotif                      | intronMotif                                       | intronMotif                      |
+| outFilterIntronMotifs            | None                             | None                                              | None                             |
+| alignSoftClipAtReferenceEnds     | Yes                              | Yes                                               | Yes                              |
+| quantMode                        | TranscriptomeSAM   GeneCounts    | TranscriptomeSAM   GeneCounts                     | TranscriptomeSAM   GeneCounts    |
+| outSAMtype                       | BAM   Unsorted                   | BAM   Unsorted                                    | BAM   Unsorted                   |
+| outSAMunmapped                   | Within                           | Within                                            | Within                           |
+| genomeLoad                       | NoSharedMemory                   | NoSharedMemory                                    | NoSharedMemory                   |
+| chimMainSegmentMultNmax          | 1                                | 1                                                 | 1                                |
+| outSAMattributes                 | NH   HI   AS   nM   NM   ch      | NH   HI   AS   nM   NM   ch                       | NH   HI   AS   nM   NM   ch      |
+| alignInsertionFlush              | None                             | None                                              | Right                            |
+| alignIntronMax                   | 1000000                          | 1000000                                           | 100000                           |
+| alignMatesGapMax                 | 1000000                          | 1000000                                           | 100000                           |
+| alignSJDBoverhangMin             | 1                                | 1                                                 | 10                               |
+| outFilterMismatchNmax            | 999                              | 999                                               | 999                              |
+| alignSJstitchMismatchNmax        | 5   -1   5   5                   | 0   -1   0   0                                    | 5   -1   5   5                   |
+| alignSplicedMateMapLmin          | 0                                | 0                                                 | 30                               |
+| alignSplicedMateMapLminOverLmate | 0.5                              | 0.66                                              | 0                                |
+| chimJunctionOverhangMin          | 10                               | 15                                                | 8                                |
+| chimMultimapNmax                 | 50                               | 0                                                 | 20                               |
+| chimMultimapScoreRange           | 1                                | 1                                                 | 3                                |
+| chimNonchimScoreDropMin          | 20                               | 20                                                | 10                               |
+| chimOutJunctionFormat            | 1                                | 1                                                 | 1                                |
+| chimOutType                      | Junctions   WithinBAM   SoftClip | Junctions   SeparateSAMold   WithinBAM   SoftClip | Junctions   WithinBAM   SoftClip |
+| chimScoreDropMax                 | 30                               | 20                                                | 20                               |
+| chimScoreJunctionNonGTAG         | -1                               | -1                                                | -4                               |
+| chimScoreSeparation              | 1                                | 10                                                | 10                               |
+| chimSegmentMin                   | 10                               | 15                                                | 12                               |
+| chimSegmentReadGapMax            | 3                                | 0                                                 | 0                                |
+| outFilterMultimapNmax            | 50                               | 20                                                | 20                               |
+| peOverlapMMp                     | 0.01                             | 0.01                                              | 0                                |
+| peOverlapNbasesMin               | 10                               | 0                                                 | 12                               |
+
 
 ### Outputs:
  - `log_progress_out`: Simple progress output. Can use to gauge speed and run time
