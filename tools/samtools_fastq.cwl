@@ -32,7 +32,7 @@ arguments:
 inputs:
   input_reads_1: {type: File, doc: "Input bam file."}
   SampleID: string
-  cores: { type: 'int?', default: 36 } 
+  cores: { type: 'int?', default: 16 } 
   input_type: {type: [{type: enum, name: input_type, symbols: ["PEBAM", "SEBAM"]}], doc: "Please select one option for input file type, PEBAM (paired-end BAM), SEBAM (single-end BAM)."}
 
 

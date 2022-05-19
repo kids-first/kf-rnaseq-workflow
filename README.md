@@ -55,6 +55,11 @@ inputs:
           "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto, 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the transcript, 'fr-stranded' if read1 same sense as transcript" }
   gtf_anno: { type: 'File', doc: "General transfer format (gtf) file with gene models corresponding to fasta reference" }
   star_fusion_genome_untar_path: {type: 'string?', doc: "This is what the path will be when genome_tar is unpackaged", default: "GRCh38_v39_CTAT_lib_Mar242022.CUSTOM"}
+  reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", "sbg:suggestedValue": {
+    class: File, path: 5f500135e4b0370371c051b4, name: GRCh38.primary_assembly.genome.fa,
+    secondaryFiles: [{class: File, path: 62866da14d85bc2e02ba52db, name: GRCh38.primary_assembly.genome.fa.fai}]},
+  secondaryFiles: ['.fai']}
+
 ```
 
 ### Bam input-specific:
@@ -78,7 +83,7 @@ inputs:
 
 ### Samtools fastq:
 ```yaml
-samtools_fastq_cores: { type: 'int?', doc: "Num cores for bam2fastq conversion, if input is bam", default: 36 }
+samtools_fastq_cores: { type: 'int?', doc: "Num cores for bam2fastq conversion, if input is bam", default: 16 }
 input_type: {type: [{type: 'enum', name: input_type, symbols: ["PEBAM", "SEBAM",
         "FASTQ"]}], doc: "Please select one option for input file type, PEBAM (paired-end BAM), SEBAM (single-end BAM) or FASTQ."}
 ```
@@ -153,8 +158,6 @@ Kids First favors setting/overriding defaults with "arriba-heavy" specified in [
 ```
 ### arriba:
 ```yaml
-  reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", "sbg:suggestedValue": {
-      class: File, path: 5f500135e4b0370371c051b4, name: GRCh38.primary_assembly.genome.fa}}
   arriba_memory: {type: 'int?', doc: "Mem intensive tool. Set in GB", default: 64}
 ```
 ### STAR Fusion:
