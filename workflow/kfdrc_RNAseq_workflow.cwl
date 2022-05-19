@@ -60,6 +60,11 @@ doc: |-
             "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto, 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the transcript, 'fr-stranded' if read1 same sense as transcript" }
     gtf_anno: { type: 'File', doc: "General transfer format (gtf) file with gene models corresponding to fasta reference" }
     star_fusion_genome_untar_path: {type: 'string?', doc: "This is what the path will be when genome_tar is unpackaged", default: "GRCh38_v39_CTAT_lib_Mar242022.CUSTOM"}
+    reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", "sbg:suggestedValue": {
+      class: File, path: 5f500135e4b0370371c051b4, name: GRCh38.primary_assembly.genome.fa,
+      secondaryFiles: [{class: File, path: 62866da14d85bc2e02ba52db, name: GRCh38.primary_assembly.genome.fa.fai}]},
+    secondaryFiles: ['.fai']}
+
   ```
 
   ### Bam input-specific:
@@ -83,7 +88,7 @@ doc: |-
 
   ### Samtools fastq:
   ```yaml
-  samtools_fastq_cores: { type: 'int?', doc: "Num cores for bam2fastq conversion, if input is bam", default: 36 }
+  samtools_fastq_cores: { type: 'int?', doc: "Num cores for bam2fastq conversion, if input is bam", default: 16 }
   input_type: {type: [{type: 'enum', name: input_type, symbols: ["PEBAM", "SEBAM",
           "FASTQ"]}], doc: "Please select one option for input file type, PEBAM (paired-end BAM), SEBAM (single-end BAM) or FASTQ."}
   ```
@@ -158,8 +163,6 @@ doc: |-
   ```
   ### arriba:
   ```yaml
-    reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", "sbg:suggestedValue": {
-        class: File, path: 5f500135e4b0370371c051b4, name: GRCh38.primary_assembly.genome.fa}}
     arriba_memory: {type: 'int?', doc: "Mem intensive tool. Set in GB", default: 64}
   ```
   ### STAR Fusion:
@@ -290,6 +293,10 @@ requirements:
 
 inputs:
   # many tool
+  reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", "sbg:suggestedValue": {
+      class: File, path: 5f500135e4b0370371c051b4, name: GRCh38.primary_assembly.genome.fa,
+      secondaryFiles: [{class: File, path: 62866da14d85bc2e02ba52db, name: GRCh38.primary_assembly.genome.fa.fai}]},
+    secondaryFiles: ['.fai']}
   output_basename: {type: 'string', doc: "String to use as basename for outputs"}
   reads1: {type: File, doc: "Input fastq file, gzipped or uncompressed OR bam file"}
   reads2: {type: 'File?', doc: "If paired end, R2 reads files, gzipped or uncompressed"}
@@ -306,7 +313,7 @@ inputs:
 
   # samtools fastq
   samtools_fastq_cores: {type: 'int?', doc: "Num cores for bam2fastq conversion, if\
-      \ input is bam", default: 36}
+      \ input is bam", default: 16}
   input_type: {type: [{type: 'enum', name: input_type, symbols: ["PEBAM", "SEBAM",
           "FASTQ"]}], doc: "Please select one option for input file type, PEBAM (paired-end\
       \ BAM), SEBAM (single-end BAM) or FASTQ."}
@@ -460,8 +467,6 @@ inputs:
       \ 10"}
 
   # arriba
-  reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", "sbg:suggestedValue": {
-      class: File, path: 5f500135e4b0370371c051b4, name: GRCh38.primary_assembly.genome.fa}}
   arriba_memory: {type: 'int?', doc: "Mem intensive tool. Set in GB", default: 64}
   # STAR Fusion
   FusionGenome: {type: 'File', doc: "STAR-Fusion CTAT Genome lib", "sbg:suggestedValue": {
@@ -513,10 +518,8 @@ outputs:
       \ stats output, only if adapter is supplied."}
   STAR_transcriptome_bam: {type: 'File', outputSource: star_2-7-10a/transcriptome_bam_out,
     doc: "STAR bam of transcriptome reads"}
-  STAR_sorted_genomic_bam: {type: 'File', outputSource: samtools_sort/sorted_bam,
-    doc: "STAR sorted alignment bam"}
-  STAR_sorted_genomic_bai: {type: 'File', outputSource: samtools_sort/sorted_bai,
-    doc: "STAR index for sorted aligned bam"}
+  STAR_sorted_genomic_cram: {type: 'File', outputSource: samtools_bam_to_cram/output,
+    doc: "STAR sorted and indexed genomic alignment cram"}
   STAR_chimeric_junctions: {type: 'File?', outputSource: star_fusion_1-10-1/chimeric_junction_compressed,
     doc: "STAR chimeric junctions"}
   STAR_gene_count: {type: 'File', outputSource: star_2-7-10a/gene_counts, doc: "STAR\
@@ -783,6 +786,19 @@ steps:
       col_num: annofuse_col_num
       output_basename: output_basename
     out: [annofuse_filtered_fusions_tsv]
+  samtools_bam_to_cram:
+    run: ../tools/samtools_bam_to_cram.cwl
+    in:
+      reference: reference_fasta
+      input_bam:
+        source: [samtools_sort/sorted_bam, samtools_sort/sorted_bai]
+        valueFrom: |
+          ${
+            var bundle = self[0];
+            bundle.secondaryFiles = [self[1]];
+            return bundle;
+          }
+    out: [output]
 
 $namespaces:
   sbg: https://sevenbridges.com
