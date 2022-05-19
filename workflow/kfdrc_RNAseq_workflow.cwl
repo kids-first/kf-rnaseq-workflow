@@ -245,10 +245,8 @@ doc: |-
     cutadapt_stats: {type: 'File?', outputSource: cutadapt_3-4/cutadapt_stats, doc: "Cutadapt stats output, only if adapter is supplied."}
     STAR_transcriptome_bam: {type: 'File', outputSource: star_2-7-10a/transcriptome_bam_out,
       doc: "STAR bam of transcriptome reads"}
-    STAR_sorted_genomic_bam: {type: 'File', outputSource: samtools_sort/sorted_bam,
-      doc: "STAR sorted alignment bam"}
-    STAR_sorted_genomic_bai: {type: 'File', outputSource: samtools_sort/sorted_bai,
-      doc: "STAR index for sorted aligned bam"}
+    STAR_sorted_genomic_cram: {type: 'File', outputSource: samtools_bam_to_cram/output,
+      doc: "STAR sorted and indexed genomic alignment cram"}
     STAR_chimeric_junctions: {type: 'File?', outputSource: star_fusion_1-10-1/chimeric_junction_compressed,
       doc: "STAR chimeric junctions"}
     STAR_gene_count: {type: 'File', outputSource: star_2-7-10a/gene_counts, doc: "STAR genecounts"}
