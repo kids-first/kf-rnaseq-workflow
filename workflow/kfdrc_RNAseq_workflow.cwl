@@ -7,7 +7,7 @@ doc: |-
 
   This is the Kids First RNA-Seq pipeline, which calculates gene and transcript isoform expression, detects fusions ans splice junctions.
   We are transitioning to to this current version which upgrades several software components.
-  Our legacy workflow is still available as [v3.0.1](https://github.com/kids-first/kf-rnaseq-workflow/tree/v3.0.1)
+  Our legacy workflow is still available as [v3.0.1](https://github.com/kids-first/kf-rnaseq-workflow/tree/v3.0.1), and on Cavatica, [revision 8](https://cavatica.sbgenomics.com/public/apps/cavatica/apps-publisher/kfdrc-rnaseq-workflow/8)
 
   ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
 
@@ -22,7 +22,7 @@ doc: |-
 
   If you would like to run this workflow using the cavatica public app, a basic primer on running public apps can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-Cavatica-af5ebb78c38a4f3190e32e67b4ce12bb).
   Alternatively, if you would like to run it locally using `cwltool`, a basic primer on that can be found [here](https://www.notion.so/d3b/Starting-From-Scratch-Running-CWLtool-b8dbbde2dc7742e4aff290b0a878344d) and combined with app-specific info from the readme below.
-  ~~This workflow is the current production workflow, equivalent to this [Cavatica public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-rnaseq-workflow).~~
+  This workflow is the current production workflow, equivalent to this [Cavatica public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-rnaseq-workflow).
 
   ### Cutadapt
   [Cutadapt v3.4](https://github.com/marcelm/cutadapt) Cut adapter sequences from raw reads if needed.
