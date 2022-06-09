@@ -10,7 +10,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
-    ramMin: 4000
+    coresMin: $(inputs.cores)
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9'
 baseCommand: [samtools, view]
@@ -26,7 +26,8 @@ arguments:
 inputs:
   reference: {type: File, secondaryFiles: [.fai], doc: "Reference fasta with associated fai index",
     inputBinding: {prefix: "-T", position: 2 }}
-  input_bam: {type: File, secondaryFiles: [^.bai], doc: "Input bam file",
+  input_bam: {type: File, doc: "Input bam file",
     inputBinding: { position: 3 }}
+  cores: {type: 'int?', default: 16, inputBinding: {prefix: "-@", position: 2}}
 outputs:
   output: { type: File, outputBinding: { glob: '*.cram' }, secondaryFiles: [.crai] }
