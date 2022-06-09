@@ -105,7 +105,7 @@ doc: |-
     outSAMattrRGline: {type: string, doc: "Suggested setting, with TABS SEPARATING THE TAGS, format is: ID:sample_name LB:aliquot_id PL:platform SM:BSID for example ID:7316-242 LB:750189 PL:ILLUMINA SM:BS_W72364MN"}
     STARgenome: {type: File, doc: "Tar gzipped reference that will be unzipped at run time", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a7,
         name: STAR_2.7.10a_GENCODE39.tar.gz}}
-    runThreadN: {type: 'int?', default: 16, doc: "Adjust this value to change number of cores used."}
+    runThreadN: {type: 'int?', default: 36, doc: "Adjust this value to change number of cores used."}
     twopassMode: {type: ['null', {type: enum, name: twopassMode, symbols: ["Basic",
             "None"]}], default: "Basic", doc: "Enable two pass mode to detect novel splice events. Default is basic (on)."}
     alignSJoverhangMin: {type: 'int?', default: 8, doc: "minimum overhang for unannotated junctions. ENCODE default used."}
@@ -327,8 +327,8 @@ inputs:
   STARgenome: {type: File, doc: "Tar gzipped reference that will be unzipped at run\
       \ time", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a7,
       name: STAR_2.7.10a_GENCODE39.tar.gz}}
-  runThreadN: {type: 'int?', default: 16, doc: "Adjust this value to change number\
-      \ of cores used."}
+  runThreadN: {type: 'int?', default: 36, doc: "Adjust this value to change number\
+      \ of cores used by STAR."}
   twopassMode: {type: ['null', {type: enum, name: twopassMode, symbols: ["Basic",
           "None"]}], default: "Basic", doc: "Enable two pass mode to detect novel\
       \ splice events. Default is basic (on)."}
