@@ -238,8 +238,6 @@ If they do need trimming, supply the adapters and the cutadapt step will trim, a
 ### Outputs:
 ```yaml
   cutadapt_stats: {type: 'File?', outputSource: cutadapt_3-4/cutadapt_stats, doc: "Cutadapt stats output, only if adapter is supplied."}
-  STAR_transcriptome_bam: {type: 'File', outputSource: star_2-7-10a/transcriptome_bam_out,
-    doc: "STAR bam of transcriptome reads"}
   STAR_sorted_genomic_cram: {type: 'File', outputSource: samtools_bam_to_cram/output,
     doc: "STAR sorted and indexed genomic alignment cram"}
   STAR_chimeric_junctions: {type: 'File?', outputSource: star_fusion_1-10-1/chimeric_junction_compressed,
