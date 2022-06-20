@@ -41,8 +41,15 @@ This workflow is the current production workflow, equivalent to this [Cavatica p
 ## Usage
 
 ### Runtime Estimates:
-- 8 GB paired end FASTQ input: 9 hours & $9.00
-- 19 GB PE BAM input: 9 hours 30 Minutes & $9.50
+Based on a test set of five input bams, Cavatica compute and storage estimates:
+ - Typical 2 hour run time, 10 hours is a higher end possibility
+ - Cost:
+   - Pure spot instances with no terminations: $2.37 mean
+   - Pure on-demand: $5.19 mean
+   - Warning: If spot instance kill rate is high, especially for `c5.9xlarge` instance type, the cost could end up greater than on-demand
+ - Storage:
+   - Total output size 6GB mean
+   - Storage estimate ~ $0.14 per month
 
 ### Inputs common:
 ```yaml
