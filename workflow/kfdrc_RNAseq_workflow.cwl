@@ -300,7 +300,7 @@ inputs:
       class: File, path: 5f500135e4b0370371c051b4, name: GRCh38.primary_assembly.genome.fa,
       secondaryFiles: [{class: File, path: 62866da14d85bc2e02ba52db, name: GRCh38.primary_assembly.genome.fa.fai}]},
     secondaryFiles: ['.fai']}
-  output_basename: {type: 'string?', doc: "String to use as basename for outputs. Will default to basename of read1 if blank"}
+  output_basename: {type: 'string?', doc: "String to use as basename for outputs. Will use read1 file basename if null"}
   reads1: {type: File, doc: "Input fastq file, gzipped or uncompressed OR bam file"}
   reads2: {type: 'File?', doc: "If paired end, R2 reads files, gzipped or uncompressed"}
 
@@ -564,15 +564,22 @@ outputs:
       \ 10 or more read counts of support"}
 
 steps:
+  pickbasename:
+    run: ../tools/basename_picker.cwl
+    in:
+      read1_filename:
+        source: reads1
+        valueFrom: $(self.basename.split('.')[0])
+      output_basename: output_basename
+    out: [output]
+
   bam2fastq:
     # Skip if input is FASTQ already
     run: ../tools/samtools_fastq.cwl
     when: $(inputs.input_type != "FASTQ")
     in:
       input_reads_1: reads1
-      SampleID: 
-        source: output_basename
-        valueFrom: "$(if self ? self : inputs.read1.basename.split('.')[0])"
+      SampleID: pickbasename/output
       cores: samtools_fastq_cores
       input_type: input_type
     out: [fq1, fq2]
@@ -590,9 +597,7 @@ steps:
         pickValue: first_non_null
       r1_adapter: r1_adapter
       r2_adapter: r2_adapter
-      sample_name:
-        source: output_basename
-        valueFrom: "$(if self ? self : inputs.read1.basename.split('.')[0])"
+      sample_name: pickbasename/output
     out: [trimmedReadsR1, trimmedReadsR2, cutadapt_stats]
 
   star_2-7-10a:
@@ -607,9 +612,7 @@ steps:
       readFilesIn2:
         source: [cutadapt_3-4/trimmedReadsR1, bam2fastq/fq2, reads2]
         pickValue: first_non_null
-      outFileNamePrefix:
-        source: output_basename
-        valueFrom: "$(if self ? self : inputs.read1.basename.split('.')[0])"
+      outFileNamePrefix: pickbasename/output
       runThreadN: runThreadN
       twopassMode: twopassMode
       alignSJoverhangMin: alignSJoverhangMin
@@ -678,9 +681,7 @@ steps:
       novel_splice_sites: rmats_novel_splice_sites
       stat_off: rmats_stat_off
       allow_clipping: rmats_allow_clipping
-      output_basename:
-        source: output_basename
-        valueFrom: "$(if self ? self : inputs.read1.basename.split('.')[0])"
+      output_basename: pickbasename/output
       rmats_threads: rmats_threads
       rmats_ram: rmats_ram
     out: [filtered_alternative_3_prime_splice_sites_jc, filtered_alternative_5_prime_splice_sites_jc,
@@ -697,9 +698,7 @@ steps:
     in:
       Chimeric_junction: star_2-7-10a/chimeric_junctions
       genome_tar: FusionGenome
-      output_basename:
-        source: output_basename
-        valueFrom: "$(if self ? self : inputs.read1.basename.split('.')[0])"
+      output_basename: pickbasename/output
       genome_untar_path: star_fusion_genome_untar_path
       compress_chimeric_junction: compress_chimeric_junction
     out: [abridged_coding, chimeric_junction_compressed]
@@ -718,9 +717,7 @@ steps:
       memory: arriba_memory
       reference_fasta: reference_fasta
       gtf_anno: gtf_anno
-      outFileNamePrefix:
-        source: output_basename
-        valueFrom: "$(if self ? self : inputs.read1.basename.split('.')[0])"
+      outFileNamePrefix: pickbasename/output
       arriba_strand_flag: strand_parse/arriba_std
     out: [arriba_fusions]
 
@@ -746,9 +743,7 @@ steps:
       paired_end: paired_end
       estimate_rspd: estimate_rspd
       genomeDir: RSEMgenome
-      outFileNamePrefix:
-        source: output_basename
-        valueFrom: "$(if self ? self : inputs.read1.basename.split('.')[0])"
+      outFileNamePrefix: pickbasename/output
       strandedness: strand_parse/rsem_std
     out: [gene_out, isoform_out]
 
@@ -767,9 +762,7 @@ steps:
   supplemental:
     run: ../tools/supplemental_tar_gz.cwl
     in:
-      outFileNamePrefix:
-        source: output_basename
-        valueFrom: "$(if self ? self : inputs.read1.basename.split('.')[0])"
+      outFileNamePrefix: pickbasename/output
       Gene_TPM: rna_seqc/Gene_TPM
       Gene_count: rna_seqc/Gene_count
       Exon_count: rna_seqc/Exon_count
@@ -786,9 +779,7 @@ steps:
       reads2:
         source: [cutadapt_3-4/trimmedReadsR2, bam2fastq/fq2, reads2]
         pickValue: first_non_null
-      SampleID:
-        source: output_basename
-        valueFrom: "$(if self ? self : inputs.read1.basename.split('.')[0])"
+      SampleID: pickbasename/output
       avg_frag_len: kallisto_avg_frag_len
       std_dev: kallisto_std_dev
     out: [abundance_out]
@@ -803,9 +794,7 @@ steps:
       arriba_output_file: arriba_fusion_2-2-1/arriba_fusions
       star_fusion_output_file: star_fusion_1-10-1/abridged_coding
       col_num: annofuse_col_num
-      output_basename:
-        source: output_basename
-        valueFrom: "$(if self ? self : inputs.read1.basename.split('.')[0])"
+      output_basename: pickbasename/output
     out: [annofuse_filtered_fusions_tsv]
   samtools_bam_to_cram:
     run: ../tools/samtools_bam_to_cram.cwl
