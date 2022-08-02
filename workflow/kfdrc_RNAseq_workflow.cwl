@@ -26,8 +26,8 @@ doc: |-
 
   ### Cutadapt
   [Cutadapt v3.4](https://github.com/marcelm/cutadapt) Cut adapter sequences from raw reads if needed.
-  ### [STAR](docs/STAR_2.7.10a.md) 
-  [STAR v2.7.10a](https://doi.org/f4h523) RNA-Seq raw data alignment. See 
+  ### [STAR](docs/STAR_2.7.10a.md)
+  [STAR v2.7.10a](https://doi.org/f4h523) RNA-Seq raw data alignment. See
   ### [RSEM](docs/RSEM_1.3.1.md)
   [RSEM v1.3.1](https://doi:10/cwg8n5) Calculation of gene expression.
   ### Kallisto
@@ -326,7 +326,7 @@ inputs:
   r2_adapter: {type: 'string?', doc: "Optional input. If the input reads have already\
       \ been trimmed, leave these as null. If they do need trimming, supply the adapters."}
   # STAR
-  outSAMattrRGline: {type: string, doc: "Suggested setting, with TABS SEPARATING THE\
+  outSAMattrRGline: {type: 'string?', doc: "Suggested setting, with TABS SEPARATING THE\
       \ TAGS, format is: ID:sample_name LB:aliquot_id PL:platform SM:BSID for example\
       \ ID:7316-242 LB:750189 PL:ILLUMINA SM:BS_W72364MN"}
   STARgenome: {type: File, doc: "Tar gzipped reference that will be unzipped at run\
@@ -495,7 +495,7 @@ inputs:
   estimate_rspd: {type: 'boolean?', doc: "Set this option if you want to estimate\
       \ the read start position distribution (RSPD) from data", default: true}
   # annoFuse
-  sample_name: {type: 'string', doc: "Sample ID of the input reads"}
+  sample_name: {type: 'string?', doc: "Sample ID of the input reads"}
   annofuse_col_num: {type: 'int?', doc: "column number in file of fusion name."}
   # rmats
   rmats_read_length: {type: 'int', doc: "Input read length for sample reads."}
@@ -564,14 +564,16 @@ outputs:
       \ 10 or more read counts of support"}
 
 steps:
-  pickbasename:
+  basename_picker:
     run: ../tools/basename_picker.cwl
     in:
       read1_filename:
         source: reads1
         valueFrom: $(self.basename.split('.')[0])
       output_basename: output_basename
-    out: [output]
+      sample_name: sample_name
+      star_rg_line: outSAMattrRGline
+    out: [outname, outsample, outrg]
 
   bam2fastq:
     # Skip if input is FASTQ already
@@ -579,7 +581,7 @@ steps:
     when: $(inputs.input_type != "FASTQ")
     in:
       input_reads_1: reads1
-      SampleID: pickbasename/output
+      SampleID: basename_picker/outname
       cores: samtools_fastq_cores
       input_type: input_type
     out: [fq1, fq2]
@@ -597,14 +599,14 @@ steps:
         pickValue: first_non_null
       r1_adapter: r1_adapter
       r2_adapter: r2_adapter
-      sample_name: pickbasename/output
+      sample_name: basename_picker/outname
     out: [trimmedReadsR1, trimmedReadsR2, cutadapt_stats]
 
   star_2-7-10a:
     # will get fastq from first non-null in this order - cutadapt, bam2fastq, wf input
     run: ../tools/star_2.7.10a_align.cwl
     in:
-      outSAMattrRGline: outSAMattrRGline
+      outSAMattrRGline: basename_picker/outrg
       genomeDir: STARgenome
       readFilesIn1:
         source: [cutadapt_3-4/trimmedReadsR1, bam2fastq/fq1, reads1]
@@ -612,7 +614,7 @@ steps:
       readFilesIn2:
         source: [cutadapt_3-4/trimmedReadsR1, bam2fastq/fq2, reads2]
         pickValue: first_non_null
-      outFileNamePrefix: pickbasename/output
+      outFileNamePrefix: basename_picker/outname
       runThreadN: runThreadN
       twopassMode: twopassMode
       alignSJoverhangMin: alignSJoverhangMin
@@ -681,7 +683,7 @@ steps:
       novel_splice_sites: rmats_novel_splice_sites
       stat_off: rmats_stat_off
       allow_clipping: rmats_allow_clipping
-      output_basename: pickbasename/output
+      output_basename: basename_picker/outname
       rmats_threads: rmats_threads
       rmats_ram: rmats_ram
     out: [filtered_alternative_3_prime_splice_sites_jc, filtered_alternative_5_prime_splice_sites_jc,
@@ -698,7 +700,7 @@ steps:
     in:
       Chimeric_junction: star_2-7-10a/chimeric_junctions
       genome_tar: FusionGenome
-      output_basename: pickbasename/output
+      output_basename: basename_picker/outname
       genome_untar_path: star_fusion_genome_untar_path
       compress_chimeric_junction: compress_chimeric_junction
     out: [abridged_coding, chimeric_junction_compressed]
@@ -717,7 +719,7 @@ steps:
       memory: arriba_memory
       reference_fasta: reference_fasta
       gtf_anno: gtf_anno
-      outFileNamePrefix: pickbasename/output
+      outFileNamePrefix: basename_picker/outname
       arriba_strand_flag: strand_parse/arriba_std
     out: [arriba_fusions]
 
@@ -743,7 +745,7 @@ steps:
       paired_end: paired_end
       estimate_rspd: estimate_rspd
       genomeDir: RSEMgenome
-      outFileNamePrefix: pickbasename/output
+      outFileNamePrefix: basename_picker/outname
       strandedness: strand_parse/rsem_std
     out: [gene_out, isoform_out]
 
@@ -762,7 +764,7 @@ steps:
   supplemental:
     run: ../tools/supplemental_tar_gz.cwl
     in:
-      outFileNamePrefix: pickbasename/output
+      outFileNamePrefix: basename_picker/outname
       Gene_TPM: rna_seqc/Gene_TPM
       Gene_count: rna_seqc/Gene_count
       Exon_count: rna_seqc/Exon_count
@@ -779,7 +781,7 @@ steps:
       reads2:
         source: [cutadapt_3-4/trimmedReadsR2, bam2fastq/fq2, reads2]
         pickValue: first_non_null
-      SampleID: pickbasename/output
+      SampleID: basename_picker/outname
       avg_frag_len: kallisto_avg_frag_len
       std_dev: kallisto_std_dev
     out: [abundance_out]
@@ -787,14 +789,14 @@ steps:
   annofuse:
     run: ../workflow/kfdrc_annoFuse_wf.cwl
     in:
-      sample_name: sample_name
+      sample_name: basename_picker/outsample
       FusionGenome: FusionGenome
       genome_untar_path: star_fusion_genome_untar_path
       rsem_expr_file: rsem/gene_out
       arriba_output_file: arriba_fusion_2-2-1/arriba_fusions
       star_fusion_output_file: star_fusion_1-10-1/abridged_coding
       col_num: annofuse_col_num
-      output_basename: pickbasename/output
+      output_basename: basename_picker/outname
     out: [annofuse_filtered_fusions_tsv]
   samtools_bam_to_cram:
     run: ../tools/samtools_bam_to_cram.cwl
