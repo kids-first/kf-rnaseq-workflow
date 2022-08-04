@@ -5,7 +5,7 @@ requirements:
   - class: InlineJavascriptRequirement
 
 inputs:
-  read1_filename: string
+  root_name: string
   output_basename: 'string?'
   sample_name: 'string?'
   star_rg_line: 'string?'
@@ -20,8 +20,8 @@ outputs:
 
 expression: |
   ${
-    var name = inputs.output_basename ? inputs.output_basename : inputs.read1_filename;
-    var sample = inputs.sample_name ? inputs.sample_name : inputs.read1_filename;
+    var name = inputs.output_basename ? inputs.output_basename : inputs.root_name;
+    var sample = inputs.sample_name ? inputs.sample_name : inputs.root_name;
     var rgid = "ID:" + sample + "_1"
     var rglb = "LB:" + sample
     var rgsm = "SM:" + sample

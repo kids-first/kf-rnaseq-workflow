@@ -589,7 +589,7 @@ steps:
   basename_picker:
     run: ../tools/basename_picker.cwl
     in:
-      read1_filename:
+      root_name:
         source: reads1
         valueFrom: $(self.basename.split('.')[0])
       output_basename: output_basename
