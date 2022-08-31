@@ -7,7 +7,7 @@ Our legacy workflow is still available as [v3.0.1](https://github.com/kids-first
 ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
 
 ## Introduction
-This pipeline has an optional cutadapt to trim adapters from the raw reads, bam-to-fastq conversion if necessary, and passes the reads to STAR for alignment.
+This pipeline has an optional cutadapt to trim adapters from the raw reads, alignment-to-fastq conversion if necessary, and passes the reads to STAR for alignment.
 The alignment output is used by RSEM for gene expression abundance estimation and rMATS for differential alternative splicing events detection.
 Additionally, Kallisto is used for quantification, but uses pseudoalignments to estimate the gene abundance from the raw data.
 Fusion calling is performed using Arriba and STAR-Fusion detection tools on the STAR alignment outputs.
@@ -69,7 +69,7 @@ inputs:
 
 ```
 
-### Bam input-specific:
+### Alignment (SAM/BAM/CRAM) input-specific:
 ```yaml
 inputs:
   reads1: File
@@ -90,9 +90,10 @@ inputs:
 
 ### Samtools fastq:
 ```yaml
-samtools_fastq_cores: { type: 'int?', doc: "Num cores for bam2fastq conversion, if input is bam", default: 16 }
-input_type: {type: [{type: 'enum', name: input_type, symbols: ["PEBAM", "SEBAM",
-        "FASTQ"]}], doc: "Please select one option for input file type, PEBAM (paired-end BAM), SEBAM (single-end BAM) or FASTQ."}
+samtools_fastq_cores: { type: 'int?', doc: "Num cores for align2fastq conversion, if input is an alignment file", default: 16 }
+input_type: {type: [{type: 'enum', name: input_type, symbols: ["PE_ALIGN", "SE_ALIGN",
+        "FASTQ"]}], doc: "Please select one option for input file type, PE_ALIGN (paired-end ALIGN), SE_ALIGN (single-end ALIGN) or FASTQ."}
+cram_reference: { type: 'File?', secondaryFiles: [.fai], doc: "If input align is cram and you are uncertain all contigs are registered at http://www.ebi.ac.uk/ena/cram/md5/, provide here" }
 ```
 ### cutadapt:
 ```yaml
@@ -217,7 +218,7 @@ Kids First favors setting/overriding defaults with "arriba-heavy" specified in [
 
 - For PE fastq input, please enter the reads 1 file in `reads1` and the reads 2 file in `reads2`.
 - For SE fastq input, enter the single ends reads file in `reads1` and leave `reads2` empty as it is optional.
-- For BAM input, please enter the reads file in `reads1` and leave `reads2` empty as it is optional.
+- For alignment input (SAM/BAM/CRAM), please enter the reads file in `reads1` and leave `reads2` empty as it is optional.
 
 2) `r1_adapter` and `r2_adapter` are OPTIONAL:
 

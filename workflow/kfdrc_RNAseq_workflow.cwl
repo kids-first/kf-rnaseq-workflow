@@ -12,7 +12,7 @@ doc: |
   ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
 
   ## Introduction
-  This pipeline has an optional cutadapt to trim adapters from the raw reads, bam-to-fastq conversion if necessary, and passes the reads to STAR for alignment.
+  This pipeline has an optional cutadapt to trim adapters from the raw reads, alignment-to-fastq conversion if necessary, and passes the reads to STAR for alignment.
   The alignment output is used by RSEM for gene expression abundance estimation and rMATS for differential alternative splicing events detection.
   Additionally, Kallisto is used for quantification, but uses pseudoalignments to estimate the gene abundance from the raw data.
   Fusion calling is performed using Arriba and STAR-Fusion detection tools on the STAR alignment outputs.
@@ -74,7 +74,7 @@ doc: |
 
   ```
 
-  ### Bam input-specific:
+  ### Alignment (SAM/BAM/CRAM) input-specific:
   ```yaml
   inputs:
     reads1: File
@@ -95,9 +95,10 @@ doc: |
 
   ### Samtools fastq:
   ```yaml
-  samtools_fastq_cores: { type: 'int?', doc: "Num cores for bam2fastq conversion, if input is bam", default: 16 }
-  input_type: {type: [{type: 'enum', name: input_type, symbols: ["PEBAM", "SEBAM",
-          "FASTQ"]}], doc: "Please select one option for input file type, PEBAM (paired-end BAM), SEBAM (single-end BAM) or FASTQ."}
+  samtools_fastq_cores: { type: 'int?', doc: "Num cores for align2fastq conversion, if input is an alignment file", default: 16 }
+  input_type: {type: [{type: 'enum', name: input_type, symbols: ["PE_ALIGN", "SE_ALIGN",
+          "FASTQ"]}], doc: "Please select one option for input file type, PE_ALIGN (paired-end ALIGN), SE_ALIGN (single-end ALIGN) or FASTQ."}
+  cram_reference: { type: 'File?', secondaryFiles: [.fai], doc: "If input align is cram and you are uncertain all contigs are registered at http://www.ebi.ac.uk/ena/cram/md5/, provide here" }
   ```
   ### cutadapt:
   ```yaml
@@ -222,7 +223,7 @@ doc: |
 
   - For PE fastq input, please enter the reads 1 file in `reads1` and the reads 2 file in `reads2`.
   - For SE fastq input, enter the single ends reads file in `reads1` and leave `reads2` empty as it is optional.
-  - For BAM input, please enter the reads file in `reads1` and leave `reads2` empty as it is optional.
+  - For alignment input (SAM/BAM/CRAM), please enter the reads file in `reads1` and leave `reads2` empty as it is optional.
 
   2) `r1_adapter` and `r2_adapter` are OPTIONAL:
 
@@ -333,11 +334,14 @@ inputs:
       \ be when genome_tar is unpackaged", default: "GRCh38_v39_CTAT_lib_Mar242022.CUSTOM"}
 
   # samtools fastq
-  samtools_fastq_cores: {type: 'int?', doc: "Num cores for bam2fastq conversion, if\
-      \ input is bam", default: 16}
-  input_type: {type: [{type: 'enum', name: input_type, symbols: ["PEBAM", "SEBAM",
-          "FASTQ"]}], doc: "Please select one option for input file type, PEBAM (paired-end\
-      \ BAM), SEBAM (single-end BAM) or FASTQ."}
+  samtools_fastq_cores: {type: 'int?', doc: "Num cores for align2fastq conversion,\
+      \ if input is an alignment file", default: 16}
+  input_type: {type: [{type: 'enum', name: input_type, symbols: ["PE_ALIGN", "SE_ALIGN",
+          "FASTQ"]}], doc: "Please select one option for input file type, PE_ALIGN\
+      \ (paired-end ALIGNment), SE_ALIGN (single-end ALIGNment) or FASTQ."}
+  cram_reference: {type: 'File?', secondaryFiles: [.fai], doc: "If input align is\
+      \ cram and you are uncertain all contigs are registered at http://www.ebi.ac.uk/ena/cram/md5/,\
+      \ provide here"}
   # cutadapt
   r1_adapter: {type: 'string?', doc: "Optional input. If the input reads have already\
       \ been trimmed, leave these as null. If they do need trimming, supply the adapters."}
@@ -597,7 +601,7 @@ steps:
       star_rg_line: outSAMattrRGline
     out: [outname, outsample, outrg]
 
-  bam2fastq:
+  align2fastq:
     # Skip if input is FASTQ already
     run: ../tools/samtools_fastq.cwl
     when: $(inputs.input_type != "FASTQ")
@@ -606,6 +610,7 @@ steps:
       SampleID: basename_picker/outname
       cores: samtools_fastq_cores
       input_type: input_type
+      cram_reference: cram_reference
     out: [fq1, fq2]
 
   cutadapt_3-4:
@@ -614,10 +619,10 @@ steps:
     when: $(inputs.r1_adapter != null)
     in:
       readFilesIn1:
-        source: [bam2fastq/fq1, reads1]
+        source: [align2fastq/fq1, reads1]
         pickValue: first_non_null
       readFilesIn2:
-        source: [bam2fastq/fq2, reads2]
+        source: [align2fastq/fq2, reads2]
         pickValue: first_non_null
       r1_adapter: r1_adapter
       r2_adapter: r2_adapter
@@ -625,16 +630,16 @@ steps:
     out: [trimmedReadsR1, trimmedReadsR2, cutadapt_stats]
 
   star_2-7-10a:
-    # will get fastq from first non-null in this order - cutadapt, bam2fastq, wf input
+    # will get fastq from first non-null in this order - cutadapt, align2fastq, wf input
     run: ../tools/star_2.7.10a_align.cwl
     in:
       outSAMattrRGline: basename_picker/outrg
       genomeDir: STARgenome
       readFilesIn1:
-        source: [cutadapt_3-4/trimmedReadsR1, bam2fastq/fq1, reads1]
+        source: [cutadapt_3-4/trimmedReadsR1, align2fastq/fq1, reads1]
         pickValue: first_non_null
       readFilesIn2:
-        source: [cutadapt_3-4/trimmedReadsR1, bam2fastq/fq2, reads2]
+        source: [cutadapt_3-4/trimmedReadsR1, align2fastq/fq2, reads2]
         pickValue: first_non_null
       outFileNamePrefix: basename_picker/outname
       runThreadN: runThreadN
@@ -798,10 +803,10 @@ steps:
       transcript_idx: kallisto_idx
       strand: strand_parse/kallisto_std
       reads1:
-        source: [cutadapt_3-4/trimmedReadsR1, bam2fastq/fq1, reads1]
+        source: [cutadapt_3-4/trimmedReadsR1, align2fastq/fq1, reads1]
         pickValue: first_non_null
       reads2:
-        source: [cutadapt_3-4/trimmedReadsR2, bam2fastq/fq2, reads2]
+        source: [cutadapt_3-4/trimmedReadsR2, align2fastq/fq2, reads2]
         pickValue: first_non_null
       SampleID: basename_picker/outname
       avg_frag_len: kallisto_avg_frag_len
@@ -858,5 +863,5 @@ hints:
 - SE
 - STAR
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v4.1.0'
+- id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v4.2.0'
   label: github-release
