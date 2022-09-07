@@ -60,7 +60,7 @@ doc: |
   ```yaml
   inputs:
     output_basename: { type: 'string?', doc: "String to use as basename for outputs. Will use read1 file basename if null." }
-    reads1: { type: File, doc: "Input fastq file, gzipped or uncompressed OR bam file" }
+    reads1: { type: File, doc: "Input fastq file, gzipped or uncompressed OR alignment file file" }
     reads2: { type: 'File?', doc: "If paired end, R2 reads files, gzipped or uncompressed" }
 
     wf_strand_param: { type: [{type: 'enum', name: wf_strand_param, symbols: ["default",
@@ -320,7 +320,8 @@ inputs:
     secondaryFiles: ['.fai']}
   output_basename: {type: 'string?', doc: "String to use as basename for outputs.\
       \ Will use read1 file basename if null"}
-  reads1: {type: File, doc: "Input fastq file, gzipped or uncompressed OR bam file"}
+  reads1: {type: File, doc: "Input fastq file, gzipped or uncompressed OR alignment\
+      \ file"}
   reads2: {type: 'File?', doc: "If paired end, R2 reads files, gzipped or uncompressed"}
 
   wf_strand_param: {type: [{type: 'enum', name: wf_strand_param, symbols: ["default",
@@ -852,6 +853,7 @@ hints:
 - ANNOFUSE
 - ARRIBA
 - BAM
+- CRAM
 - CUTADAPT
 - FASTQ
 - KALLISTO
