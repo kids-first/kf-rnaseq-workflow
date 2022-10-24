@@ -633,6 +633,9 @@ steps:
   star_2-7-10a:
     # will get fastq from first non-null in this order - cutadapt, align2fastq, wf input
     run: ../tools/star_2.7.10a_align.cwl
+    hints:
+    - class: 'sbg:AWSInstanceType'
+      value: c4.8xlarge;ebs-gp2;500
     in:
       outSAMattrRGline: basename_picker/outrg
       genomeDir: STARgenome
