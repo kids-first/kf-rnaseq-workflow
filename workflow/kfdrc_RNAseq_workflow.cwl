@@ -523,7 +523,7 @@ inputs:
   # annoFuse
   sample_name: {type: 'string?', doc: "Sample ID of the input reads. If not provided,\
       \ will use reads1 file basename."}
-  annofuse_col_num: {type: 'int?', doc: "column number in file of fusion name."}
+  annofuse_col_num: {type: 'int?', doc: "column number in file of fusion name.", default: 30}
   # rmats
   rmats_read_length: {type: 'int', doc: "Input read length for sample reads."}
   rmats_variable_read_length: {type: 'boolean?', doc: "Allow reads with lengths that\

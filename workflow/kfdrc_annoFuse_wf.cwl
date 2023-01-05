@@ -7,10 +7,10 @@ requirements:
 inputs:
   sample_name: { type: 'string', doc: "Sample name to apply. Ought to be one from some kind of clinical database" }
   FusionGenome: { type: 'File', doc: "GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz", "sbg:suggestedValue": { class: 'File', path: '5d9c8d04e4b0950cce147f94', name: 'GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz' }}
-  genome_untar_path: { type: 'string?', doc: "This is what the path will be when genome_tar is unpackaged", default: "GRCh38_v27_CTAT_lib_Feb092018/ctat_genome_lib_build_dir" }
+  genome_untar_path: { type: 'string?', doc: "This is what the path will be when genome_tar is unpackaged", default: "GRCh38_v39_CTAT_lib_Mar242022.CUSTOM" }
   rsem_expr_file: { type: 'File', doc: "gzipped rsem gene expression file" }
   arriba_output_file: { type: 'File', doc: "Output from arriba, usually extension arriba.fusions.tsv" }
-  col_num: { type: 'int?', doc: "column number in file of fusion name." }
+  col_num: { type: 'int?', doc: "column number in file of fusion name, use 24 for arriba v1.1, 30 for v2", default: 30 }
   star_fusion_output_file: { type: 'File', doc: "Output from STAR Fusion, usually extension STAR.fusion_predictions.abridged.coding_effect.tsv" }
   output_basename: { type: 'string', doc: "String to use as basename for outputs" }
 
