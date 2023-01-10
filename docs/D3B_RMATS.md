@@ -24,8 +24,8 @@ The rMATS workflow can also be run as a standalone workflow. In this workflow, r
 
 ### Outputs
 
- - `filtered_alternative_3_prime_splice_sites_jc`: File extension `filtered.A3SS.MATS.JC.txt`. Alternative 3 prime splice sites JC.txt output from RMATs containing only those calls with 10 or more read counts of support
- - `filtered_alternative_5_prime_splice_sites_jc`: File extension `filtered.A5SS.MATS.JC.txt`. Alternative 5 prime splice sites JC.txt output from RMATs containing only those calls with 10 or more read counts of support
- - `filtered_mutually_exclusive_exons_jc`: File extension `filtered.MXE.MATS.JC.txt`. Mutually exclusive exons JC.txt output from RMATs containing only those calls with 10 or more read counts of support
- - `filtered_retained_introns_jc`: File extension `filtered.RI.MATS.JC.txt`. Retained introns JC.txt output from RMATs containing only those calls with 10 or more read counts of support
- - `filtered_skipped_exons_jc`: File extension `filtered.SE.MATS.JC.txt`. Skipped exons JC.txt output from RMATs containing only those calls with 10 or more read counts of support
+ - `filtered_alternative_3_prime_splice_sites_jc`: File extension `filtered.A3SS.MATS.JC.txt`. Alternative 3 prime splice sites JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
+ - `filtered_alternative_5_prime_splice_sites_jc`: File extension `filtered.A5SS.MATS.JC.txt`. Alternative 5 prime splice sites JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
+ - `filtered_mutually_exclusive_exons_jc`: File extension `filtered.MXE.MATS.JC.txt`. Mutually exclusive exons JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
+ - `filtered_retained_introns_jc`: File extension `filtered.RI.MATS.JC.txt`. Retained introns JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
+ - `filtered_skipped_exons_jc`: File extension `filtered.SE.MATS.JC.txt`. Skipped exons JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support

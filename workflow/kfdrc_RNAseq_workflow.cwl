@@ -288,15 +288,15 @@ doc: |
     annofuse_filtered_fusions_tsv: {type: 'File?', outputSource: annofuse/annofuse_filtered_fusions_tsv,
       doc: "Filtered fusions called by annoFuse."}
     rmats_filtered_alternative_3_prime_splice_sites_jc: {type: 'File', outputSource: rmats/filtered_alternative_3_prime_splice_sites_jc,
-      doc: "Alternative 3 prime splice sites JC.txt output from RMATs containing only those calls with 10 or more read counts of support"}
+      doc: "Alternative 3 prime splice sites JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support"}
     rmats_filtered_alternative_5_prime_splice_sites_jc: {type: 'File', outputSource: rmats/filtered_alternative_5_prime_splice_sites_jc,
-      doc: "Alternative 5 prime splice sites JC.txt output from RMATs containing only those calls with 10 or more read counts of support"}
+      doc: "Alternative 5 prime splice sites JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support"}
     rmats_filtered_mutually_exclusive_exons_jc: {type: 'File', outputSource: rmats/filtered_mutually_exclusive_exons_jc,
-      doc: "Mutually exclusive exons JC.txt output from RMATs containing only those calls with 10 or more read counts of support"}
+      doc: "Mutually exclusive exons JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support"}
     rmats_filtered_retained_introns_jc: {type: 'File', outputSource: rmats/filtered_retained_introns_jc,
-      doc: "Retained introns JC.txt output from RMATs containing only those calls with 10 or more read counts of support"}
+      doc: "Retained introns JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support"}
     rmats_filtered_skipped_exons_jc: {type: 'File', outputSource: rmats/filtered_skipped_exons_jc,
-      doc: "Skipped exons JC.txt output from RMATs containing only those calls with 10 or more read counts of support"}
+      doc: "Skipped exons JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support"}
   ```
 
   ## Reference build notes:
@@ -576,19 +576,19 @@ outputs:
     doc: "Filtered fusions called by annoFuse."}
   rmats_filtered_alternative_3_prime_splice_sites_jc: {type: 'File', outputSource: rmats/filtered_alternative_3_prime_splice_sites_jc,
     doc: "Alternative 3 prime splice sites JC.txt output from RMATs containing only\
-      \ those calls with 10 or more read counts of support"}
+      \ those calls with 10 or more junction spanning read counts of support"}
   rmats_filtered_alternative_5_prime_splice_sites_jc: {type: 'File', outputSource: rmats/filtered_alternative_5_prime_splice_sites_jc,
     doc: "Alternative 5 prime splice sites JC.txt output from RMATs containing only\
-      \ those calls with 10 or more read counts of support"}
+      \ those calls with 10 or more junction spanning read counts of support"}
   rmats_filtered_mutually_exclusive_exons_jc: {type: 'File', outputSource: rmats/filtered_mutually_exclusive_exons_jc,
     doc: "Mutually exclusive exons JC.txt output from RMATs containing only those\
-      \ calls with 10 or more read counts of support"}
+      \ calls with 10 or more junction spanning read counts of support"}
   rmats_filtered_retained_introns_jc: {type: 'File', outputSource: rmats/filtered_retained_introns_jc,
     doc: "Retained introns JC.txt output from RMATs containing only those calls with\
-      \ 10 or more read counts of support"}
+      \ 10 or more junction spanning read counts of support"}
   rmats_filtered_skipped_exons_jc: {type: 'File', outputSource: rmats/filtered_skipped_exons_jc,
     doc: "Skipped exons JC.txt output from RMATs containing only those calls with\
-      \ 10 or more read counts of support"}
+      \ 10 or more junction spanning read counts of support"}
 
 steps:
   basename_picker:
