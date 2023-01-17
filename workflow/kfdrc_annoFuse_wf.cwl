@@ -39,6 +39,9 @@ steps:
       [formatted_fusion_tsv]
 
   annotate_arriba:
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c5.2xlarge
     run: ../tools/fusion_annotator.cwl
     in:
       input_fusion_file: format_arriba_output/formatted_fusion_tsv
