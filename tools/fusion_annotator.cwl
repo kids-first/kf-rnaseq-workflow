@@ -4,7 +4,7 @@ id: fusion_annotator
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'migbro/fusionanno:0.1.1'
+    dockerPull: 'migbro/fusionannotator:0.1.1'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 4
@@ -15,7 +15,7 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      -I pigz -cf $(inputs.genome_tar.path) &&
+      -I pigz -xf $(inputs.genome_tar.path) &&
       /opt/FusionAnnotator/FusionAnnotator
       --genome_lib_dir ./$(inputs.genome_untar_path)
       --annotate $(inputs.input_fusion_file.path)
