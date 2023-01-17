@@ -4,7 +4,7 @@ id: annoFuse
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/annofuse:0.90.0'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/annofuse:0.91.0'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 4
