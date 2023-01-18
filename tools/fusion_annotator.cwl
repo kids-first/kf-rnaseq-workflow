@@ -4,7 +4,7 @@ id: fusion_annotator
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'migbro/fusionannotator:0.1.1'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/fusionannotator:0.1.1'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 4
