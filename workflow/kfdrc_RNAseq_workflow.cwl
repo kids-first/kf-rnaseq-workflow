@@ -202,7 +202,8 @@ doc: |
   ### annoFuse:
   ```yaml
     sample_name: {type: 'string?', doc: "Sample ID of the input reads. If not provided, will use reads1 file basename."}
-    annofuse_col_num: {type: 'int?', doc: "column number in file of fusion name."}
+    annofuse_col_num: {type: 'int?', doc: "0-based column number in file of fusion name."}
+    fusion_annotator_ref: { type: 'File', doc: "Tar ball with fusion_annot_lib.idx and blast_pairs.idx from STAR-Fusion CTAT Genome lib. Can be same as FusionGenome, but only two files needed from that package", "sbg:suggestedValue": { class: 'File', path: '63cff818facdd82011c8d6fe', name: 'GRCh38_v39_fusion_annot_custom.tar.gz' }}
   ```
   ### rmats
   ```yaml
@@ -301,6 +302,7 @@ doc: |
 
   ## Reference build notes:
    - STAR-Fusion reference built with command `/usr/local/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl --gtf gencode.v39.primary_assembly.annotation.gtf --annot_filter_rule ../AnnotFilterRule.pm --CPU 36 --fusion_annot_lib ../fusion_lib.Mar2021.dat.gz --genome_fa ../GRCh38.primary_assembly.genome.fa --output_dir GRCh38_v39_CTAT_lib_Mar242022.CUSTOM --human_gencode_filter --pfam_db current --dfam_db human 2> build.errs > build.out &`
+   - fusion_annotator_ref built by placing GRCh38_v39_CTAT_lib_Mar242022.CUSTOM/fusion_annot_lib.idx and GRCh38_v39_CTAT_lib_Mar242022.CUSTOM/blast_pairs.idx into its own tar ball
    - kallisto index built using RSEM `RSEM_GENCODE39.transcripts.fa` file as transcriptome fasta, using command: `kallisto index -i RSEM_GENCODE39.transcripts.kallisto.idx RSEM_GENCODE39.transcripts.fa`
    - RNA-SEQc reference built using [collapse gtf script](https://github.com/broadinstitute/gtex-pipeline/blob/master/gene_model/collapse_annotation.py)
      - Two references needed if data are stranded vs. unstranded
@@ -523,7 +525,12 @@ inputs:
   # annoFuse
   sample_name: {type: 'string?', doc: "Sample ID of the input reads. If not provided,\
       \ will use reads1 file basename."}
-  annofuse_col_num: {type: 'int?', doc: "column number in file of fusion name.", default: 30}
+  annofuse_col_num: {type: 'int?', doc: "0-based column number in file of fusion name.",
+    default: 30}
+  fusion_annotator_ref: {type: 'File', doc: "Tar ball with fusion_annot_lib.idx and\
+      \ blast_pairs.idx from STAR-Fusion CTAT Genome lib. Can be same as FusionGenome,\
+      \ but only two files needed from that package", "sbg:suggestedValue": {class: 'File',
+      path: '63cff818facdd82011c8d6fe', name: 'GRCh38_v39_fusion_annot_custom.tar.gz'}}
   # rmats
   rmats_read_length: {type: 'int', doc: "Input read length for sample reads."}
   rmats_variable_read_length: {type: 'boolean?', doc: "Allow reads with lengths that\
@@ -818,7 +825,7 @@ steps:
     run: ../workflow/kfdrc_annoFuse_wf.cwl
     in:
       sample_name: basename_picker/outsample
-      FusionGenome: FusionGenome
+      FusionGenome: fusion_annotator_ref
       genome_untar_path: star_fusion_genome_untar_path
       rsem_expr_file: rsem/gene_out
       arriba_output_file: arriba_fusion_2-2-1/arriba_fusions
@@ -865,5 +872,5 @@ hints:
 - SE
 - STAR
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v4.2.2'
+- id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v4.3.0'
   label: github-release

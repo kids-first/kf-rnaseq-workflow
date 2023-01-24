@@ -6,11 +6,11 @@ requirements:
 
 inputs:
   sample_name: { type: 'string', doc: "Sample name to apply. Ought to be one from some kind of clinical database" }
-  FusionGenome: { type: 'File', doc: "GRCh38_v27_CTAT_lib_Feb092018.plug-n-play.tar.gz", "sbg:suggestedValue": { class: 'File', path: '62853e7ad63f7c6d8d7ae5a8', name: 'GRCh38_v39_CTAT_lib_Mar242022.CUSTOM.tar.gz' }}
+  FusionGenome: { type: 'File', doc: "Tar ball with fusion_annot_lib.idx and blast_pairs.idx from STAR-Fusion CTAT Genome lib", "sbg:suggestedValue": { class: 'File', path: '63cff818facdd82011c8d6fe', name: 'GRCh38_v39_fusion_annot_custom.tar.gz' } }
   genome_untar_path: { type: 'string?', doc: "This is what the path will be when genome_tar is unpackaged", default: "GRCh38_v39_CTAT_lib_Mar242022.CUSTOM" }
   rsem_expr_file: { type: 'File', doc: "gzipped rsem gene expression file" }
   arriba_output_file: { type: 'File', doc: "Output from arriba, usually extension arriba.fusions.tsv" }
-  col_num: { type: 'int?', doc: "column number in file of fusion name, use 24 for arriba v1.1, 30 for v2", default: 30 }
+  col_num: { type: 'int?', doc: "0-based column number in file of fusion name, use 24 for arriba v1.1, 30 for v2", default: 30 }
   star_fusion_output_file: { type: 'File', doc: "Output from STAR Fusion, usually extension STAR.fusion_predictions.abridged.coding_effect.tsv" }
   output_basename: { type: 'string', doc: "String to use as basename for outputs" }
 
@@ -39,9 +39,6 @@ steps:
       [formatted_fusion_tsv]
 
   annotate_arriba:
-    hints:
-      - class: 'sbg:AWSInstanceType'
-        value: c5.2xlarge
     run: ../tools/fusion_annotator.cwl
     in:
       input_fusion_file: format_arriba_output/formatted_fusion_tsv
@@ -65,3 +62,8 @@ steps:
 
 $namespaces:
   sbg: https://sevenbridges.com
+
+hints:
+  - class: 'sbg:AWSInstanceType'
+    value: c5.2xlarge;ebs-gp2;400
+    doc: "Chosen for speed and lower cost"
