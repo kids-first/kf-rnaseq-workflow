@@ -19,22 +19,10 @@ outputs:
 
 steps:
   format_arriba_output:
-    run: ../tools/format_fusion_file.cwl
+    run: ../tools/format_arriba_fusion_file.cwl
     in:
-      input_caller_fusion_file: arriba_output_file
+      arriba_fusion_file: arriba_output_file
       sample_name: sample_name
-      caller:
-        valueFrom: ${ return "arriba" }
-    out:
-      [formatted_fusion_tsv]
-
-  format_starfusion_output:
-    run: ../tools/format_fusion_file.cwl
-    in:
-      input_caller_fusion_file: star_fusion_output_file
-      sample_name: sample_name
-      caller:
-        valueFrom: ${ return "starfusion" }
     out:
       [formatted_fusion_tsv]
 
@@ -53,7 +41,7 @@ steps:
     run: ../tools/annoFuse.cwl
     in:
       arriba_formatted_fusions: annotate_arriba/annotated_tsv
-      starfusion_formatted_fusions: format_starfusion_output/formatted_fusion_tsv
+      starfusion_formatted_fusions: star_fusion_output_file
       rsem_expr_file: rsem_expr_file
       sample_name: sample_name
       output_basename: output_basename

@@ -32,7 +32,7 @@ This workflow is the current production workflow, equivalent to this [Cavatica p
 ### [Arriba](docs/ARRIBA_2.2.1.md)
 [Arriba v2.2.1](https://github.com/suhrig/arriba/) Fusion caller that uses `STAR` aligned reads and chimeric reads output.
 ### [annoFuse](docs/D3B_ANNOFUSE.md)
-[annoFuse 0.90.0](https://github.com/d3b-center/annoFuse/releases/tag/v0.90.0) Filter and prioritize fusion calls. For more information, please see the following [paper](https://www.biorxiv.org/content/10.1101/839738v3).
+[annoFuse 0.92.0](https://github.com/d3b-center/annoFuse/releases/tag/v0.92.0) Filter and prioritize fusion calls. For more information, please see the following [paper](https://www.biorxiv.org/content/10.1101/839738v3).
 ### RNA-SeQC
 [RNA-SeQC v2.3.4](https://github.com/broadinstitute/rnaseqc) Generate metrics such as gene and transcript counts, sense/antisene mapping, mapping rates, etc
 ### [rMATS](docs/D3B_RMATS.md)

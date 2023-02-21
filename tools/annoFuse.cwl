@@ -4,12 +4,16 @@ id: annoFuse
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/annofuse:0.91.0'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/annofuse:0.92.0'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 4
     ramMin: 8000
-
+  - class: InitialWorkDirRequirement
+    listing:
+      - entryname: annoFusePerSample.R
+        entry:
+          $include: ../scripts/annoFusePerSample.R
 baseCommand: []
 arguments:
   - position: 1
@@ -24,7 +28,7 @@ arguments:
         exit 0;
       fi
 
-      Rscript /rocker-build/annoFusePerSample.R
+      Rscript annoFusePerSample.R
       --fusionfileArriba $(inputs.arriba_formatted_fusions.path)
       --fusionfileStarFusion $(inputs.starfusion_formatted_fusions.path)
       --expressionFile $(inputs.rsem_expr_file.path)
