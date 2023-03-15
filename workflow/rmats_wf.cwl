@@ -48,6 +48,7 @@ outputs:
   filtered_mutually_exclusive_exons_jc: {type: 'File', outputSource: filter_me_exons/output, doc: "Mutually exclusive exons JC.txt output from RMATs containing only those calls with 10 or more read counts of support" }
   filtered_retained_introns_jc: {type: 'File', outputSource: filter_retained_introns/output, doc: "Retained introns JC.txt output from RMATs containing only those calls with 10 or more read counts of support" }
   filtered_skipped_exons_jc: {type: 'File', outputSource: filter_skipped_exons/output, doc: "Skipped exons JC.txt output from RMATs containing only those calls with 10 or more read counts of support" }
+  unfiltered_results: { type: 'File[]', outputSource: [rmats_both_bam/alternative_3_prime_splice_sites_jc, rmats_both_bam/alternative_5_prime_splice_sites_jc, rmats_both_bam/mutually_exclusive_exons_jc, rmats_both_bam/retained_introns_jc, rmats_both_bam/skipped_exons_jc, rmats_both_bam/temp_read_outcomes, rmats_both_bam/summary_file] }
 
 steps:
   rmats_both_bam: 
@@ -66,7 +67,7 @@ steps:
       output_directory: output_basename
       threads: rmats_threads
       ram: rmats_ram
-    out: [alternative_3_prime_splice_sites_jc, alternative_5_prime_splice_sites_jc, mutually_exclusive_exons_jc, retained_introns_jc, skipped_exons_jc]
+    out: [alternative_3_prime_splice_sites_jc, alternative_5_prime_splice_sites_jc, mutually_exclusive_exons_jc, retained_introns_jc, skipped_exons_jc, temp_read_outcomes, summary_file]
   filter_alt_3_prime:
     run: ../tools/awk_junction_filtering.cwl
     in:
