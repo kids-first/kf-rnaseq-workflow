@@ -99,6 +99,10 @@ cram_reference: { type: 'File?', secondaryFiles: [.fai], doc: "If input align is
 ```yaml
 r1_adapter: { type: 'string?', doc: "Optional input. If the input reads have already been trimmed, leave these as null. If they do need trimming, supply the adapters." }
 r2_adapter: { type: 'string?', doc: "Optional input. If the input reads have already been trimmed, leave these as null. If they do need trimming, supply the adapters." }
+min_len: { type: 'int?', doc: "If you do not use this option, reads that have a length of zero (empty reads) are kept in the output", default: 20 }
+quality_base: { type: 'int?', doc: "Phred scale used", default: 33 }
+quality_cutoff: {type: 'int[]?', doc: "Quality trim cutoff, see https://cutadapt.readthedocs.io/en/v3.4/guide.html#quality-trimming for how 5' 3' is handled" }
+
 ```
 ### STAR:
 This section may seem overwhelming.
@@ -225,6 +229,9 @@ Kids First favors setting/overriding defaults with "arriba-heavy" specified in [
 
 - If the input reads have already been trimmed, leave these as null and cutadapt step will simple pass on the fastq files to STAR.
 - If they do need trimming, supply the adapters and the cutadapt step will trim, and pass trimmed fastqs along.
+- `min_len` if adapter is trimmed, currently set to min `20` bp. Change this as you see fit
+- `quality_base` set to phred scale `33` by default if trimming. There was a weird time when `64` was used - change if different
+- `quality_cutoff` if adapter is trimmed and you want to set a min bp quality. A single value will apply to both paired ends, 2 values will allow you to assign a different one to each (unusual)
 
 3) `wf_strand_param` is a workflow convenience param so that, if you input the following, the equivalent will propagate to the four tools that use that parameter:
 
