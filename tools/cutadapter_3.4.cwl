@@ -39,8 +39,8 @@ inputs:
     inputBinding: { prefix: "-m", position: 4 } }
   quality_base: { type: 'int?', doc: "Phred scale used", default: 33,
     inputBinding: { prefix: "--quality-base", position: 4 } }
-  quality_cutoff: {type: 'int?', doc: "Quality trim cutoff, see https://cutadapt.readthedocs.io/en/v3.4/guide.html#quality-trimming for how 5' 3' is handled", default: 20,
-    inputBinding: { prefix: "--quality-cutoff", position: 4, itemSeparator: "," } }
+  quality_cutoff: {type: 'int[]?', doc: "Quality trim cutoff, see https://cutadapt.readthedocs.io/en/v3.4/guide.html#quality-trimming for how 5' 3' is handled",
+    inputBinding: { prefix: "--quality-cutoff", position: 4, itemSeparator: ",", shellQuote: false} }
   readFilesIn1: { type: File, doc: "read1 fastq file", inputBinding: {position: 4} }
   readFilesIn2: { type: 'File?', doc: "read2 fastq file, if paired", inputBinding: {position: 4} }
   sample_name: string

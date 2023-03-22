@@ -104,6 +104,10 @@ doc: |
   ```yaml
   r1_adapter: { type: 'string?', doc: "Optional input. If the input reads have already been trimmed, leave these as null. If they do need trimming, supply the adapters." }
   r2_adapter: { type: 'string?', doc: "Optional input. If the input reads have already been trimmed, leave these as null. If they do need trimming, supply the adapters." }
+  min_len: { type: 'int?', doc: "If you do not use this option, reads that have a length of zero (empty reads) are kept in the output", default: 20 }
+  quality_base: { type: 'int?', doc: "Phred scale used", default: 33 }
+  quality_cutoff: {type: 'int[]?', doc: "Quality trim cutoff, see https://cutadapt.readthedocs.io/en/v3.4/guide.html#quality-trimming for how 5' 3' is handled" }
+
   ```
   ### STAR:
   This section may seem overwhelming.
@@ -230,6 +234,9 @@ doc: |
 
   - If the input reads have already been trimmed, leave these as null and cutadapt step will simple pass on the fastq files to STAR.
   - If they do need trimming, supply the adapters and the cutadapt step will trim, and pass trimmed fastqs along.
+  - `min_len` if adapter is trimmed, currently set to min `20` bp. Change this as you see fit
+  - `quality_base` set to phred scale `33` by default if trimming. There was a weird time when `64` was used - change if different
+  - `quality_cutoff` if adapter is trimmed and you want to set a min bp quality. A single value will apply to both paired ends, 2 values will allow you to assign a different one to each (unusual)
 
   3) `wf_strand_param` is a workflow convenience param so that, if you input the following, the equivalent will propagate to the four tools that use that parameter:
 
@@ -307,13 +314,10 @@ doc: |
    - RNA-SEQc reference built using [collapse gtf script](https://github.com/broadinstitute/gtex-pipeline/blob/master/gene_model/collapse_annotation.py)
      - Two references needed if data are stranded vs. unstranded
      - Flag `--collapse_only` used for stranded
-
-
 requirements:
 - class: ScatterFeatureRequirement
 - class: MultipleInputFeatureRequirement
 - class: SubworkflowFeatureRequirement
-
 inputs:
   # many tool
   reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", "sbg:suggestedValue": {
@@ -325,7 +329,6 @@ inputs:
   reads1: {type: File, doc: "Input fastq file, gzipped or uncompressed OR alignment\
       \ file"}
   reads2: {type: 'File?', doc: "If paired end, R2 reads files, gzipped or uncompressed"}
-
   wf_strand_param: {type: [{type: 'enum', name: wf_strand_param, symbols: ["default",
           "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto,\
       \ 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the\
@@ -335,7 +338,6 @@ inputs:
       name: gencode.v39.primary_assembly.annotation.gtf}}
   star_fusion_genome_untar_path: {type: 'string?', doc: "This is what the path will\
       \ be when genome_tar is unpackaged", default: "GRCh38_v39_CTAT_lib_Mar242022.CUSTOM"}
-
   # samtools fastq
   samtools_fastq_cores: {type: 'int?', doc: "Num cores for align2fastq conversion,\
       \ if input is an alignment file", default: 16}
@@ -350,6 +352,11 @@ inputs:
       \ been trimmed, leave these as null. If they do need trimming, supply the adapters."}
   r2_adapter: {type: 'string?', doc: "Optional input. If the input reads have already\
       \ been trimmed, leave these as null. If they do need trimming, supply the adapters."}
+  min_len: {type: 'int?', doc: "If you do not use this option, reads that have a length\
+      \ of zero (empty reads) are kept in the output", default: 20}
+  quality_base: {type: 'int?', doc: "Phred scale used", default: 33}
+  quality_cutoff: {type: 'int[]?', doc: "Quality trim cutoff, see https://cutadapt.readthedocs.io/en/v3.4/guide.html#quality-trimming\
+      \ for how 5' 3' is handled"}
   # STAR
   outSAMattrRGline: {type: 'string?', doc: "Suggested setting format is: ID:sample_name\
       \ LB:aliquot_id PL:platform SM:BSID for example ID:7316-242 LB:750189 PL:ILLUMINA\
@@ -496,7 +503,6 @@ inputs:
       \ bases to trigger mates merging and realignment. Specify >0 value to switch\
       \ on the 'merging of overlapping mates'algorithm. SF recommends 12,  AR recommends\
       \ 10"}
-
   # arriba
   arriba_memory: {type: 'int?', doc: "Mem intensive tool. Set in GB", default: 64}
   # STAR Fusion
@@ -504,7 +510,7 @@ inputs:
       class: File, path: 62853e7ad63f7c6d8d7ae5a8, name: GRCh38_v39_CTAT_lib_Mar242022.CUSTOM.tar.gz}}
   compress_chimeric_junction: {type: 'boolean?', default: true, doc: 'If part of a
       workflow, recommend compressing this file as final output'}
-  # RNAseQC
+  # RNASeQC
   RNAseQC_GTF: {type: 'File', doc: "gtf file from `gtf_anno` that has been collapsed\
       \ GTEx-style", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a3,
       name: gencode.v39.primary_assembly.rnaseqc.stranded.gtf}}
@@ -535,7 +541,7 @@ inputs:
   rmats_read_length: {type: 'int', doc: "Input read length for sample reads."}
   rmats_variable_read_length: {type: 'boolean?', doc: "Allow reads with lengths that\
       \ differ from --readLength to be processed. --readLength will still be used\
-      \ to determine IncFormLen and SkipFormLen."}
+      \ to determine IncFormLen and SkipFormLen.", default: true}
   rmats_novel_splice_sites: {type: 'boolean?', doc: "Select for novel splice site\
       \ detection or unannotated splice sites. 'true' to detect or add this parameter,\
       \ 'false' to disable denovo detection. Tool Default: false"}
@@ -549,7 +555,6 @@ inputs:
   rmats_read_type: {type: ['null', {type: enum, name: rmats_read_type, symbols: [
           "single", "paired"]}], default: "paired", doc: "Indicate whether input reads\
       \ are single- or paired-end"}
-
 outputs:
   cutadapt_stats: {type: 'File?', outputSource: cutadapt_3-4/cutadapt_stats, doc: "Cutadapt\
       \ stats output, only if adapter is supplied."}
@@ -596,7 +601,6 @@ outputs:
   rmats_filtered_skipped_exons_jc: {type: 'File', outputSource: rmats/filtered_skipped_exons_jc,
     doc: "Skipped exons JC.txt output from RMATs containing only those calls with\
       \ 10 or more junction spanning read counts of support"}
-
 steps:
   basename_picker:
     run: ../tools/basename_picker.cwl
@@ -608,7 +612,6 @@ steps:
       sample_name: sample_name
       star_rg_line: outSAMattrRGline
     out: [outname, outsample, outrg]
-
   align2fastq:
     # Skip if input is FASTQ already
     run: ../tools/samtools_fastq.cwl
@@ -620,7 +623,6 @@ steps:
       input_type: input_type
       cram_reference: cram_reference
     out: [fq1, fq2]
-
   cutadapt_3-4:
     # Skip if no adapter given, get fastq from prev step if not null or wf input
     run: ../tools/cutadapter_3.4.cwl
@@ -634,9 +636,11 @@ steps:
         pickValue: first_non_null
       r1_adapter: r1_adapter
       r2_adapter: r2_adapter
+      min_len: min_len
+      quality_base: quality_base
+      quality_cutoff: quality_cutoff
       sample_name: basename_picker/outname
     out: [trimmedReadsR1, trimmedReadsR2, cutadapt_stats]
-
   star_2-7-10a:
     # will get fastq from first non-null in this order - cutadapt, align2fastq, wf input
     run: ../tools/star_2.7.10a_align.cwl
@@ -647,7 +651,7 @@ steps:
         source: [cutadapt_3-4/trimmedReadsR1, align2fastq/fq1, reads1]
         pickValue: first_non_null
       readFilesIn2:
-        source: [cutadapt_3-4/trimmedReadsR1, align2fastq/fq2, reads2]
+        source: [cutadapt_3-4/trimmedReadsR2, align2fastq/fq2, reads2]
         pickValue: first_non_null
       outFileNamePrefix: basename_picker/outname
       runThreadN: runThreadN
@@ -692,14 +696,12 @@ steps:
       peOverlapNbasesMin: peOverlapNbasesMin
     out: [chimeric_junctions, chimeric_sam_out, gene_counts, genomic_bam_out, junctions_out,
       log_final_out, log_out, log_progress_out, transcriptome_bam_out]
-
   samtools_sort:
     run: ../tools/samtools_sort.cwl
     in:
       unsorted_bam: star_2-7-10a/genomic_bam_out
       chimeric_sam_out: star_2-7-10a/chimeric_sam_out
     out: [sorted_bam, sorted_bai, chimeric_bam_out]
-
   rmats:
     run: ../workflow/rmats_wf.cwl
     in:
@@ -723,13 +725,11 @@ steps:
       rmats_ram: rmats_ram
     out: [filtered_alternative_3_prime_splice_sites_jc, filtered_alternative_5_prime_splice_sites_jc,
       filtered_mutually_exclusive_exons_jc, filtered_retained_introns_jc, filtered_skipped_exons_jc]
-
   strand_parse:
     run: ../tools/expression_parse_strand_param.cwl
     in:
       wf_strand_param: wf_strand_param
     out: [rsem_std, kallisto_std, rnaseqc_std, arriba_std]
-
   star_fusion_1-10-1:
     run: ../tools/star_fusion_1.10.1_call.cwl
     in:
@@ -739,7 +739,6 @@ steps:
       genome_untar_path: star_fusion_genome_untar_path
       compress_chimeric_junction: compress_chimeric_junction
     out: [abridged_coding, chimeric_junction_compressed]
-
   arriba_fusion_2-2-1:
     run: ../tools/arriba_fusion_2.2.1.cwl
     in:
@@ -757,7 +756,6 @@ steps:
       outFileNamePrefix: basename_picker/outname
       arriba_strand_flag: strand_parse/arriba_std
     out: [arriba_fusions]
-
   arriba_draw_2-2-1:
     run: ../tools/arriba_draw_2.2.1.cwl
     in:
@@ -772,7 +770,6 @@ steps:
           }
       gtf_anno: gtf_anno
     out: [arriba_pdf]
-
   rsem:
     run: ../tools/rsem_calc_expression.cwl
     in:
@@ -783,7 +780,6 @@ steps:
       outFileNamePrefix: basename_picker/outname
       strandedness: strand_parse/rsem_std
     out: [gene_out, isoform_out]
-
   rna_seqc:
     run: ../tools/rnaseqc_2.4.2.cwl
     in:
@@ -795,7 +791,6 @@ steps:
         valueFrom: |
           $(self == "single")
     out: [Metrics, Gene_TPM, Gene_count, Exon_count]
-
   supplemental:
     run: ../tools/supplemental_tar_gz.cwl
     in:
@@ -804,7 +799,6 @@ steps:
       Gene_count: rna_seqc/Gene_count
       Exon_count: rna_seqc/Exon_count
     out: [RNASeQC_counts]
-
   kallisto:
     run: ../tools/kallisto_calc_expression.cwl
     in:
@@ -820,7 +814,6 @@ steps:
       avg_frag_len: kallisto_avg_frag_len
       std_dev: kallisto_std_dev
     out: [abundance_out]
-
   annofuse:
     run: ../workflow/kfdrc_annoFuse_wf.cwl
     in:
@@ -833,7 +826,6 @@ steps:
       col_num: annofuse_col_num
       output_basename: basename_picker/outname
     out: [annofuse_filtered_fusions_tsv]
-
   samtools_bam_to_cram:
     run: ../tools/samtools_bam_to_cram.cwl
     in:
@@ -847,7 +839,6 @@ steps:
             return bundle;
           }
     out: [output]
-
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
@@ -872,5 +863,5 @@ hints:
 - SE
 - STAR
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v4.4.0'
+- id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v4.5.0'
   label: github-release
