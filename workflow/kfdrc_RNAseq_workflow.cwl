@@ -538,10 +538,10 @@ inputs:
       \ but only two files needed from that package", "sbg:suggestedValue": {class: 'File',
       path: '63cff818facdd82011c8d6fe', name: 'GRCh38_v39_fusion_annot_custom.tar.gz'}}
   # rmats
-  rmats_read_length: {type: 'int', doc: "Input read length for sample reads."}
+  rmats_read_length: {type: 'int?', doc: "Input read length for sample reads."}
   rmats_variable_read_length: {type: 'boolean?', doc: "Allow reads with lengths that\
       \ differ from --readLength to be processed. --readLength will still be used\
-      \ to determine IncFormLen and SkipFormLen.", default: true}
+      \ to determine IncFormLen and SkipFormLen."}
   rmats_novel_splice_sites: {type: 'boolean?', doc: "Select for novel splice site\
       \ detection or unannotated splice sites. 'true' to detect or add this parameter,\
       \ 'false' to disable denovo detection. Tool Default: false"}
