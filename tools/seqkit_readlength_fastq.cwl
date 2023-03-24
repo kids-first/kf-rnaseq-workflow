@@ -15,7 +15,7 @@ arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
-      seqkit fx2tab -nl $(inputs.input_fastq.path) | head -n 1000000 | cut -f 2 | sort | uniq -c > $(inputs.input_fastq.nameroot).fastq_readlength
+      seqkit fx2tab -nl $(inputs.input_fastq.path) | head -n 1000000 | cut -f 2 | sort | uniq -c > $(inputs.input_fastq.nameroot).fastq_readlength | sort -nr -k1,1
 
 inputs:
   input_fastq: { type: File, doc: "Input fastq file"}
