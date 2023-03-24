@@ -1,6 +1,6 @@
 cwlVersion: v1.2
 class: CommandLineTool
-id: fastq_readlength
+id: seqkit_readlength_fastq
 doc: |-
   seqkit fx2tab -nl NA18152.fastq
 requirements:
@@ -25,3 +25,23 @@ outputs:
     type: File
     outputBinding:
       glob: "*.fastq_readlength"
+  top_readlength:
+    type: int
+    outputBinding:
+      glob: "*.fastq_readlength"
+      loadContents: true
+      outputEval: |
+        ${
+          var rows = self[0].contents.split(/\r?\n/).slice(0,-1);
+          return rows[0].split(/\s/).pop();
+        }
+  variable_readlength:
+    type: boolean
+    outputBinding:
+      glob: "*.fastq_readlength"
+      loadContents: true
+      outputEval: |
+        ${
+          var rows = self[0].contents.split(/\r?\n/).slice(0,-1);
+          return rows.length > 1;
+        }
