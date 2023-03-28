@@ -9,7 +9,7 @@ requirements:
   - class: ResourceRequirement
     coresMin: $(inputs.cores)
   - class: DockerRequirement
-    dockerPull: zqs891011/seqkit:2.3.1
+    dockerPull: pgc-images.sbgenomics.com/d3b-bixu/seqkit:2.3.1
 baseCommand: []
 arguments:
   - position: 0
