@@ -152,3 +152,5 @@ steps:
     out: [output]
 sbg:license: Apache License 2.0
 sbg:publisher: KFDRC
+$namespaces:
+  sbg: https://sevenbridges.com

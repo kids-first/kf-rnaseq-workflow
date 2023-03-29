@@ -63,7 +63,7 @@ doc: |
     reads1: { type: File, doc: "Input fastq file, gzipped or uncompressed OR alignment file file" }
     reads2: { type: 'File?', doc: "If paired end, R2 reads files, gzipped or uncompressed" }
 
-    wf_strand_param: { type: [{type: 'enum', name: wf_strand_param, symbols: ["default",
+    wf_strand_param: { type: ['null', {type: 'enum', name: wf_strand_param, symbols: ["default",
             "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto, 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the transcript, 'fr-stranded' if read1 same sense as transcript" }
     gtf_anno: { type: 'File', doc: "General transfer format (gtf) file with gene models corresponding to fasta reference" }
     star_fusion_genome_untar_path: {type: 'string?', doc: "This is what the path will be when genome_tar is unpackaged", default: "GRCh38_v39_CTAT_lib_Mar242022.CUSTOM"}
@@ -329,7 +329,7 @@ inputs:
   reads1: {type: File, doc: "Input fastq file, gzipped or uncompressed OR alignment\
       \ file"}
   reads2: {type: 'File?', doc: "If paired end, R2 reads files, gzipped or uncompressed"}
-  wf_strand_param: {type: [{type: 'enum', name: wf_strand_param, symbols: ["default",
+  wf_strand_param: {type: ['null', {type: 'enum', name: wf_strand_param, symbols: ["default",
           "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto,\
       \ 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the\
       \ transcript, 'fr-stranded' if read1 same sense as transcript"}
@@ -702,6 +702,13 @@ steps:
       unsorted_bam: star_2-7-10a/genomic_bam_out
       chimeric_sam_out: star_2-7-10a/chimeric_sam_out
     out: [sorted_bam, sorted_bai, chimeric_bam_out]
+  bam_strandness:
+    run: ../tools/bam_strandness.cwl
+    in:
+      input_bam: samtools_sort/sorted_bam
+      annotation_gtf: gtf_anno
+      kallisto_idx: kallisto_idx
+    out: [output, strandedness]
   rmats:
     run: ../workflow/rmats_wf.cwl
     in:
@@ -714,7 +721,8 @@ steps:
       variable_read_length: rmats_variable_read_length
       read_type: rmats_read_type
       strandedness:
-        source: wf_strand_param
+        source: [wf_strand_param, bam_strandness/strandedness]
+        pickValue: first_non_null
         valueFrom: |
           $(self == "rf-stranded" ? "fr-firststrand" : self == "fr-stranded" ? "fr-secondstrand" : "fr-unstranded")
       novel_splice_sites: rmats_novel_splice_sites
@@ -728,7 +736,9 @@ steps:
   strand_parse:
     run: ../tools/expression_parse_strand_param.cwl
     in:
-      wf_strand_param: wf_strand_param
+      wf_strand_param:
+        source: [wf_strand_param, bam_strandness/strandedness]
+        pickValue: first_non_null
     out: [rsem_std, kallisto_std, rnaseqc_std, arriba_std]
   star_fusion_1-10-1:
     run: ../tools/star_fusion_1.10.1_call.cwl
