@@ -2,7 +2,11 @@ cwlVersion: v1.2
 class: CommandLineTool
 id: seqkit_readlength_fastq
 doc: |-
-  seqkit fx2tab -nl NA18152.fastq
+  Given a fastq input:
+  - Use seqkit + head to grab the first 1000000 records and convert that to a TSV
+  - Grab the column that contains the read length from the TSV (column 2)
+  - Get the unique read lengths as well as their counts
+  - Sort those read lengths by count in descending order
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
