@@ -15,18 +15,21 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      samtools view -h $(inputs.input_bam.path) | head -n $(inputs.n_reads * 2) | samtools sort -n -@ $(inputs.cpu - 3) | samtools fastq -@ 2 -n -1 $(inputs.input_bam.nameroot).converted_1.fastq -2 $(inputs.input_bam.nameroot).converted_2.fastq -0 /dev/null -s /dev/null
+      samtools view -h $(inputs.input_bam.path) | head -n $(inputs.n_reads * 2) |
+      $(inputs.paired_end ? "samtools sort -n -@ " + (inputs.cpu - 3) + " |" : "")
+      samtools fastq -@ 2 -n $(inputs.paired_end ? "-1 1.fastq -2 2.fastq -0 /dev/null" : "-0 1.fastq") -s /dev/null
   - position: 10
     shellQuote: false
     prefix: "&&"
     valueFrom: >-
-      check_strandedness --gtf $(inputs.annotation_gtf.path) --kallisto_index $(inputs.kallisto_idx.path) --reads_1 $(inputs.input_bam.nameroot).converted_1.fastq --reads_2 $(inputs.input_bam.nameroot).converted_2.fastq --nreads $(inputs.n_reads) > $(inputs.input_bam.nameroot).bam.strandness
-  
+      check_strandedness --gtf $(inputs.annotation_gtf.path) --kallisto_index $(inputs.kallisto_idx.path) --reads_1 1.fastq $(inputs.paired_end ? "--reads_2 2.fastq" : "") --nreads $(inputs.n_reads) > $(inputs.input_bam.nameroot).bam.strandness
+
 inputs:
   input_bam: {type: File, doc: "Input bam file"}
-  annotation_gtf: {type: 'File', doc: "gtf file from `gtf_anno` that has been collapsed GTEx-style"}
+  annotation_gtf: {type: 'File', doc: "gtf file from `gtf_anno` is the primary gtf from gencode"}
   kallisto_idx: {type: 'File', doc: "Specialized index of a **transcriptome** fasta file for kallisto"}
   n_reads: {type: 'int?', doc: "number of reads to sample", default: 200000}
+  paired_end: { type: 'boolean?', doc: "Set to true if reads are paired end." }
   cpu: { type: 'int?', default: 16, doc: "CPUs to allocate to this task" }
 outputs:
   output:
