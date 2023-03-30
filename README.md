@@ -58,7 +58,7 @@ inputs:
   reads1: { type: File, doc: "Input fastq file, gzipped or uncompressed OR alignment file file" }
   reads2: { type: 'File?', doc: "If paired end, R2 reads files, gzipped or uncompressed" }
 
-  wf_strand_param: { type: [{type: 'enum', name: wf_strand_param, symbols: ["default",
+  wf_strand_param: { type: ['null', {type: 'enum', name: wf_strand_param, symbols: ["default",
           "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto, 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the transcript, 'fr-stranded' if read1 same sense as transcript" }
   gtf_anno: { type: 'File', doc: "General transfer format (gtf) file with gene models corresponding to fasta reference" }
   star_fusion_genome_untar_path: {type: 'string?', doc: "This is what the path will be when genome_tar is unpackaged", default: "GRCh38_v39_CTAT_lib_Mar242022.CUSTOM"}
@@ -233,7 +233,7 @@ Kids First favors setting/overriding defaults with "arriba-heavy" specified in [
 - `quality_base` set to phred scale `33` by default if trimming. There was a weird time when `64` was used - change if different
 - `quality_cutoff` if adapter is trimmed and you want to set a min bp quality. A single value will apply to both paired ends, 2 values will allow you to assign a different one to each (unusual)
 
-3) `wf_strand_param` is a workflow convenience param so that, if you input the following, the equivalent will propagate to the four tools that use that parameter:
+3) `wf_strand_param` is now *optional* as the workflow will try to determine strandedness for you. However, if you'd like to override autodetect, it is a workflow convenience param so that, if you input the following, the equivalent will propagate to the four tools that use that parameter:
 
 - `default`: 'rsem_std': null, 'kallisto_std': null, 'rnaseqc_std': null, 'arriba_std': null. This means unstranded or auto in the case of arriba.
 - `rf-stranded`: 'rsem_std': 0, 'kallisto_std': 'rf-stranded', 'rnaseqc_std': 'rf', 'arriba_std': 'reverse'.  This means if read1 in the input fastq/bam is reverse complement to the transcript that it maps to.
@@ -260,7 +260,7 @@ groups"`. See the STAR documentation on `outSAMattrRGline` for complete details.
 - `STARgenome`: STAR_2.7.10a_GENCODE39.tar.gz, created using the star_2.7.10a_genome_generate.cwl tool, using the `reference_fasta`, `gtf_anno`, and setting `sjdbOverhang` to 100
 - `kallisto_idx`: RSEM_GENCODE39.transcripts.kallisto.idx, built from RSEM GENCODE 39 transcript fasts, in `RSEMgenome` tar ball, following instructions from [here](https://pachterlab.github.io/kallisto/manual)
 
-6) rMATS requires you provide the length of the reads in the sample. If you are unsure of the length, you can set `rmats_variable_read_length` to true which will allow reads with a length other than the value you provided to be processed.
+6) rMATS requires the length of the reads in the sample. This workflow will attempt to estimate the read length based on a polling of reads. If the user wishes to override this value they can set `rmats_read_length` to their desired read length. Additionally, there is a `rmats_variable_read_legnth` boolean that users can set if their reads are not uniform in length. This workflow will poll the reads and set that value to true if it observes multiple read lengths. Like read length, user-provided input will override this guess.
 
 7) While `output_basename`, `sample_name`, and `outSAMattrRGline` are optional, it is strongly recommended that the user provide these values for data quality purposes. If the user does not provide these values, the basename of the reads1 file will be substituted in their place.
 
