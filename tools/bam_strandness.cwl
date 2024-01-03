@@ -6,10 +6,29 @@ doc: |-
 requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
+    expressionLib:
+      - |
+        /**
+        * Given the contents of a file and a string keyword. Return the post-colon value on the line containing the keyWord
+        * For instance if the line contents were KeyWord:Value, the function will return Value.
+        *
+        * @param {String} fileContents - The contents of the file
+        * @param {String} keyWord - The exact keyWord for which we will be checking
+        * @return {String, null} the string after the keyWord and colon; null if no keyWord found
+        */
+        function returnKeyValue (fileContents, keyWord) {
+          var rows = fileContents.split(/\r?\n/).slice(0,-1);
+          for (var row in rows) {
+            if (rows[row].search(keyWord) == 0) {
+              return rows[row].split(':')[1];
+            }
+          }
+          return null;
+        }
   - class: ResourceRequirement
     coresMin: $(inputs.cores)
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/stranded:1.0.0'
+    dockerPull: 'pgc-images.sbgenomics.com/danmiller/stranded:1.1.2'
 baseCommand: []
 arguments:
   - position: 1
@@ -36,6 +55,20 @@ outputs:
     type: File
     outputBinding:
       glob: "*.bam.strandness"
+  read_length_median:
+    type: int?
+    outputBinding:
+      glob: "*.bam.strandness"
+      loadContents: true
+      outputEval: |
+        $(parseInt(returnKeyValue(self[0].contents.trim(), "MedianReadLength")))
+  read_length_stddev:
+    type: float?
+    outputBinding:
+      glob: "*.bam.strandness"
+      loadContents: true
+      outputEval: |
+        $(parseFloat(returnKeyValue(self[0].contents.trim(), "StddevReadLength")))
   strandedness:
     type:
       - 'null'

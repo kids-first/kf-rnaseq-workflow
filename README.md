@@ -188,8 +188,6 @@ Kids First favors setting/overriding defaults with "arriba-heavy" specified in [
 ```yaml
   kallisto_idx: {type: 'File', doc: "Specialized index of a **transcriptome** fasta file for kallisto", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a6,
       name: RSEM_GENCODE39.transcripts.kallisto.idx}}
-  kallisto_avg_frag_len: {type: 'int?', doc: "Optional input. Average fragment length for Kallisto only if single end input."}
-  kallisto_std_dev: {type: 'long?', doc: "Optional input. Standard Deviation of the average fragment length for Kallisto only needed if single end input."}
 ```
 ### RSEM:
 ```yaml
@@ -206,7 +204,6 @@ Kids First favors setting/overriding defaults with "arriba-heavy" specified in [
 ```
 ### rmats
 ```yaml
-  rmats_read_length: {type: 'int', doc: "Input read length for sample reads."}
   rmats_variable_read_length: {type: 'boolean?', doc: "Allow reads with lengths that differ from --readLength to be processed. --readLength will still be used to determine IncFormLen and SkipFormLen."}
   rmats_novel_splice_sites: {type: 'boolean?', doc: "Select for novel splice site detection or unannotated splice sites. 'true' to detect or add this parameter, 'false' to disable denovo detection. Tool Default: false"}
   rmats_stat_off: {type: 'boolean?', doc: "Select to skip statistical analysis, either between two groups or on single sample group. 'true' to add this parameter. Tool default: false"}
@@ -260,7 +257,7 @@ groups"`. See the STAR documentation on `outSAMattrRGline` for complete details.
 - `STARgenome`: STAR_2.7.10a_GENCODE39.tar.gz, created using the star_2.7.10a_genome_generate.cwl tool, using the `reference_fasta`, `gtf_anno`, and setting `sjdbOverhang` to 100
 - `kallisto_idx`: RSEM_GENCODE39.transcripts.kallisto.idx, built from RSEM GENCODE 39 transcript fasts, in `RSEMgenome` tar ball, following instructions from [here](https://pachterlab.github.io/kallisto/manual)
 
-6) rMATS requires the length of the reads in the sample. This workflow will attempt to estimate the read length based on a polling of reads. If the user wishes to override this value they can set `rmats_read_length` to their desired read length. Additionally, there is a `rmats_variable_read_legnth` boolean that users can set if their reads are not uniform in length. This workflow will poll the reads and set that value to true if it observes multiple read lengths. Like read length, user-provided input will override this guess.
+6) rMATS requires the length of the reads in the sample. This workflow will attempt to estimate the read length based on a polling of reads. If the user wishes to override this value they can set `read_length_median` to their desired read length. Additionally, there is a `rmats_variable_read_legnth` boolean that users can set if their reads are not uniform in length. This workflow will poll the reads and set that value to true if it observes multiple read lengths. Like read length, user-provided input will override this guess.
 
 7) While `output_basename`, `sample_name`, and `outSAMattrRGline` are optional, it is strongly recommended that the user provide these values for data quality purposes. If the user does not provide these values, the basename of the reads1 file will be substituted in their place.
 
