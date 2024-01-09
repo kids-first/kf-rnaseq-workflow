@@ -19,7 +19,7 @@ arguments:
       set -eo pipefail
 
       ${
-          if(inputs.input_type == "PE_ALIGN"){
+          if(inputs.is_paired_end){
               var command = "samtools sort -m 1G -n -O SAM -@ " + inputs.cores
               if (inputs.cram_reference){
                 command += " --reference " + inputs.cram_reference.path
@@ -27,7 +27,7 @@ arguments:
               command += " " + inputs.input_reads_1.path + " | samtools fastq -c 2 -1 " + inputs.SampleID + ".converted_1.fastq.gz -2 " + inputs.SampleID + ".converted_2.fastq.gz -@ " + inputs.cores+ " -"
               return command
           }
-          else if(inputs.input_type == "SE_ALIGN"){
+          else {
               var command = "samtools sort -m 1G -n -O SAM -@ " + inputs.cores
               if (inputs.cram_reference){
                 command += " --reference " + inputs.cram_reference.path
@@ -41,7 +41,7 @@ inputs:
   input_reads_1: {type: File, doc: "Input alignment file"}
   SampleID: string
   cores: { type: 'int?', default: 16 } 
-  input_type: {type: [{type: enum, name: input_type, symbols: ["PE_ALIGN", "SE_ALIGN"]}], doc: "Please select one option for input file type, PE_ALIGN (paired-end ALIGNment), SE_ALIGN (single-end ALIGNment)."}
+  is_paired_end: { type: boolean, doc: "Is the input_reads_1 file paired end?" }
   cram_reference: { type: 'File?', secondaryFiles: [.fai], doc: "If input align is cram and you are uncertain all contigs are registered at http://www.ebi.ac.uk/ena/cram/md5/, provide here" }
 
 outputs:

@@ -58,6 +58,7 @@ inputs:
   reads1: { type: File, doc: "Input fastq file, gzipped or uncompressed OR alignment file file" }
   reads2: { type: 'File?', doc: "If paired end, R2 reads files, gzipped or uncompressed" }
 
+  is_paired_end: {type: 'boolean?', doc: "For BAM inputs, are the reads paired end?"}
   wf_strand_param: { type: ['null', {type: 'enum', name: wf_strand_param, symbols: ["default",
           "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto, 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the transcript, 'fr-stranded' if read1 same sense as transcript" }
   gtf_anno: { type: 'File', doc: "General transfer format (gtf) file with gene models corresponding to fasta reference" }
@@ -91,8 +92,6 @@ inputs:
 ### Samtools fastq:
 ```yaml
 samtools_fastq_cores: { type: 'int?', doc: "Num cores for align2fastq conversion, if input is an alignment file", default: 16 }
-input_type: {type: [{type: 'enum', name: input_type, symbols: ["PE_ALIGN", "SE_ALIGN",
-        "FASTQ"]}], doc: "Please select one option for input file type, PE_ALIGN (paired-end ALIGN), SE_ALIGN (single-end ALIGN) or FASTQ."}
 cram_reference: { type: 'File?', secondaryFiles: [.fai], doc: "If input align is cram and you are uncertain all contigs are registered at http://www.ebi.ac.uk/ena/cram/md5/, provide here" }
 ```
 ### cutadapt:
@@ -193,7 +192,6 @@ Kids First favors setting/overriding defaults with "arriba-heavy" specified in [
 ```yaml
   RSEMgenome: {type: 'File', doc: "RSEM reference tar ball", "sbg:suggestedValue": {
       class: File, path: 62853e7ad63f7c6d8d7ae5a5, name: RSEM_GENCODE39.tar.gz}}
-  paired_end: {type: 'boolean?', doc: "If input is paired-end, add this flag", default: true}
   estimate_rspd: {type: 'boolean?', doc: "Set this option if you want to estimate the read start position distribution (RSPD) from data", default: true}
 ```
 ### annoFuse:
@@ -210,8 +208,6 @@ Kids First favors setting/overriding defaults with "arriba-heavy" specified in [
   rmats_allow_clipping: {type: 'boolean?', doc: "Allow alignments with soft or hard clipping to be used."}
   rmats_threads: {type: 'int?', doc: "Threads to allocate to RMATs."}
   rmats_ram: {type: 'int?', doc: "GB of RAM to allocate to RMATs."}
-  rmats_read_type: {type: ['null', {type: enum, name: rmats_read_type, symbols: [
-          "single", "paired"]}], default: "paired", doc: "Indicate whether input reads are single- or paired-end"}
 ```
 
 ### Run:
