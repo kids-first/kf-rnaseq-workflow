@@ -98,3 +98,17 @@ outputs:
               return null;
           }
         }
+  is_paired_end:
+    type: boolean?
+    outputBinding:
+      glob: "*.bam.strandness"
+      loadContents: true
+      outputEval: |
+        ${
+          var rows = self[0].contents.trim().split(/\r?\n/);
+          for (var rowNum in rows) {
+            if (rows[rowNum].search("PairEnd") != -1) { return true; }
+            if (rows[rowNum].search("SingleEnd") != -1) { return false; }
+          }
+          return null;
+        }

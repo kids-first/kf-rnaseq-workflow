@@ -96,8 +96,6 @@ doc: |
   ### Samtools fastq:
   ```yaml
   samtools_fastq_cores: { type: 'int?', doc: "Num cores for align2fastq conversion, if input is an alignment file", default: 16 }
-  input_type: {type: [{type: 'enum', name: input_type, symbols: ["PE_ALIGN", "SE_ALIGN",
-          "FASTQ"]}], doc: "Please select one option for input file type, PE_ALIGN (paired-end ALIGN), SE_ALIGN (single-end ALIGN) or FASTQ."}
   cram_reference: { type: 'File?', secondaryFiles: [.fai], doc: "If input align is cram and you are uncertain all contigs are registered at http://www.ebi.ac.uk/ena/cram/md5/, provide here" }
   ```
   ### cutadapt:
@@ -198,7 +196,6 @@ doc: |
   ```yaml
     RSEMgenome: {type: 'File', doc: "RSEM reference tar ball", "sbg:suggestedValue": {
         class: File, path: 62853e7ad63f7c6d8d7ae5a5, name: RSEM_GENCODE39.tar.gz}}
-    paired_end: {type: 'boolean?', doc: "If input is paired-end, add this flag", default: true}
     estimate_rspd: {type: 'boolean?', doc: "Set this option if you want to estimate the read start position distribution (RSPD) from data", default: true}
   ```
   ### annoFuse:
@@ -215,8 +212,6 @@ doc: |
     rmats_allow_clipping: {type: 'boolean?', doc: "Allow alignments with soft or hard clipping to be used."}
     rmats_threads: {type: 'int?', doc: "Threads to allocate to RMATs."}
     rmats_ram: {type: 'int?', doc: "GB of RAM to allocate to RMATs."}
-    rmats_read_type: {type: ['null', {type: enum, name: rmats_read_type, symbols: [
-            "single", "paired"]}], default: "paired", doc: "Indicate whether input reads are single- or paired-end"}
   ```
 
   ### Run:
@@ -326,6 +321,7 @@ inputs:
   reads1: {type: File, doc: "Input fastq file, gzipped or uncompressed OR alignment\
       \ file"}
   reads2: {type: 'File?', doc: "If paired end, R2 reads files, gzipped or uncompressed"}
+  is_paired_end: {type: 'boolean?', doc: "For BAM inputs, are the reads paired end?"}
   wf_strand_param: {type: ['null', {type: 'enum', name: wf_strand_param, symbols: [
           "default", "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto,\
       \ 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the\
@@ -340,9 +336,6 @@ inputs:
   # samtools fastq
   samtools_fastq_cores: {type: 'int?', doc: "Num cores for align2fastq conversion,\
       \ if input is an alignment file", default: 16}
-  input_type: {type: [{type: 'enum', name: input_type, symbols: ["PE_ALIGN", "SE_ALIGN",
-          "FASTQ"]}], doc: "Please select one option for input file type, PE_ALIGN\
-      \ (paired-end ALIGNment), SE_ALIGN (single-end ALIGNment) or FASTQ."}
   cram_reference: {type: 'File?', secondaryFiles: [.fai], doc: "If input align is\
       \ cram and you are uncertain all contigs are registered at http://www.ebi.ac.uk/ena/cram/md5/,\
       \ provide here"}
@@ -520,7 +513,6 @@ inputs:
   # RSEM
   RSEMgenome: {type: 'File', doc: "RSEM reference tar ball", "sbg:suggestedValue": {
       class: File, path: 62853e7ad63f7c6d8d7ae5a5, name: RSEM_GENCODE39.tar.gz}}
-  paired_end: {type: 'boolean?', doc: "If input is paired-end, add this flag", default: true}
   estimate_rspd: {type: 'boolean?', doc: "Set this option if you want to estimate\
       \ the read start position distribution (RSPD) from data", default: true}
   # annoFuse
@@ -546,9 +538,6 @@ inputs:
       \ clipping to be used."}
   rmats_threads: {type: 'int?', doc: "Threads to allocate to RMATs."}
   rmats_ram: {type: 'int?', doc: "GB of RAM to allocate to RMATs."}
-  rmats_read_type: {type: ['null', {type: enum, name: rmats_read_type, symbols: [
-          "single", "paired"]}], default: "paired", doc: "Indicate whether input reads\
-      \ are single- or paired-end"}
 outputs:
   cutadapt_stats: {type: 'File?', outputSource: cutadapt_3-4/cutadapt_stats, doc: "Cutadapt\
       \ stats output, only if adapter is supplied."}
@@ -606,15 +595,24 @@ steps:
       sample_name: sample_name
       star_rg_line: outSAMattrRGline
     out: [outname, outsample, outrg]
+  alignmentfile_pairedness:
+    run: ../tools/alignmentfile_pairedness.cwl
+    when: $(inputs.input_reads.basename.search(/.(b|cr|s)am$/) != -1)
+    in:
+      input_reads: reads1
+      input_reference: cram_reference
+    out: [is_paired_end]
   align2fastq:
     # Skip if input is FASTQ already
     run: ../tools/samtools_fastq.cwl
-    when: $(inputs.input_type != "FASTQ")
+    when: $(inputs.input_reads_1.basename.search(/.(b|cr|s)am$/) != -1)
     in:
       input_reads_1: reads1
       SampleID: basename_picker/outname
       cores: samtools_fastq_cores
-      input_type: input_type
+      is_paired_end:
+        source: [is_paired_end, alignmentfile_pairedness/is_paired_end]
+        pickValue: first_non_null
       cram_reference: cram_reference
     out: [fq1, fq2]
   cutadapt_3-4:
@@ -703,10 +701,10 @@ steps:
       annotation_gtf: gtf_anno
       kallisto_idx: kallisto_idx
       paired_end:
-        source: rmats_read_type
+        source: [reads2, is_paired_end, alignmentfile_pairedness/is_paired_end]
         valueFrom: |
-          $(self == "paired")
-    out: [output, strandedness, read_length_median, read_length_stddev]
+          $(self[0] != null ? true : self[1] != null ? self[1] : self[2])
+    out: [output, strandedness, read_length_median, read_length_stddev, is_paired_end]
   rmats:
     run: ../workflow/rmats_wf.cwl
     in:
@@ -717,7 +715,11 @@ steps:
           $([self])
       read_length: read_length_median
       variable_read_length: rmats_variable_read_length
-      read_type: rmats_read_type
+      read_type:
+        source: [is_paired_end, bam_strandness/is_paired_end]
+        pickValue: first_non_null
+        valueFrom: |
+          $(self ? "paired" : "single")
       strandedness:
         source: [wf_strand_param, bam_strandness/strandedness]
         pickValue: first_non_null
@@ -782,7 +784,9 @@ steps:
     run: ../tools/rsem_calc_expression.cwl
     in:
       bam: star_2-7-10a/transcriptome_bam_out
-      paired_end: paired_end
+      paired_end:
+        source: [is_paired_end, bam_strandness/is_paired_end]
+        pickValue: first_non_null
       estimate_rspd: estimate_rspd
       genomeDir: RSEMgenome
       outFileNamePrefix: basename_picker/outname
@@ -795,9 +799,10 @@ steps:
       collapsed_gtf: RNAseQC_GTF
       stranded: strand_parse/rnaseqc_std
       unpaired:
-        source: rmats_read_type
+        source: [is_paired_end, bam_strandness/is_paired_end]
+        pickValue: first_non_null
         valueFrom: |
-          $(self == "single")
+          $(!self)
     out: [Metrics, Gene_TPM, Gene_count, Exon_count]
   supplemental:
     run: ../tools/supplemental_tar_gz.cwl
