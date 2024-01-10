@@ -226,7 +226,7 @@ Kids First favors setting/overriding defaults with "arriba-heavy" specified in [
 - `quality_base` set to phred scale `33` by default if trimming. There was a weird time when `64` was used - change if different
 - `quality_cutoff` if adapter is trimmed and you want to set a min bp quality. A single value will apply to both paired ends, 2 values will allow you to assign a different one to each (unusual)
 
-3) `wf_strand_param` is now *optional* as the workflow will try to determine strandedness for you. However, if you'd like to override autodetect, it is a workflow convenience param so that, if you input the following, the equivalent will propagate to the four tools that use that parameter:
+3) `wf_strand_param` is now *optional* as the workflow will try to determine strandedness for you. Note: if the workflow fails to detect a strandedness, it will fail. If you'd like to override autodetect, it is a workflow convenience param so that, if you input the following, the equivalent will propagate to the four tools that use that parameter:
 
 - `default`: 'rsem_std': null, 'kallisto_std': null, 'rnaseqc_std': null, 'arriba_std': null. This means unstranded or auto in the case of arriba.
 - `rf-stranded`: 'rsem_std': 0, 'kallisto_std': 'rf-stranded', 'rnaseqc_std': 'rf', 'arriba_std': 'reverse'.  This means if read1 in the input fastq/bam is reverse complement to the transcript that it maps to.
