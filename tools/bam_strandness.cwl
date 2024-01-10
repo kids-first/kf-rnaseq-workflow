@@ -17,7 +17,7 @@ requirements:
         * @return {String, null} the string after the keyWord and colon; null if no keyWord found
         */
         function returnKeyValue (fileContents, keyWord) {
-          var rows = fileContents.split(/\r?\n/).slice(0,-1);
+          var rows = fileContents.split(/\r?\n/);
           for (var row in rows) {
             if (rows[row].search(keyWord) == 0) {
               return rows[row].split(':')[1];
@@ -28,7 +28,7 @@ requirements:
   - class: ResourceRequirement
     coresMin: $(inputs.cores)
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/danmiller/stranded:1.1.2'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/stranded:1.1.0'
 baseCommand: []
 arguments:
   - position: 1
