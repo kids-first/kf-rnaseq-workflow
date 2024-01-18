@@ -18,9 +18,11 @@ def parse_command() -> argparse.Namespace:
     parser.add_argument('--input_reference',
         help="For CRAM only, provide the reference file used when making the input_reads")
     parser.add_argument('--max_reads',
+        type=int,
         default=200_000,
         help="The max number of reads to examine to make PAIRED/SINGLE determination. default=%default")
     parser.add_argument('--threads',
+        type=int,
         default=1,
         help="For BAM/CRAM decompression, provide the number of threads. default=%default")
     args = parser.parse_args()
@@ -64,7 +66,7 @@ def count_reads(insam: pysam.AlignmentFile, max_count: int) -> tuple[int, ...]:
 
 def main():
     args = parse_command()
-    samfile = pysam.AlignmentFile(args.input_reads, 'r', reference_filename=args.input_reference)
+    samfile = pysam.AlignmentFile(args.input_reads, 'r', reference_filename=args.input_reference, threads=args.threads)
     paired_count, single_count, total_count = count_reads(samfile, args.max_reads)
     if paired_count/total_count > 0.9:
         print("ReadType:PAIRED")
