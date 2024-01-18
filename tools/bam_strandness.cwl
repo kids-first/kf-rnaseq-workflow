@@ -34,6 +34,7 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
+      /bin/bash -c '
       samtools view -h $(inputs.input_bam.path) | head -n $(inputs.n_reads * 2) |
       $(inputs.paired_end ? "samtools sort -n -@ " + (inputs.cpu - 3) + " |" : "")
       samtools fastq -@ 2 -n $(inputs.paired_end ? "-1 1.fastq -2 2.fastq -0 /dev/null" : "-0 1.fastq") -s /dev/null
@@ -41,7 +42,7 @@ arguments:
     shellQuote: false
     prefix: "&&"
     valueFrom: >-
-      check_strandedness --gtf $(inputs.annotation_gtf.path) --kallisto_index $(inputs.kallisto_idx.path) --reads_1 1.fastq $(inputs.paired_end ? "--reads_2 2.fastq" : "") --nreads $(inputs.n_reads) > $(inputs.input_bam.nameroot).bam.strandness
+      check_strandedness --gtf $(inputs.annotation_gtf.path) --kallisto_index $(inputs.kallisto_idx.path) --reads_1 1.fastq $(inputs.paired_end ? "--reads_2 2.fastq" : "") --nreads $(inputs.n_reads) > $(inputs.input_bam.nameroot).bam.strandness'
 
 inputs:
   input_bam: {type: File, doc: "Input bam file"}
