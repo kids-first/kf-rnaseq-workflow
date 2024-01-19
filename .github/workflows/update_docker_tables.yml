@@ -1,0 +1,35 @@
+name: Update Docker Tables
+
+on: [pull_request]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-tables:
+    name: Update Docker Tables
+    runs-on: ubuntu-22.04
+    steps:
+      - id: checkout
+        uses: actions/checkout@v3
+        name: Checkout Repo
+        with:
+          ref: ${{ github.head_ref }}
+      - id: make-rnaseq-table
+        name: Make Docker Table for RNAseq Workflow
+        run: |
+          python .github/scripts/workflow_to_docker_table.py --output_file docs/dockers_rnaseq.md workflow/kfdrc_RNAseq_workflow.cwl
+      - id: cpr
+        name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: update docker table
+          title: Update Production WF Docker Tables
+          body: |
+            Automated changes by [create-pull-request](https://github.com/peter-evans/create-pull-request) GitHub action.
+
+            Docker tables for production workflows now have most up-to-date and complete list of Dockers.
+          delete-branch: true
+          branch: ${{ github.head_ref }}-adjust-dockers
+          labels: bix-dev
