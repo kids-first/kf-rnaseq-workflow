@@ -1,7 +1,7 @@
 cwlVersion: v1.2
 class: CommandLineTool
 id: align2fastq
-label: "Samtools bam-to-fastq"
+label: "Samtools bam/cram-to-fastq"
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
