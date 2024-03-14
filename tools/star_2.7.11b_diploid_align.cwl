@@ -9,7 +9,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: $(inputs.runThreadN)
-    ramMin: 60000
+    ramMin: ${ return inputs.memory * 1000 }
 
 baseCommand: [tar, -I pigz, -xvf]
 arguments:
@@ -28,7 +28,7 @@ arguments:
   - position: 4 
     shellQuote: false
     valueFrom: >-
-      && pigz *ReadsPerGene.out.tab *SJ.out.tab
+      1>&2 && pigz *ReadsPerGene.out.tab *SJ.out.tab
 
 inputs:
   outSAMattrRGline: { type: string, doc: "Suggested setting, with TABS SEPARATING \
@@ -41,6 +41,7 @@ inputs:
   outFileNamePrefix: { type: string, doc: "output files name prefix (including full or relative path). Can only be defined on the command line. \
   Tool will add '.' after prefix to easily delineate between file name and suffix" }
   runThreadN: { type: 'int?', default: 16, doc: "Adjust this value to change number of cores used.", inputBinding: { position: 3, prefix: '--runThreadN' } }
+  memory: { type: 'int?', doc: "Mem in GB required. With no VCF, 60DB is fine, need more with VCF", default: 60}
   twopassMode: { type: ['null', {type: enum, name: twopassMode, symbols: ["Basic", "None"]}], default: "Basic",
   doc: "Enable two pass mode to detect novel splice events. Default is basic (on).", inputBinding: { position: 3, prefix: '--twopassMode' } }
   alignSJoverhangMin: { type: 'int?', default: 8, doc: "minimum overhang for unannotated junctions. ENCODE default used.",
@@ -96,7 +97,7 @@ inputs:
   Within KeepPairs: record unmapped mate for each alignment, and, in case of unsorted output, keep it adjacent to its mapped mate. Only affects \
   multi-mapping reads",
   inputBinding: { position: 3, prefix: '--outSAMunmapped', shellQuote: false } }
-  genomeTransformOutput: { type: [ 'null', {type: enum, name: quantMode, symbols: [None, SAM, SJ, Quant]}],
+  genomeTransformOutput: { type: [ 'null', {type: enum, name: quantMode, symbols: [None, SAM, SJ, Quant, SAM SJ, SAM Quant, SAM SJ Quant, SJ Quant ]}],
   default: None,
   doc: "which output to transform back to original genome",
   inputBinding: { position: 3, prefix: '--genomeTransformOutput', shellQuote: false } }
