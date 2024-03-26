@@ -197,3 +197,13 @@ outputs:
   chimeric_sam_out: { type: 'File?', doc: "Deprecated output. Incompatible with certain options, has chimeric read alignments", outputBinding: {glob: '*Chimeric.out.sam'} }
   chimeric_junctions: { type: File, doc: "Chimeric junctions output file. May be used for downstream tools for fusion analysis", outputBinding: {glob: '*Chimeric.out.junction'} }
   gene_counts: { type: File, doc: "STAR-generated read counts by gene", outputBinding: {glob: '*ReadsPerGene.out.tab.gz'} }
+
+$namespaces:
+  sbg: https://sevenbridges.com
+
+hints: [
+  {
+      "class": "sbg:SaveLogs",
+      "value": "*Log.out"
+  }
+]
