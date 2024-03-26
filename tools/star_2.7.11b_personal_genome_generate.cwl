@@ -6,7 +6,7 @@ doc: " Allow user to create a custom genome to align aganist"
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/star:2.7.11a'
+    dockerPull: 'pgc-images.sbgenomics.com/brownm28/star:2.7.11b'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: $(inputs.runThreadN)
