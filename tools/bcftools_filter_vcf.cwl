@@ -7,8 +7,8 @@ requirements:
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/bvcftools:latest'
   - class: ResourceRequirement
-    ramMin: 1000
-    coresMin: 1
+    ramMin: 16000
+    coresMin: 8
   - class: InlineJavascriptRequirement
 baseCommand: []
 arguments:
