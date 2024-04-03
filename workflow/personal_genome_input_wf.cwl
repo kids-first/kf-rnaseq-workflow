@@ -5,8 +5,9 @@ label: Personal Genome Input Workflow
 doc: "Filter an input VCF and remove annotations"
 
 inputs:
-  # Subset and PASS vars
+  # Strip, subset and PASS vars
   input_vcf: {type: File, secondaryFiles: ['.tbi']}
+  strip_info: {type: 'string?', doc: "If given, remove previous annotation information based on INFO file, i.e. to strip VEP info, use INFO/ANN"}
   output_basename: string
   tool_name: string
   include_expression: 'string?'
@@ -29,21 +30,32 @@ outputs:
   star_ref: { type: File, outputSource: star_personal_genome_generate/star_ref }
   debug_log: { type: File, outputSource: star_personal_genome_generate/debug_log }
 steps:
-  subset_vcf:
-    when: $(inputs.include_expression || inputs.exclude_expression)
-    run: ../tools/bcftools_filter_vcf.cwl
+  # Really just here to limit downstream uncompressed size
+  bcftools_strip_info:
+    run: ../tools/bcftools_strip_ann.cwl
+    when: $(inputs.strip_info != null)
     in:
       input_vcf: input_vcf
+      output_basename: output_basename
+      tool_name: tool_name
+      strip_info: strip_info
+    out: [stripped_vcf]
+  bcftools_subset_vcf:
+    run: ../tools/bcftools_filter_vcf.cwl
+    when: $(inputs.include_expression != null || inputs.exclude_expression != null)
+    in:
+      input_vcf: 
+        source: [bcftools_strip_info/stripped_vcf, input_vcf]
+        pickValue: first_non_null
       include_expression: include_expression
       exclude_expression: exclude_expression
       output_basename: output_basename
     out: [filtered_vcf]
-
   gatk4_selectvariants:
     run: ../tools/gatk_selectvariants.cwl
     in:
       input_vcf:
-        source: [subset_vcf/filtered_vcf, input_vcf]
+        source: [bcftools_subset_vcf/filtered_vcf, bcftools_strip_info/stripped_vcf, input_vcf]
         pickValue: first_non_null
       output_basename: output_basename
       tool_name: tool_name
