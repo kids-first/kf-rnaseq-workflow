@@ -204,6 +204,6 @@ $namespaces:
 hints: [
   {
       "class": "sbg:SaveLogs",
-      "value": "*Log.out"
+      "value": "*Log.*"
   }
 ]
