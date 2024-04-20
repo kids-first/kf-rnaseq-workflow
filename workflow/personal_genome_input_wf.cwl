@@ -12,6 +12,7 @@ inputs:
   tool_name: string
   include_expression: 'string?'
   exclude_expression: 'string?'
+  subtract_bed: {type: 'File?', doc: "Supply if you want to remove regions for any reason, like low complexity or repeat mask, etc" }
   # Genome gen vars
   genomeDir: { type: string, doc: "Output dirname. Recommend STAR_{version}_GENCODE{version num}_{Patient/sample id}" }
   genome_fa: { type: File, doc: "Fasta file to index. Recommend from GENCODE, PRI assembly. Must unzip first if compressed" }
@@ -24,7 +25,7 @@ inputs:
   Diploid: create two haplotypes for each chromosome listed in VCF file, for genotypes 1—2, assumes perfect phasing (e.g. personal genome)" }
   gtf: { type: File, doc: "Matched GTF file to index. Recommend from GENCODE, PRI assembly" }
   runThreadN: { type: 'int?', default: 16 }
-  memory: { type: 'int?', doc: "Mem in GB required. With no VCF, 60DB is fine, need more with VCF", default: 60}
+  memory: { type: 'int?', doc: "Mem in GB required. With no VCF, 60DB is fine, need more with VCF", default: 60 }
   sjdbOverhang: { type: 'int?', default: 100, doc: "Ideal value is read len minus 1, but default 100 ok for most cases" }
 outputs:
   star_ref: { type: File, outputSource: star_personal_genome_generate/star_ref }
@@ -40,12 +41,23 @@ steps:
       tool_name: tool_name
       strip_info: strip_info
     out: [stripped_vcf]
+  bedtools_subtract:
+    run: ../tools/bedtools_subtract.cwl
+    when: $(inputs.subtract_bed != null)
+    in:
+      input_vcf: 
+        source: [bcftools_strip_info/stripped_vcf, input_vcf]
+        pickValue: first_non_null
+      subtract_bed: subtract_bed
+      output_basename: output_basename
+    out: [subtracted_vcf]
+
   bcftools_subset_vcf:
     run: ../tools/bcftools_filter_vcf.cwl
     when: $(inputs.include_expression != null || inputs.exclude_expression != null)
     in:
       input_vcf: 
-        source: [bcftools_strip_info/stripped_vcf, input_vcf]
+        source: [bedtools_subtract/subtracted_vcf, bcftools_strip_info/stripped_vcf, input_vcf]
         pickValue: first_non_null
       include_expression: include_expression
       exclude_expression: exclude_expression
@@ -55,7 +67,7 @@ steps:
     run: ../tools/gatk_selectvariants.cwl
     in:
       input_vcf:
-        source: [bcftools_subset_vcf/filtered_vcf, bcftools_strip_info/stripped_vcf, input_vcf]
+        source: [bcftools_subset_vcf/filtered_vcf, bedtools_subtract/subtracted_vcf, bcftools_strip_info/stripped_vcf, input_vcf]
         pickValue: first_non_null
       output_basename: output_basename
       tool_name: tool_name
