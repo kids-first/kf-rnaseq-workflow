@@ -26,7 +26,7 @@ inputs:
   include_expression: { type: 'string?', doc: "Prefilter data frem VCF file befire personal genome gen", default: "STRLEN(REF)<=50 && STRLEN(ALT)<=50"}
   subtract_bed: {type: 'File?', doc: "Supply if you want to remove regions for any reason, like low complexity or repeat mask, etc" }
   # Genome gen vars
-  genome_dirname: { type: string, doc: "Output dirname. Recommend STAR_{version}_GENCODE{version num}_{Patient/sample id}" }
+  genome_dirname: { type: 'string?', doc: "Output dirname. Recommend STAR_{version}_GENCODE{version num}_{Patient/sample id}. Use when PG needs to be run" }
   genome_fa: { type: File, doc: "Fasta file to index. Recommend from GENCODE, PRI assembly. Must unzip first if compressed" }
   genomeTransformType: { type: [ 'null', {type: enum, name: genomeTransformType, symbols: [
       "None",
@@ -63,8 +63,6 @@ inputs:
       THE TAGS, format is: ID:sample_name LB:aliquot_id PL:platform SM:BSID for \
       example ID:7316-242 LB:750189 PL:ILLUMINA SM:BS_W72364MN"}
   genomeDir: { type: 'File?', doc: "Tar gzipped reference that will be unzipped at run time. PRovide to skip genome generate" }
-  outFileNamePrefix: { type: string, doc: "output files name prefix (including full or relative path). Can only be defined on the command line. \
-  Tool will add '.' after prefix to easily delineate between file name and suffix" }
   twopassMode: { type: ['null', {type: enum, name: twopassMode, symbols: ["Basic", "None"]}], default: "Basic",
   doc: "Enable two pass mode to detect novel splice events. Default is basic (on)."}
   alignSJoverhangMin: { type: 'int?', default: 8, doc: "minimum overhang for unannotated junctions. ENCODE default used."}
@@ -213,7 +211,7 @@ steps:
     out: [is_paired_end]
   star_personal_genome_generate:
     run: personal_genome_input_wf.cwl
-    when: $(inputs.genomeDir == null)
+    when: $(inputs.input_genomeDir == null && inputs.genomeDir != null)
     in:
       input_vcf: input_vcf
       strip_info: strip_info
@@ -224,6 +222,7 @@ steps:
       subtract_bed: subtract_bed
       # Genome gen vars
       genomeDir: genome_dirname
+      input_genomeDir: genomeDir
       genome_fa: genome_fa
       genomeTransformType: genomeTransformType
       gtf: gtf
@@ -346,11 +345,16 @@ steps:
             return bundle;
           }
     out: [output]
-
+  rsem_compatibility:
+    run: ../tools/rsem_compatibility.cwl
+    in:
+      input_bam: star_2-7-11b_diploid/transcriptome_bam_out
+      output_basename: output_basename
+    out: [rsem_compatible_bam]
   rsem:
     run: ../tools/rsem_calc_expression.cwl
     in:
-      bam: star_2-7-11b_diploid/transcriptome_bam_out
+      bam: rsem_compatibility/rsem_compatible_bam
       paired_end: is_paired_end
       estimate_rspd: estimate_rspd
       genomeDir: RSEMgenome
