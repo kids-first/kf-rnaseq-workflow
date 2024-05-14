@@ -41,7 +41,7 @@ inputs:
   outFileNamePrefix: { type: string, doc: "output files name prefix (including full or relative path). Can only be defined on the command line. \
   Tool will add '.' after prefix to easily delineate between file name and suffix" }
   runThreadN: { type: 'int?', default: 16, doc: "Adjust this value to change number of cores used.", inputBinding: { position: 3, prefix: '--runThreadN' } }
-  memory: { type: 'int?', doc: "Mem in GB required. With no VCF, 60DB is fine, need more with VCF", default: 60}
+  memory: { type: 'int?', doc: "Mem in GB required. With no VCF, 60GB is fine, need more with VCF", default: 60}
   twopassMode: { type: ['null', {type: enum, name: twopassMode, symbols: ["Basic", "None"]}], default: "Basic",
   doc: "Enable two pass mode to detect novel splice events. Default is basic (on).", inputBinding: { position: 3, prefix: '--twopassMode' } }
   alignSJoverhangMin: { type: 'int?', default: 8, doc: "minimum overhang for unannotated junctions. ENCODE default used.",
@@ -194,8 +194,6 @@ outputs:
   genomic_bam_out: { type: File, doc: "UNSORTED read mapping to genomic coordinates", outputBinding: {glob: '*Aligned.out.bam'} }
   junctions_out: { type: File, doc: "high confidence collapsed splice junctions in tab-delimited form", outputBinding: {glob: '*SJ.out.tab.gz'} }
   transcriptome_bam_out: { type: File, doc: "Read mapping to transcriptome", outputBinding: {glob: '*Aligned.toTranscriptome.out.bam'} }
-  chimeric_sam_out: { type: 'File?', doc: "Deprecated output. Incompatible with certain options, has chimeric read alignments", outputBinding: {glob: '*Chimeric.out.sam'} }
-  chimeric_junctions: { type: File, doc: "Chimeric junctions output file. May be used for downstream tools for fusion analysis", outputBinding: {glob: '*Chimeric.out.junction'} }
   gene_counts: { type: File, doc: "STAR-generated read counts by gene", outputBinding: {glob: '*ReadsPerGene.out.tab.gz'} }
 
 $namespaces:
