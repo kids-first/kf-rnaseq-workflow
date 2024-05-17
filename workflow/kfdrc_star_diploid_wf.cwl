@@ -172,7 +172,8 @@ inputs:
   wf_strand_param: {type: ['null', {type: 'enum', name: wf_strand_param, symbols: [
           "default", "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto,
       'rf-stranded' if read1 in the fastq read pairs is reverse complement to the
-      transcript, 'fr-stranded' if read1 same sense as transcript"}
+      transcript, 'fr-stranded' if read1 same sense as transcript",
+      default: "default"}
   RSEMgenome: {type: 'File', doc: "RSEM reference tar ball", "sbg:suggestedValue": {
       class: File, path: 62853e7ad63f7c6d8d7ae5a5, name: RSEM_GENCODE39.tar.gz}}
   estimate_rspd: {type: 'boolean?', doc: "Set this option if you want to estimate
