@@ -9,9 +9,9 @@ inputs:
   input_vcf: {type: File, secondaryFiles: ['.tbi']}
   strip_info: {type: 'string?', doc: "If given, remove previous annotation information based on INFO file, i.e. to strip VEP info, use INFO/ANN"}
   output_basename: string
-  tool_name: string
-  include_expression: 'string?'
-  exclude_expression: 'string?'
+  include_expression: { type: 'string?', doc: "See bcftools docs for valid expression. Can't be used at the same time as exclude_expression"}
+  exclude_expression: {type: 'string?', doc: "See bcftools docs for valid expression. Can't be used at the same time as include_expression"}
+  filter_type: { type: 'string?', doc: "Apply a FILTER value expression", default: "PASS"}
   subtract_bed: {type: 'File?', doc: "Supply if you want to remove regions for any reason, like low complexity or repeat mask, etc" }
   # Genome gen vars
   genomeDir: { type: string, doc: "Output dirname. Recommend STAR_{version}_GENCODE{version num}_{Patient/sample id}" }
@@ -38,7 +38,8 @@ steps:
     in:
       input_vcf: input_vcf
       output_basename: output_basename
-      tool_name: tool_name
+      tool_name:
+        valueFrom: "dna_in"
       strip_info: strip_info
     out: [stripped_vcf]
   bedtools_subtract:
@@ -51,33 +52,26 @@ steps:
       subtract_bed: subtract_bed
       output_basename: output_basename
     out: [subtracted_vcf]
-
   bcftools_subset_vcf:
     run: ../tools/bcftools_filter_vcf.cwl
-    when: $(inputs.include_expression != null || inputs.exclude_expression != null)
+    when: $(inputs.include_expression != null || inputs.exclude_expression != null || inputs.filter_type != null)
     in:
       input_vcf: 
         source: [bedtools_subtract/subtracted_vcf, bcftools_strip_info/stripped_vcf, input_vcf]
         pickValue: first_non_null
       include_expression: include_expression
       exclude_expression: exclude_expression
+      filter_type: filter_type
+      output_type:
+        valueFrom: "v"
       output_basename: output_basename
     out: [filtered_vcf]
-  gatk4_selectvariants:
-    run: ../tools/gatk_selectvariants.cwl
-    in:
-      input_vcf:
-        source: [bcftools_subset_vcf/filtered_vcf, bedtools_subtract/subtracted_vcf, bcftools_strip_info/stripped_vcf, input_vcf]
-        pickValue: first_non_null
-      output_basename: output_basename
-      tool_name: tool_name
-    out: [pass_vcf]
   star_personal_genome_generate:
     run: ../tools/star_2.7.11b_personal_genome_generate.cwl
     in:
       genomeDir: genomeDir
       genome_fa: genome_fa
-      genomeTransformVCF: gatk4_selectvariants/pass_vcf
+      genomeTransformVCF: bcftools_subset_vcf/filtered_vcf
       genomeTransformType: genomeTransformType
       gtf: gtf
       runThreadN: runThreadN

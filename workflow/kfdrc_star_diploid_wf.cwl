@@ -23,8 +23,9 @@ inputs:
       Will use read1 file basename if null"}
   sample_name: {type: 'string?', doc: "Sample ID of the input reads. If not provided,
       will use reads1 file basename."}
-  include_expression: { type: 'string?', doc: "Prefilter data frem VCF file befire personal genome gen", default: "STRLEN(REF)<=50 && STRLEN(ALT)<=50"}
+  include_expression: { type: 'string?', doc: "Prefilter data frem VCF file before personal genome gen", default: STRLEN(REF)<=50 && STRLEN(ALT)<=50 && FILTER="PASS"}
   subtract_bed: {type: 'File?', doc: "Supply if you want to remove regions for any reason, like low complexity or repeat mask, etc" }
+\  vcf_sample_name: { type: 'string?', doc: "csv string of samples if user wishes to apply filtering to and output specific samples"}
   # Genome gen vars
   genome_dirname: { type: 'string?', doc: "Output dirname. Recommend STAR_{version}_GENCODE{version num}_{Patient/sample id}. Use when PG needs to be run" }
   genome_fa: { type: File, doc: "Fasta file to index. Recommend from GENCODE, PRI assembly. Must unzip first if compressed" }
@@ -43,7 +44,6 @@ inputs:
   reads1: {type: File, doc: "Input fastq file, gzipped or uncompressed OR alignment
       file"}
   reads2: {type: 'File?', doc: "If paired end, R2 reads files, gzipped or uncompressed"}
-  is_paired_end: {type: 'boolean?', doc: "For BAM inputs, are the reads paired end?"}
   # Cutadapt 
   samtools_fastq_cores: {type: 'int?', doc: "Num cores for align2fastq conversion,
       if input is an alignment file", default: 16}
@@ -96,7 +96,7 @@ inputs:
   doc: "types of quantification requested. -: none. TranscriptomeSAM: output SAM/BAM alignments to transcriptome into a separate file \
   GeneCounts: count reads per gene. Choices are additive, so default is 'TranscriptomeSAM GeneCounts'"}
   quantTranscriptomeSAMoutput: { type: [ 'null', {type: enum, name: quantTranscriptomeSAMoutput, symbols: [BanSingleEnd_BanIndels_ExtendSoftclip, BanSingleEnd, BanSingleEnd_ExtendSoftclip]}],
-  default: BanSingleEnd_BanIndels_ExtendSoftclip,
+  default: BanSingleEnd_ExtendSoftclip,
   doc: "alignment filtering for TranscriptomeSAM output"}
   outSAMtype: { type: [ 'null', {type: enum, name: outSAMtype, symbols: ["BAM Unsorted", "None", "BAM SortedByCoordinate", "SAM Unsorted", "SAM SortedByCoordinate"]}],
   default: "BAM Unsorted",
@@ -107,13 +107,13 @@ inputs:
   Within KeepPairs: record unmapped mate for each alignment, and, in case of unsorted output, keep it adjacent to its mapped mate. Only affects \
   multi-mapping reads"}
   genomeTransformOutput: { type: [ 'null', {type: enum, name: quantMode, symbols: [None, SAM, SJ, Quant, SAM SJ, SAM Quant, SAM SJ Quant, SJ Quant ]}],
-  default: None,
+  default: "SAM SJ Quant",
   doc: "which output to transform back to original genome"}
   genomeLoad: { type: [ 'null', {type: enum, name: genomeLoad, symbols: ["NoSharedMemory", "LoadAndKeep", "LoadAndRemove", "LoadAndExit"]}],
   default: "NoSharedMemory",
   doc: "mode of shared memory usage for the genome file. In this context, the default value makes the most sense, the others are their as a courtesy."}
   chimMainSegmentMultNmax: { type: 'int?', doc: "maximum number of multi-alignments for the main chimeric segment. =1 will prohibit multimapping main segments"}
-  outSAMattributes: { type: 'string?', default: 'NH HI AS nM NM ch ha', doc: "a string of desired SAM attributes, in the order desired for the output SAM. Tags can be listed in any combination/order. \
+  outSAMattributes: { type: 'string?', default: "NH HI AS nM NM MD ha", doc: "a string of desired SAM attributes, in the order desired for the output SAM. Tags can be listed in any combination/order. \
   Please refer to the STAR manual, as there are numerous combinations: https://raw.githubusercontent.com/alexdobin/STAR/master/doc/STARmanual.pdf"}
   # fusion specific
   alignInsertionFlush: { type: [ 'null', {type: enum, name: alignInsertionFlush, symbols: ["None", "Right"]}], default: "None",
@@ -159,7 +159,7 @@ inputs:
   chimScoreSeparation: { type: 'int?', default: 10,
   doc: "int>=0: minimum difference (separation) between the best chimeric score and the next one. AR recommends 1"}
   chimSegmentMin: { type: 'int?', doc: "minimum length of chimeric segment length, if ==0, no chimeric output. \
-  REQUIRED for SF, 12 is their default, AR recommends 10"}
+  REQUIRED for SF, 12 is their default, AR recommends 10", default: 0 }
   chimSegmentReadGapMax: { type: 'int?', default: 0, doc: "maximum gap in the read sequence between chimeric segments. AR recommends 3"}
   outFilterMultimapNmax: { type: 'int?', default: 20, doc: "max number of multiple alignments allowed for \
   a read: if exceeded, the read is considered unmapped. ENCODE value is default. AR recommends 50"}
@@ -173,15 +173,14 @@ inputs:
           "default", "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto,
       'rf-stranded' if read1 in the fastq read pairs is reverse complement to the
       transcript, 'fr-stranded' if read1 same sense as transcript"}
-
   RSEMgenome: {type: 'File', doc: "RSEM reference tar ball", "sbg:suggestedValue": {
       class: File, path: 62853e7ad63f7c6d8d7ae5a5, name: RSEM_GENCODE39.tar.gz}}
   estimate_rspd: {type: 'boolean?', doc: "Set this option if you want to estimate
       the read start position distribution (RSPD) from data", default: true}
 
 outputs:
-  star_ref: { type: File, outputSource: star_personal_genome_generate/star_ref }
-  debug_log: { type: File, outputSource: star_personal_genome_generate/debug_log }
+  star_ref: { type: 'File?', outputSource: star_personal_genome_generate/star_ref }
+  debug_log: { type: 'File?', outputSource: star_personal_genome_generate/debug_log }
   STAR_sorted_genomic_cram: {type: 'File', outputSource: samtools_bam_to_cram/output,
     doc: "STAR sorted and indexed genomic alignment cram"}
   STAR_gene_count: {type: 'File', outputSource: star_2-7-11b_diploid/gene_counts, doc: "STAR
@@ -217,8 +216,9 @@ steps:
       strip_info: strip_info
       output_basename: output_basename
       tool_name:
-        valueFrom: "single_vqsr"
+        valueFrom: "dna_in"
       include_expression: include_expression
+      sample_name: vcf_sample_name  
       subtract_bed: subtract_bed
       # Genome gen vars
       genomeDir: genome_dirname
@@ -238,9 +238,7 @@ steps:
       input_reads_1: reads1
       SampleID: basename_picker/outname
       cores: samtools_fastq_cores
-      is_paired_end:
-        source: [is_paired_end, alignmentfile_pairedness/is_paired_end]
-        pickValue: first_non_null
+      is_paired_end: alignmentfile_pairedness/is_paired_end
       cram_reference: cram_reference
     out: [fq1, fq2]
   cutadapt_3-4:
@@ -355,7 +353,11 @@ steps:
     run: ../tools/rsem_calc_expression.cwl
     in:
       bam: rsem_compatibility/rsem_compatible_bam
-      paired_end: is_paired_end
+      paired_end:
+        # get value from tool, or test existence of reads2 fastq
+        source: [alignmentfile_pairedness/is_paired_end, reads2]
+        valueFrom: |
+          ${ return self[0] != null ? self[0] : self[1] != null }
       estimate_rspd: estimate_rspd
       genomeDir: RSEMgenome
       outFileNamePrefix: basename_picker/outname
