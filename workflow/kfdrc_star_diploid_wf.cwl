@@ -25,7 +25,7 @@ inputs:
       will use reads1 file basename."}
   include_expression: { type: 'string?', doc: "Prefilter data frem VCF file before personal genome gen", default: STRLEN(REF)<=50 && STRLEN(ALT)<=50 && FILTER="PASS"}
   subtract_bed: {type: 'File?', doc: "Supply if you want to remove regions for any reason, like low complexity or repeat mask, etc" }
-\  vcf_sample_name: { type: 'string?', doc: "csv string of samples if user wishes to apply filtering to and output specific samples"}
+  vcf_sample_name: { type: 'string?', doc: "csv string of samples if user wishes to apply filtering to and output specific samples"}
   # Genome gen vars
   genome_dirname: { type: 'string?', doc: "Output dirname. Recommend STAR_{version}_GENCODE{version num}_{Patient/sample id}. Use when PG needs to be run" }
   genome_fa: { type: File, doc: "Fasta file to index. Recommend from GENCODE, PRI assembly. Must unzip first if compressed" }
