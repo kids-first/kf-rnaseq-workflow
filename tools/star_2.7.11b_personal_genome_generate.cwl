@@ -25,7 +25,7 @@ arguments:
   - position: 4
     shellQuote: false
     valueFrom: >-
-      1>&2 && tar -I pigz -cf $(inputs.genomeDir).tar.gz ./$(inputs.genomeDir)
+      1>&2 && cp $(inputs.genomeDir)/OriginalGenome/Log.out $(inputs.genomeDir).Log.out && tar -I pigz -cf $(inputs.genomeDir).tar.gz ./$(inputs.genomeDir)
 
 inputs:
   genomeDir: { type: string, doc: "Output dirname. Recommend STAR_{version}_GENCODE{version num}", inputBinding: { position: 3, prefix: "--genomeDir" } }
@@ -52,5 +52,5 @@ outputs:
   debug_log:
     type: File
     outputBinding:
-      glob: $(inputs.genomeDir)/Log.out
+      glob: $(inputs.genomeDir).Log.out
 
