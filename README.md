@@ -1,7 +1,7 @@
 # Kids First RNA-Seq Workflow V4
 
 This is the Kids First RNA-Seq pipeline, which calculates gene and transcript isoform expression, detects fusions ans splice junctions.
-We are transitioning to to this current version which upgrades several software components.
+We have transitioned to this current version which upgrades several software components.
 Our legacy workflow is still available as [v3.0.1](https://github.com/kids-first/kf-rnaseq-workflow/tree/v3.0.1), and on Cavatica, [revision 8](https://cavatica.sbgenomics.com/public/apps/cavatica/apps-publisher/kfdrc-rnaseq-workflow/8)
 
 ![data service logo](https://github.com/d3b-center/d3b-research-workflows/raw/master/doc/kfdrc-logo-sm.png)
@@ -302,3 +302,8 @@ groups"`. See the STAR documentation on `outSAMattrRGline` for complete details.
  - RNA-SEQc reference built using [collapse gtf script](https://github.com/broadinstitute/gtex-pipeline/blob/master/gene_model/collapse_annotation.py)
    - Two references needed if data are stranded vs. unstranded
    - Flag `--collapse_only` used for stranded
+
+# [Kids First STAR Diploid Beta](docs/STAR_2.7.11b_DIPLOID.md)
+This is an alternative alignment and quantification method currently in beta phase.
+It uses a patient's DNA variant calls to create a "personal genome" for improved alignment.
+See doc linked in section header.
