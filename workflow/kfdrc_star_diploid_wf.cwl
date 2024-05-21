@@ -13,7 +13,7 @@ requirements:
 inputs:
   # Strip, subset and PASS vars
   input_vcf: {type: File, secondaryFiles: ['.tbi']}
-  reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", "sbg:suggestedValue": {
+  reference_fasta: {type: 'File?', doc: "GRCh38.primary_assembly.genome.fa", "sbg:suggestedValue": {
       class: File, path: 5f500135e4b0370371c051b4, name: GRCh38.primary_assembly.genome.fa,
       secondaryFiles: [{class: File, path: 62866da14d85bc2e02ba52db, name: GRCh38.primary_assembly.genome.fa.fai}]},
     secondaryFiles: ['.fai']}
@@ -34,22 +34,14 @@ inputs:
       "Haploid",
       "Diploid"
       ]}],
-  doc: "type of genome transformation - None: no transformation. Haploid: eplace reference alleles with alternative alleles from VCF file (e.g. consensus allele) \
-  Diploid: create two haplotypes for each chromosome listed in VCF file, for genotypes 1—2, assumes perfect phasing (e.g. personal genome)" }
+      default: Diploid,
+      doc: "type of genome transformation - None: no transformation. Haploid: eplace reference alleles with alternative alleles from VCF file (e.g. consensus allele) \
+      Diploid: create two haplotypes for each chromosome listed in VCF file, for genotypes 1—2, assumes perfect phasing (e.g. personal genome)" }
   gtf: { type: File, doc: "Matched GTF file to index. Recommend from GENCODE, PRI assembly" }
   runThreadN: { type: 'int?', default: 32 }
   memory: { type: 'int?', doc: "Mem in GB required. With no VCF, 60GB is fine, need more with VCF", default: 96}
   sjdbOverhang: { type: 'int?', default: 100, doc: "Ideal value is read len minus 1, but default 100 ok for most cases" }
-  # STAR Diploid Align Vars
-  reads1: {type: File, doc: "Input fastq file, gzipped or uncompressed OR alignment
-      file"}
-  reads2: {type: 'File?', doc: "If paired end, R2 reads files, gzipped or uncompressed"}
   # Cutadapt 
-  samtools_fastq_cores: {type: 'int?', doc: "Num cores for align2fastq conversion,
-      if input is an alignment file", default: 16}
-  cram_reference: {type: 'File?', secondaryFiles: [.fai], doc: "If input align is
-      cram and you are uncertain all contigs are registered at http://www.ebi.ac.uk/ena/cram/md5/,
-      provide here"}
   r1_adapter: {type: 'string?', doc: "Optional input. If the input reads have already
       been trimmed, leave these as null. If they do need trimming, supply the adapters."}
   r2_adapter: {type: 'string?', doc: "Optional input. If the input reads have already
@@ -59,10 +51,19 @@ inputs:
   quality_base: {type: 'int?', doc: "Phred scale used", default: 33}
   quality_cutoff: {type: 'int[]?', doc: "Quality trim cutoff, see https://cutadapt.readthedocs.io/en/v3.4/guide.html#quality-trimming
       for how 5' 3' is handled"}
+  # STAR Diploid Align Vars
+  reads1: {type: File, doc: "Input fastq file, gzipped or uncompressed OR alignment
+      file"}
+  reads2: {type: 'File?', doc: "If paired end, R2 reads files, gzipped or uncompressed"}
+  samtools_fastq_cores: {type: 'int?', doc: "Num cores for align2fastq conversion,
+      if input is an alignment file", default: 16}
+  cram_reference: {type: 'File?', secondaryFiles: [.fai], doc: "If input align is
+      cram and you are uncertain all contigs are registered at http://www.ebi.ac.uk/ena/cram/md5/,
+      provide here"}
   outSAMattrRGline: { type: string, doc: "Suggested setting, with TABS SEPARATING \
       THE TAGS, format is: ID:sample_name LB:aliquot_id PL:platform SM:BSID for \
       example ID:7316-242 LB:750189 PL:ILLUMINA SM:BS_W72364MN"}
-  genomeDir: { type: 'File?', doc: "Tar gzipped reference that will be unzipped at run time. PRovide to skip genome generate" }
+  genomeDir: { type: 'File?', doc: "Tar gzipped reference that will be unzipped at run time. Provide to skip genome generate" }
   twopassMode: { type: ['null', {type: enum, name: twopassMode, symbols: ["Basic", "None"]}], default: "Basic",
   doc: "Enable two pass mode to detect novel splice events. Default is basic (on)."}
   alignSJoverhangMin: { type: 'int?', default: 8, doc: "minimum overhang for unannotated junctions. ENCODE default used."}
@@ -173,7 +174,7 @@ inputs:
           "default", "rf-stranded", "fr-stranded"]}], doc: "use 'default' for unstranded/auto,
       'rf-stranded' if read1 in the fastq read pairs is reverse complement to the
       transcript, 'fr-stranded' if read1 same sense as transcript",
-      default: "default"}
+      default: "rf-stranded"}
   RSEMgenome: {type: 'File', doc: "RSEM reference tar ball", "sbg:suggestedValue": {
       class: File, path: 62853e7ad63f7c6d8d7ae5a5, name: RSEM_GENCODE39.tar.gz}}
   estimate_rspd: {type: 'boolean?', doc: "Set this option if you want to estimate
