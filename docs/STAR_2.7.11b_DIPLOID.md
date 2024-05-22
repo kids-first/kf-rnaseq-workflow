@@ -90,7 +90,7 @@ These variants get removed during bcftools step of filtering on `PASS`
 These have even more `FILTER` added that are dropped on `PASS`:
  - Common
    - ExcessHet: `ExcessHet > 54.69`
-   - QD2: `QD < 2.0"`
+   - QD2: `QD < 2.0`
    - QUAL30: `QUAL < 30.0`
  - SNP only:
    - SOR3_SNP: `SOR > 3.0`
