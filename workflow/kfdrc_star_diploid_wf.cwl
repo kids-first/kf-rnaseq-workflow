@@ -12,7 +12,7 @@ requirements:
 
 inputs:
   # Strip, subset and PASS vars
-  input_vcf: {type: File, secondaryFiles: ['.tbi']}
+  input_vcf: {type: 'File?', secondaryFiles: ['.tbi']}
   reference_fasta: {type: 'File?', doc: "GRCh38.primary_assembly.genome.fa", "sbg:suggestedValue": {
       class: File, path: 5f500135e4b0370371c051b4, name: GRCh38.primary_assembly.genome.fa,
       secondaryFiles: [{class: File, path: 62866da14d85bc2e02ba52db, name: GRCh38.primary_assembly.genome.fa.fai}]},
@@ -28,7 +28,7 @@ inputs:
   vcf_sample_name: { type: 'string?', doc: "csv string of samples if user wishes to apply filtering to and output specific samples"}
   # Genome gen vars
   genome_dirname: { type: 'string?', doc: "Output dirname. Recommend STAR_{version}_GENCODE{version num}_{Patient/sample id}. Use when PG needs to be run" }
-  genome_fa: { type: File, doc: "Fasta file to index. Recommend from GENCODE, PRI assembly. Must unzip first if compressed" }
+  genome_fa: { type: 'File?', doc: "Fasta file to index. Recommend from GENCODE, PRI assembly. Must unzip first if compressed" }
   genomeTransformType: { type: [ 'null', {type: enum, name: genomeTransformType, symbols: [
       "None",
       "Haploid",
@@ -37,7 +37,7 @@ inputs:
       default: Diploid,
       doc: "type of genome transformation - None: no transformation. Haploid: eplace reference alleles with alternative alleles from VCF file (e.g. consensus allele) \
       Diploid: create two haplotypes for each chromosome listed in VCF file, for genotypes 1—2, assumes perfect phasing (e.g. personal genome)" }
-  gtf: { type: File, doc: "Matched GTF file to index. Recommend from GENCODE, PRI assembly" }
+  gtf: { type: 'File?', doc: "Matched GTF file to index. Recommend from GENCODE, PRI assembly" }
   runThreadN: { type: 'int?', default: 32 }
   memory: { type: 'int?', doc: "Mem in GB required. With no VCF, 60GB is fine, need more with VCF", default: 96}
   sjdbOverhang: { type: 'int?', default: 100, doc: "Ideal value is read len minus 1, but default 100 ok for most cases" }
@@ -185,12 +185,17 @@ outputs:
   debug_log: { type: 'File?', outputSource: star_personal_genome_generate/debug_log }
   STAR_sorted_genomic_cram: {type: 'File', outputSource: samtools_bam_to_cram/output,
     doc: "STAR sorted and indexed genomic alignment cram"}
+  STAR_transcriptome_bam: { type: File, outputSource: star_2-7-11b_diploid/transcriptome_bam_out }
   STAR_gene_count: {type: 'File', outputSource: star_2-7-11b_diploid/gene_counts, doc: "STAR
       genecounts"}
   STAR_junctions_out: {type: 'File', outputSource: star_2-7-11b_diploid/junctions_out, doc: "STARjunction
       reads"}
   STAR_final_log: {type: 'File', outputSource: star_2-7-11b_diploid/log_final_out, doc: "STAR
       metricslog file of unique, multi-mapping, unmapped, and chimeric reads"}
+  RSEM_isoform: {type: 'File', outputSource: rsem/isoform_out, doc: "RSEM isoform
+      expression estimates"}
+  RSEM_gene: {type: 'File', outputSource: rsem/gene_out, doc: "RSEM gene expression
+      estimates"}
 
 steps:
   basename_picker:
