@@ -10,49 +10,45 @@ requirements:
     ramMin: 16000
     coresMin: 8
   - class: InlineJavascriptRequirement
+  - class: InitialWorkDirRequirement
+    listing:
+      - entryname: "run_filter.sh"
+        entry: |
+          #!/usr/bin/env bash
+          set -xeo pipefail
+
+          command=cat
+          if [[ $(inputs.sample_name) != null ]]
+          then
+            command="bcftools view --threads $(inputs.threads) -s $(inputs.sample_name)"
+          fi
+          $command $(inputs.input_vcf.path) \
+            | bcftools view \
+              --threads $(inputs.threads) \
+              -O $(inputs.output_type) \
+              -o $(inputs.output_basename).bcf_filtered.$(inputs.output_type == "v" ? "vcf" : inputs.output_type == "z" ? "vcf.gz" : inputs.output_type == "b" ? "bcf.gz" : "bcf") \
+              $(inputs.exclude_expression == null ? "" : "--exclude " + "'" + inputs.exclude_expression + "'") \
+              $(inputs.include_expression == null ? "" : "--include " + "'" + inputs.include_expression + "'") \
+              $(inputs.filter_expression == null ? "" : "-f " + inputs.filter_expression)
+          if [[ $(inputs.output_type) == z ]]
+          then
+            tabix $(inputs.output_basename).bcf_filtered.vcf.gz
+          fi
+
 baseCommand: []
 arguments:
   - position: 0
     shellQuote: false
     valueFrom: >-
-      ${
-        var cmd  = "bcftools view"
-        if ( inputs.sample_name != null ){
-          cmd += " --threads " + inputs.threads + " -s " + inputs.sample_name + " " + inputs.input_vcf.path + " | bcftools view ";
-        }
-        return cmd;
-      }
-  - position: 2
-    shellQuote: false
-    valueFrom: >-
-      ${
-        var arg = " -o " + inputs.output_basename + ".bcf_filtered"
-        if (inputs.output_type == "v"){
-          arg += ".vcf"
-        } else if (inputs.output_type == "z"){
-          arg += ".vcf.gz && tabix " + inputs.output_basename + ".bcf_filtered.vcf.gz"
-        } else if (inputs.output_type == "b"){
-          arg += ".bcf.gz"
-        } else{
-          arg += ".bcf"
-        }
-        if (inputs.sample_name == null){
-          arg = inputs.input_vcf.path + arg;
-        }
-        return arg;
-      }
+      /bin/bash run_filter.sh
 
 inputs:
   input_vcf: File
-  include_expression: { type: 'string?', doc: "See bcftools docs for valid expression. Can't be used at the same time as exclude_expression",
-    inputBinding: { position: 1, prefix: "--include", shellQuote: true} }
-  threads: { type: 'int?', default: 4, inputBinding: {position: 1, prefix: "--threads"} }
-  exclude_expression: { type: 'string?', doc: "See bcftools docs for valid expression. Can't be used at the same time as include_expression",
-    inputBinding: { position: 1, prefix: "--exclude", shellQuote: true} }
-  filter_expression: { type: 'string?', doc: "Add values from FILTER field to subset on",
-    inputBinding: { position: 1, prefix: "-f"}}
-  output_type: { type: [ 'null', {type: enum, name: output_type, symbols: [ "u", "b", "v", "z"]}],
-    inputBinding: { position: 1, prefix: "-O"}, default: "z" }
+  include_expression: { type: 'string?', doc: "See bcftools docs for valid expression. Can't be used at the same time as exclude_expression. Use double quotes when a string needs to be quoted"}
+  threads: { type: 'int?', default: 4 }
+  exclude_expression: { type: 'string?', doc: "See bcftools docs for valid expression. Can't be used at the same time as include_expression.  Use double quotes when a string needs to be quoted"}
+  filter_expression: { type: 'string?', doc: "Add values from FILTER field to subset on"}
+  output_type: { type: [ 'null', {type: enum, name: output_type, symbols: [ "u", "b", "v", "z"]}], default: "z"}
   sample_name: { type: 'string?', doc: "csv string of samples if user wishes to apply filtering to and output specific samples"}
   output_basename: string
 outputs:
