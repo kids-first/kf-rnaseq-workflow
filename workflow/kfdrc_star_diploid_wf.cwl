@@ -132,9 +132,6 @@ requirements:
 inputs:
   # Strip, subset and PASS vars
   input_vcf: {type: 'File?', secondaryFiles: ['.tbi']}
-  reference_fasta: {type: 'File?', doc: "GRCh38.primary_assembly.genome.fa", "sbg:suggestedValue": {class: File, path: 5f500135e4b0370371c051b4,
-      name: GRCh38.primary_assembly.genome.fa, secondaryFiles: [{class: File, path: 62866da14d85bc2e02ba52db, name: GRCh38.primary_assembly.genome.fa.fai}]},
-    secondaryFiles: ['.fai']}
   strip_info: {type: 'string?', doc: "If given, remove previous annotation information based on INFO file, i.e. to strip VEP info,
       use INFO/ANN", default: "INFO/CLNDISDB,INFO/CLNDISDBINCL,INFO/CLNDN,INFO/CLNDNINCL,INFO/CLNHGVS,INFO/CLNREVSTAT,INFO/CLNSIG,INFO/CLNSIGCONF,INFO/CLNSIGINCL,INFO/CLNVC,INFO/CLNVCSO,INFO/CLNVI,INFO/CSQ,INFO/ClippingRankSum,INFO/DB,INFO/DP,INFO/DS,INFO/END,INFO/ExcessHet,INFO/FS,INFO/HaplotypeScore,INFO/InbreedingCoeff,INFO/Intervar,INFO/Intervar_STATUS,INFO/MLEAC,INFO/MLEAF,INFO/MQ,INFO/MQRankSum,INFO/NEGATIVE_TRAIN_SITE,INFO/OLD_VARIANT,INFO/POSITIVE_TRAIN_SITE,INFO/QD,INFO/RAW_MQ,INFO/ReadPosRankSum,INFO/SOR,INFO/VQSLOD,INFO/culprit,INFO/gnomad_3_1_1_AC,INFO/gnomad_3_1_1_AC_controls_and_biobanks,INFO/gnomad_3_1_1_AC_popmax,INFO/gnomad_3_1_1_AF,INFO/gnomad_3_1_1_AF_controls_and_biobanks,INFO/gnomad_3_1_1_AF_non_cancer,INFO/gnomad_3_1_1_AF_popmax,INFO/gnomad_3_1_1_AN,INFO/gnomad_3_1_1_AN_controls_and_biobanks,INFO/gnomad_3_1_1_AN_popmax,INFO/gnomad_3_1_1_nhomalt,INFO/gnomad_3_1_1_nhomalt_popmax,INFO/gnomad_3_1_1_primate_ai_score,INFO/gnomad_3_1_1_splice_ai_consequence"}
   output_basename: {type: 'string?', doc: "String to use as basename for outputs. Will use read1 file basename if null"}
@@ -144,7 +141,7 @@ inputs:
   subtract_bed: {type: 'File?', doc: "Supply if you want to remove regions for any reason, like low complexity or repeat mask, etc"}
   vcf_sample_name: {type: 'string?', doc: "csv string of samples if user wishes to apply filtering to and output specific samples"}
   # Genome gen vars
-  genome_fa: {type: 'File?', doc: "Fasta file to index. Recommend from GENCODE, PRI assembly. Must unzip first if compressed"}
+  genome_fa: {type: 'File?', doc: "Fasta file use for PG creation/input"}
   genomeTransformType: {type: ['null', {type: enum, name: genomeTransformType, symbols: ["None", "Haploid", "Diploid"]}], default: Diploid,
     doc: "type of genome transformation - None: no transformation. Haploid: eplace reference alleles with alternative alleles from
       VCF file (e.g. consensus allele) Diploid: create two haplotypes for each chromosome listed in VCF file, for genotypes 1—2, assumes
@@ -430,7 +427,7 @@ steps:
   samtools_bam_to_cram:
     run: ../tools/samtools_bam_to_cram.cwl
     in:
-      reference: reference_fasta
+      reference: genome_fa
       input_bam:
         source: [samtools_sort/sorted_bam, samtools_sort/sorted_bai]
         valueFrom: |
