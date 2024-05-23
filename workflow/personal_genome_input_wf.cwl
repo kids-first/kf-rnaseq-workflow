@@ -11,6 +11,7 @@ inputs:
   output_basename: string
   include_expression: { type: 'string?', doc: "See bcftools docs for valid expression. Can't be used at the same time as exclude_expression"}
   exclude_expression: {type: 'string?', doc: "See bcftools docs for valid expression. Can't be used at the same time as include_expression"}
+  sample_name: { type: 'string?', doc: "csv string of samples if user wishes to apply filtering to and output specific samples"}
   filter_type: { type: 'string?', doc: "Apply a FILTER value expression", default: "PASS"}
   subtract_bed: {type: 'File?', doc: "Supply if you want to remove regions for any reason, like low complexity or repeat mask, etc" }
   # Genome gen vars
@@ -60,6 +61,7 @@ steps:
         pickValue: first_non_null
       include_expression: include_expression
       exclude_expression: exclude_expression
+      sample_name: sample_name
       filter_type: filter_type
       output_type:
         valueFrom: "v"
