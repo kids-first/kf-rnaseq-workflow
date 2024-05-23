@@ -2,7 +2,7 @@ cwlVersion: v1.2
 class: CommandLineTool
 id: star_2-7-11a_build_personal_ref
 label: "STAR Personal Reference Genome Index Generator"
-doc: " Allow user to create a custom genome to align aganist"
+doc: "Allow user to create a custom genome to align against"
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
@@ -12,12 +12,12 @@ requirements:
     coresMin: $(inputs.runThreadN)
     ramMin: ${ return inputs.memory * 1000 }
 
-baseCommand: [mkdir]
+baseCommand: []
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      $(inputs.genomeDir)
+      mkdir $(inputs.genomeDir)
   - position: 2
     shellQuote: false
     valueFrom: >-
