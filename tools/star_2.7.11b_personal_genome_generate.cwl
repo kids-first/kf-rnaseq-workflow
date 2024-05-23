@@ -36,7 +36,7 @@ inputs:
       "Haploid",
       "Diploid"
       ]}],
-  doc: "type of genome transformation - None: no transformation. Haploid: eplace reference alleles with alternative alleles from VCF file (e.g. consensus allele) \
+  doc: "type of genome transformation - None: no transformation. Haploid: replace reference alleles with alternative alleles from VCF file (e.g. consensus allele) \
   Diploid: create two haplotypes for each chromosome listed in VCF file, for genotypes 1—2, assumes perfect phasing (e.g. personal genome)",
   inputBinding: { position: 3, prefix: "--genomeTransformType", shellQuote: false } }
   gtf: { type: File, doc: "Matched GTF file to index. Recommend from GENCODE, PRI assembly", inputBinding: { position: 3, prefix: "--sjdbGTFfile" } }

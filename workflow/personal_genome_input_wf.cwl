@@ -14,14 +14,13 @@ inputs:
   filter_type: { type: 'string?', doc: "Apply a FILTER value expression", default: "PASS"}
   subtract_bed: {type: 'File?', doc: "Supply if you want to remove regions for any reason, like low complexity or repeat mask, etc" }
   # Genome gen vars
-  genomeDir: { type: string, doc: "Output dirname. Recommend STAR_{version}_GENCODE{version num}_{Patient/sample id}" }
   genome_fa: { type: File, doc: "Fasta file to index. Recommend from GENCODE, PRI assembly. Must unzip first if compressed" }
   genomeTransformType: { type: [ 'null', {type: enum, name: genomeTransformType, symbols: [
       "None",
       "Haploid",
       "Diploid"
       ]}],
-  doc: "type of genome transformation - None: no transformation. Haploid: eplace reference alleles with alternative alleles from VCF file (e.g. consensus allele) \
+  doc: "type of genome transformation - None: no transformation. Haploid: replace reference alleles with alternative alleles from VCF file (e.g. consensus allele) \
   Diploid: create two haplotypes for each chromosome listed in VCF file, for genotypes 1—2, assumes perfect phasing (e.g. personal genome)" }
   gtf: { type: File, doc: "Matched GTF file to index. Recommend from GENCODE, PRI assembly" }
   runThreadN: { type: 'int?', default: 16 }
@@ -69,7 +68,9 @@ steps:
   star_personal_genome_generate:
     run: ../tools/star_2.7.11b_personal_genome_generate.cwl
     in:
-      genomeDir: genomeDir
+      genomeDir:
+        source: output_basename
+        valueFrom: $(self + ".STAR_2.7.11b_diploid_genome")
       genome_fa: genome_fa
       genomeTransformVCF: bcftools_subset_vcf/filtered_vcf
       genomeTransformType: genomeTransformType

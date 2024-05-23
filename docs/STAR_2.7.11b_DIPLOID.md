@@ -43,7 +43,6 @@ If a pre-existing PG does not exist, need the following inputs to create:
     - Single sample VCF:  `STRLEN(REF)<=50 && STRLEN(ALT)<=50 && FILTER="PASS"`
  - `subtract_bed`: Recommend to filter regions from repeat and low complexity regions. Recommend obtaining repeat-masker bed file from UCSC, run bedtools sort + merge to simplify. Removes variant calls from `input_vcf` from notoriously difficult regions
  - `vcf_sample_name`: **If input is trio**, provide the patient sample name to ensure desired `include_expression` is applied to the specific patient
- - `genome_dirname`: Output dirname. Recommend STAR_{version}\_GENCODE\_{version num}_{Patient/sample id}
  - `genome_fa`: Should match input used for DNA. For KF/INCLUDE, recommend `Homo_sapiens_assembly38_noALT_noHLA_noDecoy.fasta`.
  - `genomeTransformType`: `Diploid`, set by default
  - `gtf`: Recommend `PRI` assembly from [GENCODE version 45](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_45/gencode.v45.primary_assembly.annotation.gtf.gz) for CFDE
@@ -58,7 +57,7 @@ If a pre-existing PG does not exist, need the following inputs to create:
  - `wf_strand_param`: Strandedness of input reads. Default is `rf-stranded`. Use 'default' for unstranded/auto, 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the transcript, 'fr-stranded' if read1 same sense as transcript
  - `RSEMgenome`: RSEM reference tar ball.
 ## OUTPUTS
- - `star_ref`: If existing `genomeDir` tar ball was not provided as well as `genome_dirname` was given, workflow will have created and provided the patient's PG. This can be re-used in the event a user wants to align another sample frm the patient and/or try different aligner parameters
+ - `star_ref`: If existing `genomeDir` tar ball was not, workflow will have created and provided the patient's PG. This can be re-used in the event a user wants to align another sample frm the patient and/or try different aligner parameters
  - `debug_log`: Log output from STAR GEnome Generate 
  - `STAR_sorted_genomic_cram`: Aligned reads to genome in CRAM format
  - `STAR_transcriptome_bam`: Typically not kept as it's seldom re-used, given that this is in beta phase, we'll keep this
