@@ -48,7 +48,6 @@ doc: |-
       - Single sample VCF:  `STRLEN(REF)<=50 && STRLEN(ALT)<=50 && FILTER="PASS"`
    - `subtract_bed`: Recommend to filter regions from repeat and low complexity regions. Recommend obtaining repeat-masker bed file from UCSC, run bedtools sort + merge to simplify. Removes variant calls from `input_vcf` from notoriously difficult regions
    - `vcf_sample_name`: **If input is trio**, provide the patient sample name to ensure desired `include_expression` is applied to the specific patient
-   - `genome_dirname`: Output dirname. Recommend STAR_{version}\_GENCODE\_{version num}_{Patient/sample id}
    - `genome_fa`: Should match input used for DNA. For KF/INCLUDE, recommend `Homo_sapiens_assembly38_noALT_noHLA_noDecoy.fasta`.
    - `genomeTransformType`: `Diploid`, set by default
    - `gtf`: Recommend `PRI` assembly from [GENCODE version 45](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_45/gencode.v45.primary_assembly.annotation.gtf.gz) for CFDE
@@ -63,7 +62,7 @@ doc: |-
    - `wf_strand_param`: Strandedness of input reads. Default is `rf-stranded`. Use 'default' for unstranded/auto, 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the transcript, 'fr-stranded' if read1 same sense as transcript
    - `RSEMgenome`: RSEM reference tar ball.
   ## OUTPUTS
-   - `star_ref`: If existing `genomeDir` tar ball was not provided as well as `genome_dirname` was given, workflow will have created and provided the patient's PG. This can be re-used in the event a user wants to align another sample frm the patient and/or try different aligner parameters
+   - `star_ref`: If existing `genomeDir` tar ball was not provided, workflow will have created and provided the patient's PG. This can be re-used in the event a user wants to align another sample frm the patient and/or try different aligner parameters
    - `debug_log`: Log output from STAR GEnome Generate 
    - `STAR_sorted_genomic_cram`: Aligned reads to genome in CRAM format
    - `STAR_transcriptome_bam`: Typically not kept as it's seldom re-used, given that this is in beta phase, we'll keep this
@@ -145,8 +144,6 @@ inputs:
   subtract_bed: {type: 'File?', doc: "Supply if you want to remove regions for any reason, like low complexity or repeat mask, etc"}
   vcf_sample_name: {type: 'string?', doc: "csv string of samples if user wishes to apply filtering to and output specific samples"}
   # Genome gen vars
-  genome_dirname: {type: 'string?', doc: "Output dirname. Recommend STAR_{version}_GENCODE{version num}_{Patient/sample id}. Use when
-      PG needs to be run"}
   genome_fa: {type: 'File?', doc: "Fasta file to index. Recommend from GENCODE, PRI assembly. Must unzip first if compressed"}
   genomeTransformType: {type: ['null', {type: enum, name: genomeTransformType, symbols: ["None", "Haploid", "Diploid"]}], default: Diploid,
     doc: "type of genome transformation - None: no transformation. Haploid: eplace reference alleles with alternative alleles from
@@ -312,7 +309,7 @@ steps:
     out: [is_paired_end]
   star_personal_genome_generate:
     run: personal_genome_input_wf.cwl
-    when: $(inputs.input_genomeDir == null && inputs.genomeDir != null)
+    when: $(inputs.input_genomeDir == null)
     in:
       input_vcf: input_vcf
       strip_info: strip_info
@@ -323,7 +320,6 @@ steps:
       sample_name: vcf_sample_name
       subtract_bed: subtract_bed
       # Genome gen vars
-      genomeDir: genome_dirname
       input_genomeDir: genomeDir
       genome_fa: genome_fa
       genomeTransformType: genomeTransformType
