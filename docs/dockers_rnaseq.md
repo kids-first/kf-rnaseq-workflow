@@ -2,11 +2,12 @@
 
 TOOL|DOCKER
 -|-
+alignmentfile_pairedness.cwl|quay.io/biocontainers/pysam:0.22.0--py310h41dec4a_0
 annoFuse.cwl|pgc-images.sbgenomics.com/d3b-bixu/annofuse:0.92.0
 arriba_draw_2.2.1.cwl|pgc-images.sbgenomics.com/d3b-bixu/arriba:2.2.1
 arriba_fusion_2.2.1.cwl|pgc-images.sbgenomics.com/d3b-bixu/arriba:2.2.1
 awk_junction_filtering.cwl|ubuntu:20.04
-bam_strandness.cwl|pgc-images.sbgenomics.com/d3b-bixu/stranded:1.0.0
+bam_strandness.cwl|pgc-images.sbgenomics.com/d3b-bixu/stranded:1.1.0
 basename_picker.cwl|None
 cutadapter_3.4.cwl|pgc-images.sbgenomics.com/d3b-bixu/cutadapt:3.4
 expression_parse_strand_param.cwl|None
