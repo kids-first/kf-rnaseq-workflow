@@ -528,6 +528,9 @@ inputs:
       clipping to be used."}
   rmats_threads: {type: 'int?', doc: "Threads to allocate to RMATs."}
   rmats_ram: {type: 'int?', doc: "GB of RAM to allocate to RMATs."}
+  run_t1k: { type: 'boolean?', default: true, doc: "Set to false to disable T1k HLA typing" }
+  hla_rna_ref_seqs: { type: 'File?', doc: "FASTA file containing the HLA allele reference sequences for RNA." }
+  hla_rna_gene_coords: { type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for RNA." }
 outputs:
   cutadapt_stats: {type: 'File?', outputSource: cutadapt_3-4/cutadapt_stats, doc: "Cutadapt
       stats output, only if adapter is supplied."}
@@ -574,6 +577,7 @@ outputs:
   rmats_filtered_skipped_exons_jc: {type: 'File', outputSource: rmats/filtered_skipped_exons_jc,
     doc: "Skipped exons JC.txt output from RMATs containing only those calls with
       10 or more junction spanning read counts of support"}
+  t1k_genotype_tsv: {type: 'File?', outputSource: t1k/genotype_tsv, doc: "Genotyping results from T1k" }
 steps:
   basename_picker:
     run: ../tools/basename_picker.cwl
@@ -684,6 +688,24 @@ steps:
       unsorted_bam: star_2-7-10a/genomic_bam_out
       chimeric_sam_out: star_2-7-10a/chimeric_sam_out
     out: [sorted_bam, sorted_bai, chimeric_bam_out]
+  t1k:
+    run: ../tools/t1k.cwl
+    when: $(inputs.run_t1k)
+    in:
+      run_t1k: run_t1k
+      bam:
+        source: [samtools_sort/sorted_bam, samtools_sort/sorted_bai]
+        valueFrom: |
+          ${
+            var bundle = self[0];
+            bundle.secondaryFiles = [self[1]];
+            return bundle;
+          }
+      reference: hla_rna_ref_seqs
+      gene_coordinates: hla_rna_gene_coords
+      skip_post_analysis:
+        valueFrom: $(1 == 1)
+    out: [genotype_tsv]
   bam_strandness:
     run: ../tools/bam_strandness.cwl
     in:
