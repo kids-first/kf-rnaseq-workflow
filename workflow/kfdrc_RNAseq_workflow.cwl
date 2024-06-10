@@ -703,6 +703,8 @@ steps:
           }
       reference: hla_rna_ref_seqs
       gene_coordinates: hla_rna_gene_coords
+      preset:
+        valueFrom: "hla"
       skip_post_analysis:
         valueFrom: $(1 == 1)
     out: [genotype_tsv]
