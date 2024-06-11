@@ -210,6 +210,13 @@ Kids First favors setting/overriding defaults with "arriba-heavy" specified in [
   rmats_ram: {type: 'int?', doc: "GB of RAM to allocate to RMATs."}
 ```
 
+### T1k
+```yaml
+  run_t1k: { type: 'boolean?', default: true, doc: "Set to false to disable T1k HLA typing" }
+  hla_rna_ref_seqs: { type: 'File?', doc: "FASTA file containing the HLA allele reference sequences for RNA." }
+  hla_rna_gene_coords: { type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for RNA." }
+```
+
 ### Run:
 
 1) Reads inputs:
@@ -252,6 +259,8 @@ groups"`. See the STAR documentation on `outSAMattrRGline` for complete details.
 - `RSEMgenome`: RSEM_GENCODE39.tar.gz, built using the `reference_fasta` and `gtf_anno`, following `GENCODE` instructions from [here](https://deweylab.github.io/RSEM/README.html), then creating a tar ball of the results.
 - `STARgenome`: STAR_2.7.10a_GENCODE39.tar.gz, created using the star_2.7.10a_genome_generate.cwl tool, using the `reference_fasta`, `gtf_anno`, and setting `sjdbOverhang` to 100
 - `kallisto_idx`: RSEM_GENCODE39.transcripts.kallisto.idx, built from RSEM GENCODE 39 transcript fasts, in `RSEMgenome` tar ball, following instructions from [here](https://pachterlab.github.io/kallisto/manual)
+- `hla_rna_ref_seqs`: hla_v3.43.0_gencode_v39_rna_seq.fa, created using https://github.com/mourisl/T1K/blob/master/t1k-build.pl with [hla.dat v3.43.0](http://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/hla.dat) and [GENCODE v39 primary assembly GTF](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_39/gencode.v39.primary_assembly.annotation.gtf.gz)
+- `hla_rna_gene_coords`: hla_v3.43.0_gencode_v39_rna_coord.fa, created using https://github.com/mourisl/T1K/blob/master/t1k-build.pl with [hla.dat v3.43.0](http://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/hla.dat) and [GENCODE v39 primary assembly GTF](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_39/gencode.v39.primary_assembly.annotation.gtf.gz)
 
 6) rMATS requires the length of the reads in the sample. This workflow will attempt to estimate the read length based on a polling of reads. If the user wishes to override this value they can set `read_length_median` to their desired read length. Additionally, there is a `rmats_variable_read_length` boolean that users can set if their reads are not uniform in length. This workflow will poll the reads and set that value to true if it observes multiple read lengths. Like read length, user-provided input will override this guess.
 
@@ -293,6 +302,7 @@ groups"`. See the STAR documentation on `outSAMattrRGline` for complete details.
     doc: "Retained introns JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support"}
   rmats_filtered_skipped_exons_jc: {type: 'File', outputSource: rmats/filtered_skipped_exons_jc,
     doc: "Skipped exons JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support"}
+  t1k_genotype_tsv: {type: 'File?', outputSource: t1k/genotype_tsv, doc: "Genotyping results from T1k" }
 ```
 
 ## Reference build notes:
