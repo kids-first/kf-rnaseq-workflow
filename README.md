@@ -37,6 +37,8 @@ This workflow is the current production workflow, equivalent to this [Cavatica p
 [RNA-SeQC v2.3.4](https://github.com/broadinstitute/rnaseqc) Generate metrics such as gene and transcript counts, sense/antisene mapping, mapping rates, etc
 ### [rMATS](docs/D3B_RMATS.md)
 [rMATS turbo v4.1.2](https://github.com/Xinglab/rmats-turbo) Computational tool to detect differential alternative splicing events from RNA-Seq data
+### [T1k](docs/T1K_README.md)
+[T1k v1.0.5](https://github.com/mourisl/T1K/) Genotype highly polymorphic genes (e.g. HLA) with bulk RNA-seq data.
 
 ## Usage
 
