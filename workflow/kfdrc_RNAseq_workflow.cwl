@@ -529,8 +529,8 @@ inputs:
   rmats_threads: {type: 'int?', doc: "Threads to allocate to RMATs."}
   rmats_ram: {type: 'int?', doc: "GB of RAM to allocate to RMATs."}
   run_t1k: { type: 'boolean?', default: true, doc: "Set to false to disable T1k HLA typing" }
-  hla_rna_ref_seqs: { type: 'File?', doc: "FASTA file containing the HLA allele reference sequences for RNA." }
-  hla_rna_gene_coords: { type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for RNA." }
+  hla_rna_ref_seqs: { type: 'File?', doc: "FASTA file containing the HLA allele reference sequences for RNA.", "sbg:suggestedValue": {class: File, path: 6669ac8127374715fc3ba3c3, name: hla_v3.43.0_gencode_v39_rna_seq.fa} }
+  hla_rna_gene_coords: { type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for RNA.", "sbg:suggestedValue": {class: File, path: 6669ac8127374715fc3ba3c1, name: hla_v3.43.0_gencode_v39_rna_coord.fa} }
 outputs:
   cutadapt_stats: {type: 'File?', outputSource: cutadapt_3-4/cutadapt_stats, doc: "Cutadapt
       stats output, only if adapter is supplied."}
