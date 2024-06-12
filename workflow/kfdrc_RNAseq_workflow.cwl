@@ -485,6 +485,7 @@ inputs:
       class: File, path: 6669ac8127374715fc3ba3c3, name: hla_v3.43.0_gencode_v39_rna_seq.fa}}
   hla_rna_gene_coords: {type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for RNA.", "sbg:suggestedValue": {
       class: File, path: 6669ac8127374715fc3ba3c1, name: hla_v3.43.0_gencode_v39_rna_coord.fa}}
+  t1k_abnormal_unmap_flag: {type: 'boolean?', doc: "Set if the flag in BAM for the unmapped read-pair is nonconcordant"}
 outputs:
   cutadapt_stats: {type: 'File?', outputSource: cutadapt_3-4/cutadapt_stats, doc: "Cutadapt stats output, only if adapter is supplied."}
   STAR_sorted_genomic_cram: {type: 'File', outputSource: samtools_bam_to_cram/output, doc: "STAR sorted and indexed genomic alignment
@@ -644,6 +645,7 @@ steps:
           }
       reference: hla_rna_ref_seqs
       gene_coordinates: hla_rna_gene_coords
+      abnormal_unmap_flag: t1k_abnormal_unmap_flag
       preset:
         valueFrom: "hla"
       output_basename:
