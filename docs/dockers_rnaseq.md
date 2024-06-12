@@ -24,3 +24,4 @@ samtools_sort.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9
 star_2.7.10a_align.cwl|pgc-images.sbgenomics.com/d3b-bixu/star:2.7.10a
 star_fusion_1.10.1_call.cwl|pgc-images.sbgenomics.com/d3b-bixu/star:fusion-1.10.1
 supplemental_tar_gz.cwl|pgc-images.sbgenomics.com/d3b-bixu/ubuntu:18.04
+t1k.cwl|pgc-images.sbgenomics.com/d3b-bixu/t1k:v1.0.5
