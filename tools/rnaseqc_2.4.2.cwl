@@ -9,24 +9,29 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8
-    ramMin: 10000
+    ramMin: 16000
 
 baseCommand: [rnaseqc]
-arguments:
-  - position: 1
-    shellQuote: false
-    valueFrom: >-
-      $(inputs.collapsed_gtf.path)
-      $(inputs.Aligned_sorted_bam.path)
 
 inputs:
-  Aligned_sorted_bam: File
-  collapsed_gtf: File
-  output_dirname: { type: 'string?', default: "output", doc: "output dirname", inputBinding: { position: 1} }
-  unpaired: { type: 'boolean?', doc: "If single-end, set to true", default: false, inputBinding: { position: 2, prefix: "--unpaired"} }
-  legacy: { type: 'boolean?', doc: "If true, will output format compatible with version 1.1.9", default: true, inputBinding: { position: 2, prefix: "--legacy" } }
-  stranded: { type: [ 'null', {type: enum, name: rnaseqc_std, symbols: ["rf", "fr"]}],
-  doc: "If stranded, specify", default: "rf", inputBinding: { position: 2, prefix: "--stranded=", separate: false} }
+  collapsed_gtf: { type: File, doc: "Collapsed GTF file",
+    inputBinding: { position: 0 } }
+  aligned_sorted_reads: { type: File, doc: "Aligned and sorted BAM or CRAM file",
+    inputBinding: { position: 1} }
+  output_dirname: { type: 'string?', default: "output", doc: "output dirname",
+    inputBinding: { position: 2} }
+  stranded: { type: [ 'null', {type: enum, name: rnaseqc_std, symbols: ["rf", "fr"]}], doc: "If stranded, specify", default: "rf",
+    inputBinding: { position: 3, prefix: "--stranded=", separate: false} }
+  unpaired: { type: 'boolean?', doc: "If single-end, set to true", default: false,
+    inputBinding: { position: 3, prefix: "--unpaired"} }
+  legacy: { type: 'boolean?', doc: "If true, will output format compatible with version 1.1.9", default: true,
+    inputBinding: { position: 3, prefix: "--legacy" } }
+  bed: { type: 'File?', doc: "BED file with intervals for estimating insert size distribution",
+    inputBinding: { position: 3, prefix: "--bed" } }
+  fasta: { type: 'File?', secondaryFiles: ['.fai'], doc: "If input is CRAM, provide reference",
+    inputBinding: { position: 3, prefix: "--fasta"} }
+  logging: { type: 'boolean?', doc: "Turn on this flag to get progress updates",
+    inputBinding: { position: 3, prefix: "-v"} }
 
 outputs:
   Metrics:
