@@ -756,7 +756,7 @@ steps:
   rna_seqc:
     run: ../tools/rnaseqc_2.4.2.cwl
     in:
-      Aligned_sorted_bam: samtools_sort/sorted_bam
+      aligned_sorted_reads: samtools_sort/sorted_bam
       collapsed_gtf: RNAseQC_GTF
       stranded: strand_parse/rnaseqc_std
       unpaired:

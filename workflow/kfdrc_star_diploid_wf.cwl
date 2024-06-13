@@ -269,10 +269,16 @@ inputs:
   wf_strand_param: {type: ['null', {type: 'enum', name: wf_strand_param, symbols: ["default", "rf-stranded", "fr-stranded"]}], doc: "use
       'default' for unstranded/auto, 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the transcript, 'fr-stranded'
       if read1 same sense as transcript", default: "rf-stranded"}
+  # RSEM inputs
   RSEMgenome: {type: 'File', doc: "RSEM reference tar ball", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a5, name: RSEM_GENCODE39.tar.gz}}
   estimate_rspd: {type: 'boolean?', doc: "Set this option if you want to estimate the read start position distribution (RSPD) from
       data", default: true}
-
+  #RNAseQC inputs
+  RNAseQC_GTF: {type: 'File', doc: "gtf file from `gtf_anno` that has been collapsed
+      GTEx-style", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a3,
+      name: gencode.v39.primary_assembly.rnaseqc.stranded.gtf}}
+  RNAseQC_bed: { type: 'File?', doc: "BED file with intervals for estimating insert size distribution" }
+  RNAseQC_legacy: { type: 'boolean?', doc: "If true, will output format compatible with version 1.1.9", default: false }
 outputs:
   star_ref: {type: 'File?', outputSource: star_personal_genome_generate/star_ref}
   debug_log: {type: 'File?', outputSource: star_personal_genome_generate/debug_log}
@@ -285,7 +291,10 @@ outputs:
       unmapped, and chimeric reads"}
   RSEM_isoform: {type: 'File', outputSource: rsem/isoform_out, doc: "RSEM isoform expression estimates"}
   RSEM_gene: {type: 'File', outputSource: rsem/gene_out, doc: "RSEM gene expression estimates"}
-
+  RNASeQC_Metrics: {type: 'File', outputSource: rna_seqc/Metrics, doc: "Metrics on
+      mapping, intronic, exonic rates, count information, etc"}
+  RNASeQC_counts: {type: 'File', outputSource: supplemental/RNASeQC_counts, doc: "Contains
+      gene tpm, gene read, and exon counts"}
 steps:
   basename_picker:
     run: ../tools/basename_picker.cwl
@@ -457,7 +466,27 @@ steps:
       outFileNamePrefix: basename_picker/outname
       strandedness: strand_parse/rsem_std
     out: [gene_out, isoform_out]
-
+  rna_seqc:
+    run: ../tools/rnaseqc_2.4.2.cwl
+    in:
+      aligned_sorted_reads: samtools_sort/sorted_bam
+      collapsed_gtf: RNAseQC_GTF
+      stranded: strand_parse/rnaseqc_std
+      unpaired:
+        source: [alignmentfile_pairedness/is_paired_end, reads2]
+        valueFrom: |
+          ${ return !(self[0] != null ? self[0] : self[1] != null) }
+      bed: RNAseQC_bed
+      legacy: RNAseQC_legacy
+    out: [Metrics, Gene_TPM, Gene_count, Exon_count]
+  supplemental:
+    run: ../tools/supplemental_tar_gz.cwl
+    in:
+      outFileNamePrefix: basename_picker/outname
+      Gene_TPM: rna_seqc/Gene_TPM
+      Gene_count: rna_seqc/Gene_count
+      Exon_count: rna_seqc/Exon_count
+    out: [RNASeQC_counts]
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
