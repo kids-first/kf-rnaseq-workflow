@@ -12,7 +12,7 @@ inputs:
   include_expression: { type: 'string?', doc: "See bcftools docs for valid expression. Can't be used at the same time as exclude_expression"}
   exclude_expression: {type: 'string?', doc: "See bcftools docs for valid expression. Can't be used at the same time as include_expression"}
   sample_name: { type: 'string?', doc: "csv string of samples if user wishes to apply filtering to and output specific samples"}
-  filter_type: { type: 'string?', doc: "Apply a FILTER value expression", default: "PASS"}
+  filter_type: { type: 'string?', doc: "Apply a FILTER value expression" }
   subtract_bed: {type: 'File?', doc: "Supply if you want to remove regions for any reason, like low complexity or repeat mask, etc" }
   # Genome gen vars
   genome_fa: { type: File, doc: "Fasta file to index. Recommend from GENCODE, PRI assembly. Must unzip first if compressed" }
@@ -62,7 +62,7 @@ steps:
       include_expression: include_expression
       exclude_expression: exclude_expression
       sample_name: sample_name
-      filter_type: filter_type
+      filter_expression: filter_type
       output_type:
         valueFrom: "v"
       output_basename: output_basename

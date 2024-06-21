@@ -57,3 +57,7 @@ outputs:
     outputBinding:
       glob: "*.{v,b}cf{,.gz}"
     secondaryFiles: ['.tbi?']
+  debug_run_filter_sh:
+    type: File
+    outputBinding:
+      glob: "run_filter.sh"
