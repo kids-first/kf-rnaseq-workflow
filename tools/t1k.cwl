@@ -59,7 +59,7 @@ inputs:
   output_read_assignment: { type: 'boolean?', inputBinding: { position: 12 , prefix: "--outputReadAssignment" }, doc: "Set to output the allele assignment for each read to prefix_assign.tsv file" }
 
   threads: { type: 'int?', doc: "Num processing threads to use", default: 8, inputBinding: { position: 12, prefix: "-t" } }
-  ram: { type: 'int?', doc: "Num GB memory to make available", default: 16 }
+  ram: { type: 'int?', doc: "Num GB memory to make available", default: 32 }
 outputs:
   aligned_fasta: { type: 'File[]', outputBinding: { glob: '*_aligned_*.fa' } }
   allele_tsv: { type: File, outputBinding: { glob: '*_allele.tsv' } }
