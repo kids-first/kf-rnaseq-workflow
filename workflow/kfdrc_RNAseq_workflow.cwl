@@ -488,6 +488,7 @@ inputs:
   hla_rna_gene_coords: {type: 'File?', doc: "FASTA file containing the coordinates of the HLA genes for RNA.", "sbg:suggestedValue": {
       class: File, path: 6669ac8127374715fc3ba3c1, name: hla_v3.43.0_gencode_v39_rna_coord.fa}}
   t1k_abnormal_unmap_flag: {type: 'boolean?', doc: "Set if the flag in BAM for the unmapped read-pair is nonconcordant"}
+  t1k_ram: {type: 'int?', doc: "GB of RAM to allocate to T1k." }
 outputs:
   cutadapt_stats: {type: 'File?', outputSource: cutadapt_3-4/cutadapt_stats, doc: "Cutadapt stats output, only if adapter is supplied."}
   STAR_sorted_genomic_cram: {type: 'File', outputSource: samtools_bam_to_cram/output, doc: "STAR sorted and indexed genomic alignment
@@ -655,6 +656,7 @@ steps:
         valueFrom: $(self).t1k_hla
       skip_post_analysis:
         valueFrom: $(1 == 1)
+      ram: t1k_ram
     out: [genotype_tsv]
   bam_strandness:
     run: ../tools/bam_strandness.cwl
