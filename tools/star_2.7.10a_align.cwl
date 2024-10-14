@@ -22,8 +22,8 @@ arguments:
     valueFrom: >-
       && STAR
       --genomeDir ./$(inputs.genomeDir.nameroot.replace(".tar", ""))/
-      --readFilesIn $(inputs.readFilesIn1.path) $(inputs.readFilesIn2 ? inputs.readFilesIn2.path : '')
-      --readFilesCommand $(inputs.readFilesIn1.nameext == '.gz' ? 'zcat' : '-')
+      --readFilesIn $(inputs.readFilesIn1.map(function(e) { return e.path }).join(',')) $(inputs.readFilesIn2 ? inputs.readFilesIn2.map(function(e) { return e.path }).join(',') : '')
+      --readFilesCommand $(inputs.readFilesIn1.shift().nameext == '.gz' ? 'zcat' : '-')
       --outFileNamePrefix $(inputs.outFileNamePrefix).
   - position: 4 
     shellQuote: false
@@ -31,13 +31,13 @@ arguments:
       && pigz *ReadsPerGene.out.tab *SJ.out.tab
 
 inputs:
-  outSAMattrRGline: { type: string, doc: "Suggested setting, with TABS SEPARATING \
+  outSAMattrRGline: { type: 'string[]', doc: "Suggested setting, with TABS SEPARATING \
       THE TAGS, format is: ID:sample_name LB:aliquot_id PL:platform SM:BSID for \
       example ID:7316-242 LB:750189 PL:ILLUMINA SM:BS_W72364MN",
-      inputBinding: { position: 3, prefix: '--outSAMattrRGline', shellQuote: false }}
+      inputBinding: { position: 3, prefix: '--outSAMattrRGline', shellQuote: false, itemSeparator: "," }}
   genomeDir: { type: File, doc: "Tar gzipped reference that will be unzipped at run time" }
-  readFilesIn1: { type: File, doc: "Input fastq file, gzipped or uncompressed" }
-  readFilesIn2: { type: 'File?', doc: "If paired end, R2 reads files, gzipped or uncompressed" }
+  readFilesIn1: { type: 'File[]', doc: "Input fastq file, gzipped or uncompressed" }
+  readFilesIn2: { type: 'File[]?', doc: "If paired end, R2 reads files, gzipped or uncompressed" }
   outFileNamePrefix: { type: string, doc: "output files name prefix (including full or relative path). Can only be defined on the command line. \
   Tool will add '.' after prefix to easily delineate between file name and suffix" }
   runThreadN: { type: 'int?', default: 16, doc: "Adjust this value to change number of cores used.", inputBinding: { position: 3, prefix: '--runThreadN' } }
