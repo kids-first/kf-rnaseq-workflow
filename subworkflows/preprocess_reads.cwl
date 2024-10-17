@@ -55,6 +55,7 @@ outputs:
         outSAMattrRGline:
           type: string
     outputSource: construct_out_record/out_record
+  cutadapt_stats: {type: 'File?', outputSource: cutadapt_3-4/cutadapt_stats, doc: "Cutadapt stats output, only if adapter is supplied."}
 steps:
   basename_picker:
     run: ../tools/basename_picker.cwl
