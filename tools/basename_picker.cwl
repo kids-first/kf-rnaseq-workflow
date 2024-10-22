@@ -26,7 +26,7 @@ expression: |
     var rglb = "LB:" + sample
     var rgsm = "SM:" + sample
     var rgpl = "PL:Illumina"
-    var rgds = "\"DS:Values for this read group were auto-generated and may not reflect the true read group information.\""
+    var rgds = "DS:\"Values for this read group were auto-generated and may not reflect the true read group information.\""
     var rg = inputs.star_rg_line ? inputs.star_rg_line : [rgid, rgpl, rglb, rgsm, rgds].join("\t")
     return {
       'outname' : name,

@@ -1,4 +1,4 @@
-cwlVersion: v1.0
+cwlVersion: v1.2
 class: CommandLineTool
 id: kallisto
 requirements:
@@ -9,6 +9,9 @@ requirements:
   - class: ResourceRequirement
     coresMin: 8
     ramMin: 10000
+  - class: SchemaDefRequirement
+    types:
+    - $import: ../schema/reads_record_type.yml
 
 baseCommand: []
 arguments:
@@ -21,15 +24,18 @@ arguments:
       -b 10
       -t 8
       $(inputs.strand ? inputs.strand == "default" ? "" : "--"+inputs.strand : "")
-      $(inputs.reads2 ? inputs.reads1.path+" "+inputs.reads2.path : "--single -l "+inputs.avg_frag_len+" -s "+inputs.std_dev+" "+inputs.reads1.path) &&
-      mv output/abundance.tsv $(inputs.SampleID).kallisto.abundance.tsv &&
-      gzip $(inputs.SampleID).kallisto.abundance.tsv
+      $(inputs.reads_records.every(function(e) { return !e.is_paired_end }) ? ["--single", "-l", inputs.avg_frag_len, "-s", inputs.std_dev].join(' ') : "")
+      $(inputs.reads_records.map(function(e) { return (e.reads2 != null ? [e.reads1.path, e.reads2.path].join(' ') : e.reads1.path) }).join(' '))
+      && mv output/abundance.tsv $(inputs.SampleID).kallisto.abundance.tsv
+      && gzip $(inputs.SampleID).kallisto.abundance.tsv
 
 inputs:
   transcript_idx: File
   strand: {type: ['null', string], doc: "input none if unstranded, otherwise rf-stranded or fr-stranded"}
-  reads1: File
-  reads2: File?
+  reads_records:
+    type:
+      type: array
+      items: ../schema/reads_record_type.yml#reads_record
   SampleID: string
   std_dev: long?
   avg_frag_len: int?
