@@ -260,7 +260,7 @@ doc: |
      - `min_len` if adapter is trimmed, currently set to min `20` bp. Change this as you see fit
      - `quality_base` set to Phred scale `33` by default if trimming. There was a weird time when `64` was used - change if different
      - `quality_cutoff` if adapter is trimmed and you want to set a min bp quality. A single value will apply to both paired ends, 2 values will allow you to assign a different one to each (unusual)
-  3. `wf_strand_param` is now *optional* as the workflow will try to determine strandedness for you. Note: if the workflow fails to detect a strandedness, it will fail. If you'd like to override autodetect, it is a workflow convenience param so that, if you input the following, the equivalent will propagate to the four tools that use that parameter:
+  3. `wf_strand_param` is now *optional* as the workflow will try to determine strandedness for you. Note: if the workflow fails to detect a strandedness, it will fail. If you would like to override autodetect, it is a workflow convenience param so that, if you input the following, the equivalent will propagate to the four tools that use that parameter:
      - `default`: 'rsem_std': null, 'kallisto_std': null, 'rnaseqc_std': null, 'arriba_std': null. This means unstranded or auto in the case of arriba.
      - `rf-stranded`: 'rsem_std': 0, 'kallisto_std': 'rf-stranded', 'rnaseqc_std': 'rf', 'arriba_std': 'reverse'.  This means if read1 in the input FASTQ/BAM is reverse complement to the transcript that it maps to.
      - `fr-stranded`: 'rsem_std': 1, 'kallisto_std': 'fr-stranded', 'rnaseqc_std': 'fr', 'arriba_std': 'yes'. This means if read1 in the input FASTQ/BAM is the same sense (maps 5' to 3') to the transcript that it maps to.
@@ -320,6 +320,11 @@ doc: |
    - RNA-SEQc reference built using [collapse GTF script](https://github.com/broadinstitute/gtex-pipeline/blob/master/gene_model/collapse_annotation.py)
      - Two references needed if data are stranded vs. unstranded
      - Flag `--collapse_only` used for stranded
+
+  # [Kids First STAR Diploid Beta](docs/STAR_2.7.11b_DIPLOID.md)
+  This is an alternative alignment and quantification method currently in beta phase.
+  It uses DNA variant calls form a patient to create a "personal genome" for improved alignment.
+  See doc linked in section header.
 
 requirements:
 - class: ScatterFeatureRequirement
