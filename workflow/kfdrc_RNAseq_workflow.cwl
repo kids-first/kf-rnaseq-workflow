@@ -321,11 +321,6 @@ doc: |
      - Two references needed if data are stranded vs. unstranded
      - Flag `--collapse_only` used for stranded
 
-  # [Kids First STAR Diploid Beta](docs/STAR_2.7.11b_DIPLOID.md)
-  This is an alternative alignment and quantification method currently in beta phase.
-  It uses DNA variant calls form a patient to create a "personal genome" for improved alignment.
-  See doc linked in section header.
-
 requirements:
 - class: ScatterFeatureRequirement
 - class: MultipleInputFeatureRequirement
