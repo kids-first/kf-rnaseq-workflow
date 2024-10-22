@@ -8,6 +8,7 @@ doc: |
   Convert to FASTQ
   Cutadapt
 requirements:
+- class: SubworkflowFeatureRequirement
 - class: ScatterFeatureRequirement
 - class: StepInputExpressionRequirement
 - class: InlineJavascriptRequirement
@@ -37,46 +38,26 @@ steps:
         source: reads_record
         valueFrom: $(self.outSAMattrRGline)
     out: [outname, outsample, outrg]
-  alignmentfile_pairedness:
-    run: ../tools/alignmentfile_pairedness.cwl
-    when: $(inputs.input_reads.reads1.basename.search(/.(b|cr|s)am$/) != -1)
+  prepare_aligned_reads:
+    run: ../subworkflows/prepare_aligned_reads.cwl
+    when: $(inputs.reads_record.reads1.basename.search(/.(b|cr|s)am$/) != -1)
     in:
-      input_reads:
-        source: reads_record
-        valueFrom: $(self.reads1)
-      input_reference:
-        source: reads_record
-        valueFrom: $(self.cram_reference)
-    out: [is_paired_end]
-  align2fastq:
-    # Skip if input is FASTQ already
-    run: ../tools/samtools_fastq.cwl
-    when: $(inputs.input_reads_1.reads1.basename.search(/.(b|cr|s)am$/) != -1)
-    in:
-      input_reads_1:
-        source: reads_record
-        valueFrom: $(self.reads1)
-      SampleID: basename_picker/outname
-      cores: samtools_fastq_cores
-      is_paired_end:
-        source: [reads_record, alignmentfile_pairedness/is_paired_end]
-        valueFrom: |
-          $(self[0].is_paired_end != null ? self[0].is_paired_end : self[1])
-      cram_reference:
-        source: reads_record
-        valueFrom: $(self.cram_reference)
-    out: [fq1, fq2]
+      reads_record: reads_record
+      sample_name: basename_picker/outsample
+      output_basename: basename_picker/outname
+      samtools_fastq_cores: samtools_fastq_cores
+    out: [reads1, reads2, is_paired_end, rg_string]
   cutadapt_3-4:
     # Skip if no adapter given, get fastq from prev step if not null or wf input
     run: ../tools/cutadapter_3.4.cwl
     when: $(inputs.r1_adapter.r1_adapter != null)
     in:
       readFilesIn1:
-        source: [align2fastq/fq1, reads_record]
+        source: [prepare_aligned_reads/reads1, reads_record]
         valueFrom: |
           $(self[0] != null ? self[0] : self[1].reads1)
       readFilesIn2:
-        source: [align2fastq/fq2, reads_record]
+        source: [prepare_aligned_reads/reads2, reads_record]
         valueFrom: |
           $(self[0] != null ? self[0] : self[1].reads2)
       r1_adapter:
@@ -103,18 +84,20 @@ steps:
     run: ../tools/build_reads_record.cwl
     in:
       reads1:
-        source: [cutadapt_3-4/trimmedReadsR1, align2fastq/fq1, reads_record]
+        source: [cutadapt_3-4/trimmedReadsR1, prepare_aligned_reads/reads1, reads_record]
         valueFrom: |
           $(self[0] != null ? self[0] : self[1] != null ? self[1] : self[2].reads1)
       reads2:
-        source: [cutadapt_3-4/trimmedReadsR2, align2fastq/fq2, reads_record]
+        source: [cutadapt_3-4/trimmedReadsR2, prepare_aligned_reads/reads2, reads_record]
         valueFrom: |
           $(self[0] != null ? self[0] : self[1] != null ? self[1] : self[2].reads2)
       is_paired_end:
-        source: [reads_record, alignmentfile_pairedness/is_paired_end]
+        source: [reads_record, prepare_aligned_reads/is_paired_end]
         valueFrom: |
           $(self[0].reads2 != null ? true : self[0].is_paired_end != null ? self[0].is_paired_end : self[1] != null ? self[1] : false)
-      outSAMattrRGline: basename_picker/outrg
+      outSAMattrRGline:
+        source: [prepare_aligned_reads/rg_string, basename_picker/outrg]
+        pickValue: first_non_null
     out: [out_rr]
 $namespaces:
   sbg: https://sevenbridges.com

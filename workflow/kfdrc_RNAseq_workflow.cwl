@@ -404,7 +404,7 @@ inputs:
       most sense, the others are their as a courtesy."}
   chimMainSegmentMultNmax: {type: 'int?', default: 1, doc: "maximum number of multi-alignments for the main chimeric segment. =1 will
       prohibit multimapping main segments"}
-  outSAMattributes: {type: 'string?', default: 'NH HI AS nM NM ch', doc: "a string of desired SAM attributes, in the order desired
+  outSAMattributes: {type: 'string?', default: 'NH HI AS nM NM ch RG', doc: "a string of desired SAM attributes, in the order desired
       for the output SAM. Tags can be listed in any combination/order. Please refer to the STAR manual, as there are numerous combinations:
       https://raw.githubusercontent.com/alexdobin/star_2.7.10a/master/doc/STARmanual.pdf"}
   alignInsertionFlush: {type: ['null', {type: enum, name: alignInsertionFlush, symbols: ["None", "Right"]}], default: "None", doc: "how
@@ -519,10 +519,22 @@ outputs:
       from RMATs containing only those calls with 10 or more junction spanning read counts of support"}
   t1k_genotype_tsv: {type: 'File?', outputSource: t1k/genotype_tsv, doc: "Genotyping results from T1k"}
 steps:
+  samtools_split:
+    run: ../tools/samtools_split.cwl
+    when: $(inputs.input_reads != null)
+    scatter: [input_reads]
+    scatterMethod: dotproduct
+    in:
+      input_reads: input_alignment_files
+      reference: cram_reference
+    out: [bam_files]
   lists_to_reads_records:
     run: ../subworkflows/lists_to_reads_records.cwl
     in:
-      input_alignment_files: input_alignment_files
+      input_alignment_files:
+        source: samtools_split/bam_files
+        valueFrom: |
+          $(self == null || self.every(function(e) { return e == null}) ? null : self.filter(function(e) { return e != null }).reduce(function(e,i) { return e.concat(i) }))
       input_pe_reads: input_pe_reads
       input_pe_mates: input_pe_mates
       input_se_reads: input_se_reads
