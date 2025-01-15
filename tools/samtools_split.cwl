@@ -23,7 +23,7 @@ requirements:
           set -xeo pipefail
           RG_NUM=`samtools head $(inputs.input_reads.path) | grep -c ^@RG`
           if [ $RG_NUM != 1 ]; then
-            samtools split -f '%*_%#.bam' -@ $(inputs.cores) --reference $(inputs.reference.path) $(inputs.input_reads.path)
+            samtools split -f '%*_%#.bam' -@ $(inputs.cores) $(inputs.reference ? '--reference ' + inputs.reference.path : '') $(inputs.input_reads.path)
           fi
 baseCommand: []
 arguments:
@@ -33,7 +33,7 @@ arguments:
       /bin/bash split_bam.sh
 inputs:
   input_reads: { type: File, doc: "Input bam file" }
-  reference: { type: File, doc: "Reference fasta file" }
+  reference: { type: 'File?', doc: "Reference fasta file" }
   ram: { type: 'int?', default: 36, doc: "GB of RAM to allocate to the task." }
   cpu: { type: 'int?', default: 36, doc: "Minimum reserved number of CPU cores for the task." }
 outputs:
