@@ -30,25 +30,25 @@ doc: |
   This workflow is the current production workflow, equivalent to this [CAVATICA public app](https://cavatica.sbgenomics.com/public/apps#cavatica/apps-publisher/kfdrc-rnaseq-workflow).
 
   ### Cutadapt
-  [Cutadapt v3.4](https://github.com/marcelm/cutadapt) Cut adapter sequences from raw reads if needed.
+  [Cutadapt v3.4](https://github.com/marcelm/cutadapt) Cut adapter sequences from raw reads if needed. For more information please see the following [paper](https://doi.org/10.14806/ej.17.1.200).
   ### [STAR](docs/STAR_2.7.10a.md)
   [STAR v2.7.10a](https://doi.org/f4h523) RNA-Seq raw data alignment.
   ### [RSEM](docs/RSEM_1.3.1.md)
-  [RSEM v1.3.1](https://doi:10/cwg8n5) Calculation of gene expression.
+  [RSEM v1.3.1](https://doi.org/10.1186/1471-2105-12-323) Calculation of gene expression.
   ### Kallisto
-  [Kallisto v0.43.1](https://doi:10.1038/nbt.3519) Raw data pseudoalignment to estimate gene abundance.
+  [Kallisto v0.43.1](https://doi.org/10.1038/nbt.3519) Raw data pseudoalignment to estimate gene abundance.
   ### [STAR-Fusion](docs/STAR-Fusion_1.10.1.md)
-  [STAR-Fusion v1.10.1](https://doi:10.1101/120295) Fusion detection for `STAR` chimeric reads.
+  [STAR-Fusion v1.10.1](https://doi.org/10.1101/120295) Fusion detection for `STAR` chimeric reads.
   ### [Arriba](docs/ARRIBA_2.2.1.md)
-  [Arriba v2.2.1](https://github.com/suhrig/arriba/) Fusion caller that uses `STAR` aligned reads and chimeric reads output.
+  [Arriba v2.2.1](https://github.com/suhrig/arriba/) Fusion caller that uses `STAR` aligned reads and chimeric reads output. For more information, please see the following [paper](https://doi.org/10.1101/gr.257246.119).
   ### [annoFuse](docs/D3B_ANNOFUSE.md)
   [annoFuse 0.92.0](https://github.com/d3b-center/annoFuse/releases/tag/v0.92.0) Filter and prioritize fusion calls. For more information, please see the following [paper](https://www.biorxiv.org/content/10.1101/839738v3).
   ### RNA-SeQC
-  [RNA-SeQC v2.3.4](https://github.com/broadinstitute/rnaseqc) Generate metrics such as gene and transcript counts, sense/antisense mapping, mapping rates, etc
+  [RNA-SeQC v2.3.4](https://github.com/broadinstitute/rnaseqc) Generate metrics such as gene and transcript counts, sense/antisense mapping, mapping rates, etc. For more information please see the following [paper](https://doi.org/10.1093/bioinformatics/btab135).
   ### [rMATS](docs/D3B_RMATS.md)
-  [rMATS turbo v4.1.2](https://github.com/Xinglab/rmats-turbo) Computational tool to detect differential alternative splicing events from RNA-Seq data
+  [rMATS turbo v4.1.2](https://github.com/Xinglab/rmats-turbo) Computational tool to detect differential alternative splicing events from RNA-Seq data. For more information, please see the following [paper](https://doi.org/10.1038/s41596-023-00944-2).
   ### [T1k](docs/T1K_README.md)
-  [T1k v1.0.5](https://github.com/mourisl/T1K/) Genotype highly polymorphic genes (e.g. HLA) with bulk RNA-seq data.
+  [T1k v1.0.5](https://github.com/mourisl/T1K/) Genotype highly polymorphic genes (e.g. HLA) with bulk RNA-seq data. For more information, please see the following [paper](https://doi.org/10.1101/gr.277585.122).
 
   ## Usage
 
