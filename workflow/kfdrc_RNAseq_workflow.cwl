@@ -31,7 +31,7 @@ doc: |
 
   ### Cutadapt
   Cutadapt v3.4: Cut adapter sequences from raw reads if needed.
-  - [Git repo](https://github.com/marcelm/cutadapt)
+  - [Github](https://github.com/marcelm/cutadapt)
   - [Publication](https://doi.org/10.14806/ej.17.1.200)
   ### STAR
   STAR v2.7.10a: RNA-Seq raw data alignment.
