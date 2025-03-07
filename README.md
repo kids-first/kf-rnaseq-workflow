@@ -37,6 +37,7 @@ STAR v2.7.10a: RNA-Seq raw data alignment.
 RSEM v1.3.1: Calculation of gene expression.
  - [Github](https://github.com/deweylab/RSEM/tree/v1.3.1)
  - [Publication](https://doi.org/10.1186/1471-2105-12-323)
+ - [README](docs/RSEM_1.3.1.md)
 ### Kallisto
 Kallisto v0.43.1: Raw data pseudoalignment to estimate gene abundance.
  - [Github](https://github.com/pachterlab/kallisto/tree/v0.43.1)
