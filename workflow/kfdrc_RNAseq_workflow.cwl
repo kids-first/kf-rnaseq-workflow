@@ -38,7 +38,7 @@ doc: |
   - [Github](https://github.com/alexdobin/STAR/tree/2.7.10a)
   - [Publication](https://doi.org/f4h523)
   - [README](docs/STAR_2.7.10a.md)
-  ### [RSEM](docs/RSEM_1.3.1.md)
+  ### RSEM
   RSEM v1.3.1: Calculation of gene expression.
   - [Github](https://github.com/deweylab/RSEM/tree/v1.3.1)
   - [Publication](https://doi.org/10.1186/1471-2105-12-323)
