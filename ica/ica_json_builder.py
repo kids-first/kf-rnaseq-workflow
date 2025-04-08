@@ -1,0 +1,70 @@
+#/usr/bin/env python3
+
+import json
+import yaml
+import sys
+
+def interpret_string(in_type: str, default: str | None = None) -> dict[str, str]:
+    out = {}
+    if default: out["value"] = default
+    if not in_type.endswith('?'): out['minValues'] = 1
+    if '[]' in in_type: out['maxValues'] = 1000
+    if in_type.startswith("string"):
+        out["type"] = "textbox"
+    elif in_type.startswith("null"):
+        out["minValues"] = 0
+    elif in_type.startswith("float"):
+        out["type"] = "number"
+    elif in_type.startswith("int"):
+        out["type"] = "integer"
+    elif in_type.startswith("boolean"):
+        out["type"] = "checkbox"
+    elif in_type.startswith("File"):
+        out["type"] = "data"
+        out["dataFilter"] = {"dataType": "file"}
+    elif in_type.startswith("Directory"):
+        out["type"] = "data"
+        out["dataFilter"] = {"dataType": "directory"}
+    return out
+
+def interpret_enum(enum_type: dict[str, str], default: str | None = None) -> dict[str, str]:
+    out = {"type": "select",
+           "choices": [{"value": i, "text": i, "selected": i == default} for i in enum_type["symbols"]]}
+    return out
+
+
+def interpret_list(list_type: list[str], default: str | None = None) -> dict[str, str]:
+    out = {"minValues": 1}
+    for t in list_type:
+        if type(t) == str:
+            out.update(interpret_string(t))
+        elif type(t) == dict:
+            out.update(interpret_enum(t, default))
+        else:
+            raise Exception(f"I don't know what to do with {t}")
+    return out
+
+
+def main():
+    with open(sys.argv[-1], 'r') as file:
+        wf = yaml.safe_load(file)
+    inputs = [dict(v, **{"id": k}) for k, v in wf['inputs'].items()]
+    payload = {"fields":[]}
+    for input in inputs:
+        ica_attr = {"id": input["id"]}
+        doc = None if 'doc' not in input else input['doc']
+        if doc: ica_attr["helpText"] = doc
+        default = None if 'default' not in input else input['default']
+        if type(input["type"]) == dict:
+            ica_attr.update(interpret_enum(input["type"], default))
+        elif type(input["type"]) == str:
+            ica_attr.update(interpret_string(input["type"], default))
+        elif type(input["type"]) == list:
+            ica_attr.update(interpret_list(input["type"], default))
+        else:
+            raise Exception(f"Cannot process input {input['type']}")
+        payload["fields"].append(ica_attr)
+    print(json.dumps(payload, sort_keys=True, indent=2))
+
+if __name__ == "__main__":
+    main()

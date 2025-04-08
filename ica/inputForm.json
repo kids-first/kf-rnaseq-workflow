@@ -1,0 +1,779 @@
+{
+  "fields": [
+    {
+      "dataFilter": {
+        "dataType": "file"
+      },
+      "helpText": "GRCh38.primary_assembly.genome.fa",
+      "id": "reference_fasta",
+      "minValues": 1,
+      "type": "data"
+    },
+    {
+      "helpText": "String to use as basename for outputs. Will use read1 file basename if null",
+      "id": "output_basename",
+      "type": "textbox"
+    },
+    {
+      "dataFilter": {
+        "dataType": "file"
+      },
+      "helpText": "List of input SAM/BAM/CRAM files to process",
+      "id": "input_alignment_files",
+      "maxValues": 1000,
+      "type": "data"
+    },
+    {
+      "dataFilter": {
+        "dataType": "file"
+      },
+      "helpText": "List of R1 paired end FASTQ files to process",
+      "id": "input_pe_reads",
+      "maxValues": 1000,
+      "type": "data"
+    },
+    {
+      "dataFilter": {
+        "dataType": "file"
+      },
+      "helpText": "List of R2 paired end FASTQ files to process",
+      "id": "input_pe_mates",
+      "maxValues": 1000,
+      "type": "data"
+    },
+    {
+      "dataFilter": {
+        "dataType": "file"
+      },
+      "helpText": "List of single end FASTQ files to process",
+      "id": "input_se_reads",
+      "maxValues": 1000,
+      "type": "data"
+    },
+    {
+      "helpText": "List of RG strings to use in PE processing",
+      "id": "input_pe_rg_strs",
+      "maxValues": 1000,
+      "type": "textbox"
+    },
+    {
+      "helpText": "List of RG strings to use in SE processing",
+      "id": "input_se_rg_strs",
+      "maxValues": 1000,
+      "type": "textbox"
+    },
+    {
+      "dataFilter": {
+        "dataType": "file"
+      },
+      "helpText": "If any input alignment files are CRAM, provide the reference used to create them",
+      "id": "cram_reference",
+      "type": "data"
+    },
+    {
+      "helpText": "For alignment files inputs, are the reads paired end?",
+      "id": "is_paired_end",
+      "type": "checkbox"
+    },
+    {
+      "helpText": "!Warning this will be applied to all R1 reads (PE, SE, and reads from alignment files)! If you have multiple adapters, manually trim your reads before input. If they share the same adapter, supply adapter here",
+      "id": "r1_adapter",
+      "type": "textbox"
+    },
+    {
+      "helpText": "!Warning this will be applied to all R2 reads (PE and reads from alignment files)! If you have multiple adapters, manually trim your reads before input. If they share the same adapter, supply adapter here",
+      "id": "r2_adapter",
+      "type": "textbox"
+    },
+    {
+      "helpText": "If trimming adapters, what is the minimum length reads should have post trimming",
+      "id": "min_len",
+      "type": "integer"
+    },
+    {
+      "helpText": "Phred scale used for quality scores of the reads",
+      "id": "quality_base",
+      "type": "integer"
+    },
+    {
+      "helpText": "Quality trim cutoff, see https://cutadapt.readthedocs.io/en/v3.4/guide.html#quality-trimming for how 5' 3' is handled",
+      "id": "quality_cutoff",
+      "maxValues": 1000,
+      "type": "integer"
+    },
+    {
+      "choices": [
+        {
+          "selected": false,
+          "text": "default",
+          "value": "default"
+        },
+        {
+          "selected": false,
+          "text": "rf-stranded",
+          "value": "rf-stranded"
+        },
+        {
+          "selected": false,
+          "text": "fr-stranded",
+          "value": "fr-stranded"
+        }
+      ],
+      "helpText": "use 'default' for unstranded/auto, 'rf-stranded' if read1 in the fastq read pairs is reverse complement to the transcript, 'fr-stranded' if read1 same sense as transcript",
+      "id": "wf_strand_param",
+      "minValues": 0,
+      "type": "select"
+    },
+    {
+      "dataFilter": {
+        "dataType": "file"
+      },
+      "helpText": "General transfer format (gtf) file with gene models corresponding to fasta reference",
+      "id": "gtf_anno",
+      "minValues": 1,
+      "type": "data"
+    },
+    {
+      "helpText": "This is what the path will be when genome_tar is unpackaged",
+      "id": "star_fusion_genome_untar_path",
+      "type": "textbox",
+      "value": "GRCh38_v39_CTAT_lib_Mar242022.CUSTOM"
+    },
+    {
+      "helpText": "The median read length for the reads provided.",
+      "id": "read_length_median",
+      "type": "integer"
+    },
+    {
+      "helpText": "Standard Deviation of the median read length.",
+      "id": "read_length_stddev",
+      "type": "number"
+    },
+    {
+      "helpText": "Num cores for align2fastq conversion, if input is an alignment file",
+      "id": "samtools_fastq_cores",
+      "type": "integer",
+      "value": 16
+    },
+    {
+      "dataFilter": {
+        "dataType": "file"
+      },
+      "helpText": "Tar gzipped reference that will be unzipped at run time",
+      "id": "STARgenome",
+      "minValues": 1,
+      "type": "data"
+    },
+    {
+      "helpText": "Adjust this value to change number of cores used by STAR.",
+      "id": "runThreadN",
+      "type": "integer",
+      "value": 36
+    },
+    {
+      "choices": [
+        {
+          "selected": true,
+          "text": "Basic",
+          "value": "Basic"
+        },
+        {
+          "selected": false,
+          "text": "None",
+          "value": "None"
+        }
+      ],
+      "helpText": "Enable two pass mode to detect novel splice events. Default is basic (on).",
+      "id": "twopassMode",
+      "minValues": 0,
+      "type": "select"
+    },
+    {
+      "helpText": "minimum overhang for unannotated junctions. ENCODE default used.",
+      "id": "alignSJoverhangMin",
+      "type": "integer",
+      "value": 8
+    },
+    {
+      "helpText": "alignment will be output only if its ratio of mismatches to *mapped* length is less than or equal to this value",
+      "id": "outFilterMismatchNoverLmax",
+      "type": "number",
+      "value": 0.1
+    },
+    {
+      "choices": [
+        {
+          "selected": true,
+          "text": "BySJout",
+          "value": "BySJout"
+        },
+        {
+          "selected": false,
+          "text": "Normal",
+          "value": "Normal"
+        }
+      ],
+      "helpText": "type of filtering. Normal: standard filtering using only current alignment. BySJout (default): keep only those reads that contain junctions that passed filtering into SJ.out.tab.",
+      "id": "outFilterType",
+      "minValues": 0,
+      "type": "select"
+    },
+    {
+      "helpText": "alignment will be output only if its score is higher than or equal to this value, normalized to read length (sum of mate's lengths for paired-end reads)",
+      "id": "outFilterScoreMinOverLread",
+      "type": "number",
+      "value": 0.33
+    },
+    {
+      "helpText": "alignment will be output only if the number of matched bases is higher than or equal to this value., normalized to the read length (sum of mates' lengths for paired-end reads)",
+      "id": "outFilterMatchNminOverLread",
+      "type": "number",
+      "value": 0.33
+    },
+    {
+      "choices": [
+        {
+          "selected": true,
+          "text": "None",
+          "value": "None"
+        },
+        {
+          "selected": false,
+          "text": "Fastx",
+          "value": "Fastx"
+        }
+      ],
+      "helpText": "output of unmapped and partially mapped (i.e. mapped only one mate of a paired end read) reads in separate file(s). none (default): no output. Fastx: output in separate fasta/fastq files, Unmapped.out.mate1/2.",
+      "id": "outReadsUnmapped",
+      "minValues": 0,
+      "type": "select"
+    },
+    {
+      "helpText": "maximum number of junction to be inserted to the genome on the fly at the mapping stage, including those from annotations and those detected in the 1st step of the 2-pass run",
+      "id": "limitSjdbInsertNsj",
+      "type": "integer",
+      "value": 1200000
+    },
+    {
+      "choices": [
+        {
+          "selected": true,
+          "text": "intronMotif",
+          "value": "intronMotif"
+        },
+        {
+          "selected": false,
+          "text": "None",
+          "value": "None"
+        }
+      ],
+      "helpText": "Cufflinks-like strand field flag. None: not used. intronMotif (default): strand derived from the intron motif. This option changes the output alignments: reads with inconsistent and/or non-canonical introns are filtered out.",
+      "id": "outSAMstrandField",
+      "minValues": 0,
+      "type": "select"
+    },
+    {
+      "choices": [
+        {
+          "selected": true,
+          "text": "None",
+          "value": "None"
+        },
+        {
+          "selected": false,
+          "text": "RemoveNoncanonical",
+          "value": "RemoveNoncanonical"
+        },
+        {
+          "selected": false,
+          "text": "RemoveNoncanonicalUnannotated",
+          "value": "RemoveNoncanonicalUnannotated"
+        }
+      ],
+      "helpText": "filter alignment using their motifs. None (default): no filtering. RemoveNoncanonical: filter out alignments that contain non-canonical junctions RemoveNoncanonicalUnannotated: filter out alignments that contain non-canonical unannotated junctions when using annotated splice junctions database. The annotated non-canonical junctions will be kept.",
+      "id": "outFilterIntronMotifs",
+      "minValues": 0,
+      "type": "select"
+    },
+    {
+      "choices": [
+        {
+          "selected": true,
+          "text": "Yes",
+          "value": "Yes"
+        },
+        {
+          "selected": false,
+          "text": "No",
+          "value": "No"
+        }
+      ],
+      "helpText": "allow the soft-clipping of the alignments past the end of the chromosomes. Yes (default): allow. No: prohibit, useful for compatibility with Cufflinks",
+      "id": "alignSoftClipAtReferenceEnds",
+      "minValues": 0,
+      "type": "select"
+    },
+    {
+      "choices": [
+        {
+          "selected": true,
+          "text": "TranscriptomeSAM GeneCounts",
+          "value": "TranscriptomeSAM GeneCounts"
+        },
+        {
+          "selected": false,
+          "text": "-",
+          "value": "-"
+        },
+        {
+          "selected": false,
+          "text": "TranscriptomeSAM",
+          "value": "TranscriptomeSAM"
+        },
+        {
+          "selected": false,
+          "text": "GeneCounts",
+          "value": "GeneCounts"
+        }
+      ],
+      "helpText": "types of quantification requested. -: none. TranscriptomeSAM: output SAM/BAM alignments to transcriptome into a separate file GeneCounts: count reads per gene. Choices are additive, so default is 'TranscriptomeSAM GeneCounts'",
+      "id": "quantMode",
+      "minValues": 0,
+      "type": "select"
+    },
+    {
+      "choices": [
+        {
+          "selected": true,
+          "text": "BAM Unsorted",
+          "value": "BAM Unsorted"
+        },
+        {
+          "selected": false,
+          "text": "None",
+          "value": "None"
+        },
+        {
+          "selected": false,
+          "text": "BAM SortedByCoordinate",
+          "value": "BAM SortedByCoordinate"
+        },
+        {
+          "selected": false,
+          "text": "SAM Unsorted",
+          "value": "SAM Unsorted"
+        },
+        {
+          "selected": false,
+          "text": "SAM SortedByCoordinate",
+          "value": "SAM SortedByCoordinate"
+        }
+      ],
+      "helpText": "type of SAM/BAM output. None: no SAM/BAM output. Otherwise, first word is output type (BAM or SAM), second is sort type (Unsorted or SortedByCoordinate)",
+      "id": "outSAMtype",
+      "minValues": 0,
+      "type": "select"
+    },
+    {
+      "choices": [
+        {
+          "selected": true,
+          "text": "Within",
+          "value": "Within"
+        },
+        {
+          "selected": false,
+          "text": "None",
+          "value": "None"
+        },
+        {
+          "selected": false,
+          "text": "Within KeepPairs",
+          "value": "Within KeepPairs"
+        }
+      ],
+      "helpText": "output of unmapped reads in the SAM format. None: no output. Within (default): output unmapped reads within the main SAM file (i.e. Aligned.out.sam) Within KeepPairs: record unmapped mate for each alignment, and, in case of unsorted output, keep it adjacent to its mapped mate. Only affects multi-mapping reads",
+      "id": "outSAMunmapped",
+      "minValues": 0,
+      "type": "select"
+    },
+    {
+      "choices": [
+        {
+          "selected": true,
+          "text": "NoSharedMemory",
+          "value": "NoSharedMemory"
+        },
+        {
+          "selected": false,
+          "text": "LoadAndKeep",
+          "value": "LoadAndKeep"
+        },
+        {
+          "selected": false,
+          "text": "LoadAndRemove",
+          "value": "LoadAndRemove"
+        },
+        {
+          "selected": false,
+          "text": "LoadAndExit",
+          "value": "LoadAndExit"
+        }
+      ],
+      "helpText": "mode of shared memory usage for the genome file. In this context, the default value makes the most sense, the others are their as a courtesy.",
+      "id": "genomeLoad",
+      "minValues": 0,
+      "type": "select"
+    },
+    {
+      "helpText": "maximum number of multi-alignments for the main chimeric segment. =1 will prohibit multimapping main segments",
+      "id": "chimMainSegmentMultNmax",
+      "type": "integer",
+      "value": 1
+    },
+    {
+      "helpText": "a string of desired SAM attributes, in the order desired for the output SAM. Tags can be listed in any combination/order. Please refer to the STAR manual, as there are numerous combinations: https://raw.githubusercontent.com/alexdobin/star_2.7.10a/master/doc/STARmanual.pdf",
+      "id": "outSAMattributes",
+      "type": "textbox",
+      "value": "NH HI AS nM NM ch RG"
+    },
+    {
+      "choices": [
+        {
+          "selected": true,
+          "text": "None",
+          "value": "None"
+        },
+        {
+          "selected": false,
+          "text": "Right",
+          "value": "Right"
+        }
+      ],
+      "helpText": "how to flush ambiguous insertion positions. None (default): insertions not flushed. Right: insertions flushed to the right. STAR Fusion recommended (SF)",
+      "id": "alignInsertionFlush",
+      "minValues": 0,
+      "type": "select"
+    },
+    {
+      "helpText": "maximum intron size. SF recommends 100000",
+      "id": "alignIntronMax",
+      "type": "integer",
+      "value": 1000000
+    },
+    {
+      "helpText": "maximum genomic distance between mates, SF recommends 100000 to avoid readthru fusions within 100k",
+      "id": "alignMatesGapMax",
+      "type": "integer",
+      "value": 1000000
+    },
+    {
+      "helpText": "minimum overhang for annotated junctions. SF recommends 10",
+      "id": "alignSJDBoverhangMin",
+      "type": "integer",
+      "value": 1
+    },
+    {
+      "helpText": "maximum number of mismatches per pair, large number switches off this filter",
+      "id": "outFilterMismatchNmax",
+      "type": "integer",
+      "value": 999
+    },
+    {
+      "helpText": "maximum number of mismatches for stitching of the splice junctions. Value '5 -1 5 5' improves SF chimeric junctions, also recommended by arriba (AR)",
+      "id": "alignSJstitchMismatchNmax",
+      "type": "textbox",
+      "value": "5 -1 5 5"
+    },
+    {
+      "helpText": "minimum mapped length for a read mate that is spliced. SF recommends 30",
+      "id": "alignSplicedMateMapLmin",
+      "type": "integer"
+    },
+    {
+      "helpText": "alignSplicedMateMapLmin normalized to mate length. SF recommends 0, AR 0.5",
+      "id": "alignSplicedMateMapLminOverLmate",
+      "type": "number",
+      "value": 0.5
+    },
+    {
+      "helpText": "minimum overhang for a chimeric junction. SF recommends 8, AR 10",
+      "id": "chimJunctionOverhangMin",
+      "type": "integer",
+      "value": 10
+    },
+    {
+      "helpText": "maximum number of chimeric multi-alignments. SF recommends 20, AR 50.",
+      "id": "chimMultimapNmax",
+      "type": "integer",
+      "value": 50
+    },
+    {
+      "helpText": "the score range for multi-mapping chimeras below the best chimeric score. Only works with chimMultimapNmax > 1. SF recommends 3",
+      "id": "chimMultimapScoreRange",
+      "type": "integer",
+      "value": 1
+    },
+    {
+      "helpText": "int>=0: to trigger chimeric detection, the drop in the best non-chimeric alignment score with respect to the read length has to be greater than this value. SF recommends 10",
+      "id": "chimNonchimScoreDropMin",
+      "type": "integer",
+      "value": 20
+    },
+    {
+      "helpText": "formatting type for the Chimeric.out.junction file, value 1 REQUIRED for SF",
+      "id": "chimOutJunctionFormat",
+      "type": "integer",
+      "value": 1
+    },
+    {
+      "choices": [
+        {
+          "selected": false,
+          "text": "Junctions SeparateSAMold WithinBAM SoftClip",
+          "value": "Junctions SeparateSAMold WithinBAM SoftClip"
+        },
+        {
+          "selected": false,
+          "text": "Junctions",
+          "value": "Junctions"
+        },
+        {
+          "selected": false,
+          "text": "SeparateSAMold",
+          "value": "SeparateSAMold"
+        },
+        {
+          "selected": false,
+          "text": "WithinBAM SoftClip",
+          "value": "WithinBAM SoftClip"
+        },
+        {
+          "selected": false,
+          "text": "WithinBAM HardClip",
+          "value": "WithinBAM HardClip"
+        },
+        {
+          "selected": false,
+          "text": "Junctions SeparateSAMold",
+          "value": "Junctions SeparateSAMold"
+        },
+        {
+          "selected": true,
+          "text": "Junctions WithinBAM SoftClip",
+          "value": "Junctions WithinBAM SoftClip"
+        },
+        {
+          "selected": false,
+          "text": "Junctions WithinBAM HardClip",
+          "value": "Junctions WithinBAM HardClip"
+        },
+        {
+          "selected": false,
+          "text": "Junctions SeparateSAMold WithinBAM HardClip",
+          "value": "Junctions SeparateSAMold WithinBAM HardClip"
+        },
+        {
+          "selected": false,
+          "text": "SeparateSAMold WithinBAM SoftClip",
+          "value": "SeparateSAMold WithinBAM SoftClip"
+        },
+        {
+          "selected": false,
+          "text": "SeparateSAMold WithinBAM HardClip",
+          "value": "SeparateSAMold WithinBAM HardClip"
+        }
+      ],
+      "helpText": "type of chimeric output. Args are additive, and defined as such - Junctions: Chimeric.out.junction. SeparateSAMold: output old SAM into separate Chimeric.out.sam file WithinBAM: output into main aligned BAM files (Aligned.*.bam). WithinBAM HardClip: hard-clipping in the CIGAR for supplemental chimeric alignments WithinBAM SoftClip:soft-clipping in the CIGAR for supplemental chimeric alignments",
+      "id": "chimOutType",
+      "minValues": 0,
+      "type": "select"
+    },
+    {
+      "helpText": "max drop (difference) of chimeric score (the sum of scores of all chimeric segments) from the read length. AR recommends 30",
+      "id": "chimScoreDropMax",
+      "type": "integer",
+      "value": 30
+    },
+    {
+      "helpText": "penalty for a non-GT/AG chimeric junction. default -1, SF recommends -4, AR -1",
+      "id": "chimScoreJunctionNonGTAG",
+      "type": "integer",
+      "value": -1
+    },
+    {
+      "helpText": "int>=0: minimum difference (separation) between the best chimeric score and the next one. AR recommends 1",
+      "id": "chimScoreSeparation",
+      "type": "integer",
+      "value": 1
+    },
+    {
+      "helpText": "minimum length of chimeric segment length, if ==0, no chimeric output. REQUIRED for SF, 12 is their default, AR recommends 10",
+      "id": "chimSegmentMin",
+      "type": "integer",
+      "value": 10
+    },
+    {
+      "helpText": "maximum gap in the read sequence between chimeric segments. AR recommends 3",
+      "id": "chimSegmentReadGapMax",
+      "type": "integer",
+      "value": 3
+    },
+    {
+      "helpText": "max number of multiple alignments allowed for a read: if exceeded, the read is considered unmapped. ENCODE value is default. AR recommends 50",
+      "id": "outFilterMultimapNmax",
+      "type": "integer",
+      "value": 50
+    },
+    {
+      "helpText": "maximum proportion of mismatched bases in the overlap area. SF recommends 0.1",
+      "id": "peOverlapMMp",
+      "type": "number",
+      "value": 0.01
+    },
+    {
+      "helpText": "minimum number of overlap bases to trigger mates merging and realignment. Specify >0 value to switch on the 'merging of overlapping mates'algorithm. SF recommends 12,  AR recommends 10",
+      "id": "peOverlapNbasesMin",
+      "type": "integer",
+      "value": 10
+    },
+    {
+      "helpText": "Mem intensive tool. Set in GB",
+      "id": "arriba_memory",
+      "type": "integer",
+      "value": 64
+    },
+    {
+      "dataFilter": {
+        "dataType": "file"
+      },
+      "helpText": "STAR-Fusion CTAT Genome lib",
+      "id": "FusionGenome",
+      "minValues": 1,
+      "type": "data"
+    },
+    {
+      "helpText": "If part of a workflow, recommend compressing this file as final output",
+      "id": "compress_chimeric_junction",
+      "type": "checkbox",
+      "value": true
+    },
+    {
+      "dataFilter": {
+        "dataType": "file"
+      },
+      "helpText": "gtf file from `gtf_anno` that has been collapsed GTEx-style",
+      "id": "RNAseQC_GTF",
+      "minValues": 1,
+      "type": "data"
+    },
+    {
+      "dataFilter": {
+        "dataType": "file"
+      },
+      "helpText": "Specialized index of a **transcriptome** fasta file for kallisto",
+      "id": "kallisto_idx",
+      "minValues": 1,
+      "type": "data"
+    },
+    {
+      "dataFilter": {
+        "dataType": "file"
+      },
+      "helpText": "RSEM reference tar ball",
+      "id": "RSEMgenome",
+      "minValues": 1,
+      "type": "data"
+    },
+    {
+      "helpText": "Set this option if you want to estimate the read start position distribution (RSPD) from data",
+      "id": "estimate_rspd",
+      "type": "checkbox",
+      "value": true
+    },
+    {
+      "helpText": "Sample ID of the input reads. If not provided, will use reads1 file basename.",
+      "id": "sample_name",
+      "type": "textbox"
+    },
+    {
+      "helpText": "0-based column number in file of fusion name.",
+      "id": "annofuse_col_num",
+      "type": "integer",
+      "value": 30
+    },
+    {
+      "dataFilter": {
+        "dataType": "file"
+      },
+      "helpText": "Tar ball with fusion_annot_lib.idx and blast_pairs.idx from STAR-Fusion CTAT Genome lib. Can be same as FusionGenome, but only two files needed from that package",
+      "id": "fusion_annotator_ref",
+      "minValues": 1,
+      "type": "data"
+    },
+    {
+      "helpText": "Allow reads with lengths that differ from --readLength to be processed. --readLength will still be used to determine IncFormLen and SkipFormLen.",
+      "id": "rmats_variable_read_length",
+      "type": "checkbox",
+      "value": true
+    },
+    {
+      "helpText": "Select for novel splice site detection or unannotated splice sites. 'true' to detect or add this parameter, 'false' to disable denovo detection. Tool Default: false",
+      "id": "rmats_novel_splice_sites",
+      "type": "checkbox"
+    },
+    {
+      "helpText": "Select to skip statistical analysis, either between two groups or on single sample group. 'true' to add this parameter. Tool default: false",
+      "id": "rmats_stat_off",
+      "type": "checkbox"
+    },
+    {
+      "helpText": "Allow alignments with soft or hard clipping to be used.",
+      "id": "rmats_allow_clipping",
+      "type": "checkbox"
+    },
+    {
+      "helpText": "Threads to allocate to RMATs.",
+      "id": "rmats_threads",
+      "type": "integer"
+    },
+    {
+      "helpText": "GB of RAM to allocate to RMATs.",
+      "id": "rmats_ram",
+      "type": "integer"
+    },
+    {
+      "helpText": "Set to false to disable T1k HLA typing",
+      "id": "run_t1k",
+      "type": "checkbox",
+      "value": true
+    },
+    {
+      "dataFilter": {
+        "dataType": "file"
+      },
+      "helpText": "FASTA file containing the HLA allele reference sequences for RNA.",
+      "id": "hla_rna_ref_seqs",
+      "type": "data"
+    },
+    {
+      "dataFilter": {
+        "dataType": "file"
+      },
+      "helpText": "FASTA file containing the coordinates of the HLA genes for RNA.",
+      "id": "hla_rna_gene_coords",
+      "type": "data"
+    },
+    {
+      "helpText": "Set if the flag in BAM for the unmapped read-pair is nonconcordant",
+      "id": "t1k_abnormal_unmap_flag",
+      "type": "checkbox",
+      "value": true
+    },
+    {
+      "helpText": "GB of RAM to allocate to T1k.",
+      "id": "t1k_ram",
+      "type": "integer"
+    }
+  ]
+}
