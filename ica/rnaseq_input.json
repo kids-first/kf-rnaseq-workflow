@@ -1,0 +1,139 @@
+{
+    "chimSegmentMin": 10,
+    "annofuse_col_num": 30,
+    "alignInsertionFlush": "None",
+    "outSAMstrandField": "intronMotif",
+    "t1k_abnormal_unmap_flag": true,
+    "outFilterMismatchNmax": 999,
+    "chimMultimapScoreRange": 1,
+    "rmats_stat_off": false,
+    "alignSJstitchMismatchNmax": "5 -1 5 5",
+    "quantMode": "TranscriptomeSAM GeneCounts",
+    "chimScoreDropMax": 30,
+    "samtools_fastq_cores": 16,
+    "FusionGenome": {
+        "class": "File",
+        "location": "/home/ubuntu/volume/ICA/1.txt"
+    },
+    "reference_fasta": {
+        "class": "File",
+        "location": "/home/ubuntu/volume/ICA/1.txt",
+        "secondaryFiles": [
+            {
+                "location": "/home/ubuntu/volume/ICA/1.txt",
+                "class": "File"
+            }
+        ]
+    },
+    "outFilterIntronMotifs": "None",
+    "outFilterType": "BySJout",
+    "peOverlapMMp": 0.01,
+    "rmats_novel_splice_sites": false,
+    "genomeLoad": "NoSharedMemory",
+    "is_paired_end": false,
+    "alignSJDBoverhangMin": 1,
+    "chimJunctionOverhangMin": 10,
+    "RNAseQC_GTF": {
+        "class": "File",
+        "location": "/home/ubuntu/volume/ICA/1.txt"
+    },
+    "input_pe_reads": [
+        {
+            "class": "File",
+            "location": "/home/ubuntu/volume/ICA/1.txt"
+        },
+        {
+            "class": "File",
+            "location": "/home/ubuntu/volume/ICA/1.txt"
+        }
+    ],
+    "hla_rna_ref_seqs": {
+        "class": "File",
+        "location": "/home/ubuntu/volume/ICA/1.txt"
+    },
+    "chimMultimapNmax": 50,
+    "arriba_memory": 64,
+    "kallisto_idx": {
+        "class": "File",
+        "location": "/home/ubuntu/volume/ICA/1.txt"
+    },
+    "chimMainSegmentMultNmax": 1,
+    "outSAMtype": "BAM Unsorted",
+    "twopassMode": "Basic",
+    "outFilterMismatchNoverLmax": 0.1,
+    "rmats_variable_read_length": true,
+    "chimOutJunctionFormat": 1,
+    "outFilterScoreMinOverLread": 0.33,
+    "fusion_annotator_ref": {
+        "class": "File",
+        "location": "/home/ubuntu/volume/ICA/1.txt"
+    },
+    "input_pe_mates": [
+        {
+            "class": "File",
+            "location": "/home/ubuntu/volume/ICA/1.txt"
+        },
+        {
+            "class": "File",
+            "location": "/home/ubuntu/volume/ICA/1.txt"
+        }
+    ],
+    "runThreadN": 36,
+    "chimScoreSeparation": 1,
+    "RSEMgenome": {
+        "class": "File",
+        "location": "/home/ubuntu/volume/ICA/1.txt"
+    },
+    "hla_rna_gene_coords": {
+        "class": "File",
+        "location": "/home/ubuntu/volume/ICA/1.txt"
+    },
+    "chimNonchimScoreDropMin": 20,
+    "alignIntronMax": 1000000,
+    "alignSJoverhangMin": 8,
+    "outFilterMultimapNmax": 50,
+    "outSAMattributes": "NH HI AS nM NM ch RG",
+    "star_fusion_genome_untar_path": "GRCh38_v39_CTAT_lib_Mar242022.CUSTOM",
+    "output_basename": "DELME_RNASEQ",
+    "chimScoreJunctionNonGTAG": -1,
+    "alignSoftClipAtReferenceEnds": "Yes",
+    "alignMatesGapMax": 1000000,
+    "limitSjdbInsertNsj": 1200000,
+    "alignSplicedMateMapLminOverLmate": 0.5,
+    "chimOutType": "Junctions WithinBAM SoftClip",
+    "peOverlapNbasesMin": 10,
+    "outSAMunmapped": "Within",
+    "run_t1k": true,
+    "chimSegmentReadGapMax": 3,
+    "gtf_anno": {
+        "class": "File",
+        "location": "/home/ubuntu/volume/ICA/1.txt"
+    },
+    "rmats_allow_clipping": false,
+    "STARgenome": {
+        "class": "File",
+        "location": "/home/ubuntu/volume/ICA/1.txt.fai"
+    },
+    "outReadsUnmapped": "None",
+    "compress_chimeric_junction": true,
+    "estimate_rspd": true,
+    "outFilterMatchNminOverLread": 0.33,
+    "alignSplicedMateMapLmin": 0,
+    "cram_reference": null,
+    "input_alignment_files": null,
+    "input_pe_rg_strs": null,
+    "input_se_reads": null,
+    "input_se_rg_strs": null,
+    "min_len": null,
+    "quality_base": null,
+    "quality_cutoff": null,
+    "r1_adapter": null,
+    "r2_adapter": null,
+    "read_length_median": null,
+    "read_length_stddev": null,
+    "rmats_ram": null,
+    "rmats_threads": null,
+    "sample_name": null,
+    "t1k_ram": null,
+    "wf_strand_param": null
+}

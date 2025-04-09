@@ -354,6 +354,12 @@ requirements:
 - class: SubworkflowFeatureRequirement
 - class: InlineJavascriptRequirement
 - class: StepInputExpressionRequirement
+- class: SchemaDefRequirement
+  types:
+  - $import: ../schema/reads_record_type.yml
+- class: ResourceRequirement
+  https://platform.illumina.com/rdf/ica/resources:tier: standard
+  
 inputs:
   # many tool
   reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", "sbg:suggestedValue": {class: File, path: 5f500135e4b0370371c051b4,
@@ -551,11 +557,12 @@ outputs:
 steps:
   samtools_split:
     run: ../tools/samtools_split.cwl
-    when: $(inputs.input_reads != null)
     scatter: [input_reads]
-    scatterMethod: dotproduct
     in:
-      input_reads: input_alignment_files
+      input_reads:
+        source: input_alignment_files
+        linkMerge: merge_flattened
+        pickValue: all_non_null
       reference: cram_reference
     out: [bam_files]
   lists_to_reads_records:
@@ -564,7 +571,7 @@ steps:
       input_alignment_files:
         source: samtools_split/bam_files
         valueFrom: |
-          $(self == null || self.every(function(e) { return e == null}) ? null : self.filter(function(e) { return e != null }).reduce(function(e,i) { return e.concat(i) }))
+          $(self.reduce(function(e,i) { return e.concat(i) }, []))
       input_pe_reads: input_pe_reads
       input_pe_mates: input_pe_mates
       input_se_reads: input_se_reads

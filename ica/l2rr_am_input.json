@@ -1,0 +1,24 @@
+{
+    "is_paired_end": false,
+    "input_pe_reads": null,
+    "input_pe_mates": null,
+    "cram_reference": null,
+    "input_alignment_files": [
+        {
+            "class": "File",
+            "location": "/home/ubuntu/volume/ICA/1.txt"
+        },
+        {
+            "class": "File",
+            "location": "/home/ubuntu/volume/ICA/1.txt"
+        }
+    ],
+    "input_pe_rg_strs": null,
+    "input_se_reads": null,
+    "input_se_rg_strs": null,
+    "min_len": null,
+    "quality_base": null,
+    "quality_cutoff": null,
+    "r1_adapter": null,
+    "r2_adapter": null
+}
