@@ -8,7 +8,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 4
-    ramMin: 1600
+    ramMin: 8000
 
 baseCommand: [mkdir]
 arguments:

@@ -9,7 +9,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: $(inputs.cores)
-    ramMin: ${ return inputs.cores * 1000 }
+    ramMin: $(inputs.ram * 1000)
 
 baseCommand: [samtools]
 arguments:
@@ -36,6 +36,7 @@ arguments:
 
 inputs:
   cores: { type: 'int?', doc: "Num cores to use for sorting", default: 16}
+  ram: { type: 'int?', doc: "GB of RAM to allocate to this task.", default: 32 }
   unsorted_bam: { type: File, doc: "Bam to sort, likely from STAR" }
   chimeric_sam_out: { type: 'File?', doc: "chimeric bam file - created using v2.6 STAR, probably not in 2.7 STAR" }
 

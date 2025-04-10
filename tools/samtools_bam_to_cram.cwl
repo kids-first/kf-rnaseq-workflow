@@ -11,6 +11,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: $(inputs.cores)
+    ramMin: $(inputs.ram * 1000)
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9'
 baseCommand: [samtools, view]
@@ -29,5 +30,6 @@ inputs:
   input_bam: {type: File, doc: "Input bam file",
     inputBinding: { position: 3 }}
   cores: {type: 'int?', default: 16, inputBinding: {prefix: "-@", position: 2}}
+  ram: {type: 'int?', default: 32, doc: "GB of RAM to allocate to this task"}
 outputs:
   output: { type: File, outputBinding: { glob: '*.cram' }, secondaryFiles: [.crai] }

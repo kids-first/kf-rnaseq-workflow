@@ -27,6 +27,7 @@ requirements:
         }
   - class: ResourceRequirement
     coresMin: $(inputs.cpu)
+    ramMin: $(inputs.ram * 1000)
   - class: InitialWorkDirRequirement
     listing:
       - entryname: alignmentfile_pairedness.py
@@ -42,6 +43,7 @@ inputs:
   max_reads: {type: 'int?', inputBinding: {position: 2, prefix: "--max_reads"}, doc: "The max number of reads to examine to make PAIRED/SINGLE determination"}
   output_filename: {type: 'string?', default: "pairedness.txt", inputBinding: {position: 9, shellQuote: false, prefix: ">"}, doc: "String to use for output filename"}
   cpu: { type: 'int?', default: 8, inputBinding: {position: 2, prefix: "--threads"}, doc: "CPUs to allocate to this task" }
+  ram: { type: 'int?', default: 16, doc: "RAM to allocate to this task" }
 outputs:
   pairedness_stdout:
     type: File

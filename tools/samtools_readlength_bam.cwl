@@ -33,7 +33,7 @@ outputs:
       outputEval: |
         ${
           var rows = self[0].contents.split(/\r?\n/).slice(0,-1);
-          return rows[0].split(/\s/).pop();
+          return parseInt(rows[0].split(/\s/).pop());
         }
   variable_readlength:
     type: boolean

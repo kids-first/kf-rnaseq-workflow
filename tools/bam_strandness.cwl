@@ -26,7 +26,8 @@ requirements:
           return null;
         }
   - class: ResourceRequirement
-    coresMin: $(inputs.cores)
+    coresMin: $(inputs.cpu)
+    ramMin: $(inputs.ram * 1000)
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/stranded:1.1.0'
 baseCommand: []
@@ -51,6 +52,7 @@ inputs:
   n_reads: {type: 'int?', doc: "number of reads to sample", default: 200000}
   paired_end: { type: 'boolean?', doc: "Set to true if reads are paired end." }
   cpu: { type: 'int?', default: 16, doc: "CPUs to allocate to this task" }
+  ram: { type: 'int?', default: 32, doc: "GB of RAM to allocate to this task" }
 outputs:
   output:
     type: File

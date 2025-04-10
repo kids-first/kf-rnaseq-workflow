@@ -91,11 +91,7 @@ steps:
         in_filelist: { type: { type: array, items: ['null', string] } }
       outputs:
         out_filelist: { type: { type: array, items: ['null', string] }, outputBinding: { outputEval: $(inputs.in_filelist) } }
-    when: $(inputs.reads != null)
     in:
-      reads:
-        source: input_se_reads
-        valueFrom: $(typeof(self))
       in_filelist:
         source: [input_se_rg_strs, input_se_reads]
         valueFrom: |
@@ -125,11 +121,7 @@ steps:
         in_filelist: { type: { type: array, items: ['null', string] } }
       outputs:
         out_filelist: { type: { type: array, items: ['null', string] }, outputBinding: { outputEval: $(inputs.in_filelist) } }
-    when: $(inputs.reads != null)
     in:
-      reads:
-        source: input_pe_reads
-        valueFrom: $(typeof(self))
       in_filelist:
         source: [input_pe_rg_strs, input_pe_reads]
         valueFrom: |

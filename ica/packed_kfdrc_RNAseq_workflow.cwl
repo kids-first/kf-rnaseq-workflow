@@ -356,7 +356,6 @@
                             }
                         ]
                     },
-                    "when": "$(inputs.reads != null)",
                     "in": [
                         {
                             "source": [
@@ -365,11 +364,6 @@
                             ],
                             "valueFrom": "$(self[0] != null ? self[0] : self[1] != null ? self[1].map(function(e) { return null }) : [])\n",
                             "id": "#lists_to_reads_records.cwl/create_pe_reads_null_array/in_filelist"
-                        },
-                        {
-                            "source": "#lists_to_reads_records.cwl/input_pe_reads",
-                            "valueFrom": "$(typeof(self))",
-                            "id": "#lists_to_reads_records.cwl/create_pe_reads_null_array/reads"
                         }
                     ],
                     "out": [
@@ -550,7 +544,6 @@
                             }
                         ]
                     },
-                    "when": "$(inputs.reads != null)",
                     "in": [
                         {
                             "source": [
@@ -559,11 +552,6 @@
                             ],
                             "valueFrom": "$(self[0] != null ? self[0] : self[1] != null ? self[1].map(function(e) { return null }) : [])\n",
                             "id": "#lists_to_reads_records.cwl/create_se_reads_null_array/in_filelist"
-                        },
-                        {
-                            "source": "#lists_to_reads_records.cwl/input_se_reads",
-                            "valueFrom": "$(typeof(self))",
-                            "id": "#lists_to_reads_records.cwl/create_se_reads_null_array/reads"
                         }
                     ],
                     "out": [
@@ -924,48 +912,41 @@
                 },
                 {
                     "run": "#cutadapter_3.4.cwl",
-                    "when": "$(inputs.r1_adapter.r1_adapter != null)",
+                    "when": "$(inputs.reads_record.r1_adapter != null)",
                     "in": [
                         {
-                            "source": "#preprocess_reads.cwl/reads_record",
-                            "valueFrom": "$(self.min_len)",
+                            "valueFrom": "$(inputs.reads_record.min_len)",
                             "id": "#preprocess_reads.cwl/cutadapt_3-4/min_len"
                         },
                         {
-                            "source": "#preprocess_reads.cwl/reads_record",
-                            "valueFrom": "$(self.quality_base)",
+                            "valueFrom": "$(inputs.reads_record.quality_base)",
                             "id": "#preprocess_reads.cwl/cutadapt_3-4/quality_base"
                         },
                         {
-                            "source": "#preprocess_reads.cwl/reads_record",
-                            "valueFrom": "$(self.quality_cutoff)",
+                            "valueFrom": "$(inputs.reads_record.quality_cutoff)",
                             "id": "#preprocess_reads.cwl/cutadapt_3-4/quality_cutoff"
                         },
                         {
-                            "source": "#preprocess_reads.cwl/reads_record",
-                            "valueFrom": "$(self.r1_adapter)",
+                            "valueFrom": "$(inputs.reads_record.r1_adapter)",
                             "id": "#preprocess_reads.cwl/cutadapt_3-4/r1_adapter"
                         },
                         {
-                            "source": "#preprocess_reads.cwl/reads_record",
-                            "valueFrom": "$(self.r2_adapter)",
+                            "valueFrom": "$(inputs.reads_record.r2_adapter)",
                             "id": "#preprocess_reads.cwl/cutadapt_3-4/r2_adapter"
                         },
                         {
-                            "source": [
-                                "#preprocess_reads.cwl/prepare_aligned_reads/reads1",
-                                "#preprocess_reads.cwl/reads_record"
-                            ],
-                            "valueFrom": "$(self[0] != null ? self[0] : self[1].reads1)\n",
+                            "source": "#preprocess_reads.cwl/prepare_aligned_reads/reads1",
+                            "valueFrom": "$(self != null ? self : inputs.reads_record.reads1)\n",
                             "id": "#preprocess_reads.cwl/cutadapt_3-4/readFilesIn1"
                         },
                         {
-                            "source": [
-                                "#preprocess_reads.cwl/prepare_aligned_reads/reads2",
-                                "#preprocess_reads.cwl/reads_record"
-                            ],
-                            "valueFrom": "$(self[0] != null ? self[0] : self[1].reads2)\n",
+                            "source": "#preprocess_reads.cwl/prepare_aligned_reads/reads2",
+                            "valueFrom": "$(self != null ? self : inputs.reads_record.reads2)\n",
                             "id": "#preprocess_reads.cwl/cutadapt_3-4/readFilesIn2"
+                        },
+                        {
+                            "source": "#preprocess_reads.cwl/reads_record",
+                            "id": "#preprocess_reads.cwl/cutadapt_3-4/reads_record"
                         },
                         {
                             "source": [
@@ -1036,7 +1017,8 @@
                 },
                 {
                     "class": "ResourceRequirement",
-                    "coresMin": "$(inputs.cpu)"
+                    "coresMin": "$(inputs.cpu)",
+                    "ramMin": "$(inputs.ram * 1000)"
                 },
                 {
                     "class": "InitialWorkDirRequirement",
@@ -1123,6 +1105,15 @@
                     },
                     "doc": "String to use for output filename",
                     "id": "#alignmentfile_pairedness.cwl/output_filename"
+                },
+                {
+                    "type": [
+                        "null",
+                        "int"
+                    ],
+                    "default": 16,
+                    "doc": "RAM to allocate to this task",
+                    "id": "#alignmentfile_pairedness.cwl/ram"
                 }
             ],
             "outputs": [
@@ -1673,7 +1664,8 @@
                 },
                 {
                     "class": "ResourceRequirement",
-                    "coresMin": "$(inputs.cores)"
+                    "coresMin": "$(inputs.cpu)",
+                    "ramMin": "$(inputs.ram * 1000)"
                 },
                 {
                     "class": "DockerRequirement",
@@ -1735,6 +1727,15 @@
                     ],
                     "doc": "Set to true if reads are paired end.",
                     "id": "#bam_strandness.cwl/paired_end"
+                },
+                {
+                    "type": [
+                        "null",
+                        "int"
+                    ],
+                    "default": 32,
+                    "doc": "GB of RAM to allocate to this task",
+                    "id": "#bam_strandness.cwl/ram"
                 }
             ],
             "outputs": [
@@ -3256,7 +3257,8 @@
                 },
                 {
                     "class": "ResourceRequirement",
-                    "coresMin": "$(inputs.cores)"
+                    "coresMin": "$(inputs.cores)",
+                    "ramMin": "$(inputs.ram * 1000)"
                 },
                 {
                     "class": "DockerRequirement",
@@ -3299,6 +3301,15 @@
                         "position": 3
                     },
                     "id": "#samtools_bam_to_cram.cwl/input_bam"
+                },
+                {
+                    "type": [
+                        "null",
+                        "int"
+                    ],
+                    "default": 32,
+                    "doc": "GB of RAM to allocate to this task",
+                    "id": "#samtools_bam_to_cram.cwl/ram"
                 },
                 {
                     "type": "File",
@@ -3350,7 +3361,7 @@
                 {
                     "class": "ResourceRequirement",
                     "coresMin": "$(inputs.cores)",
-                    "ramMin": "$(inputs.cores * 1000)"
+                    "ramMin": "$(inputs.ram * 1000)"
                 }
             ],
             "baseCommand": [
@@ -3400,6 +3411,15 @@
                     "type": "boolean",
                     "doc": "Is the input_reads_1 file paired end?",
                     "id": "#samtools_fastq.cwl/is_paired_end"
+                },
+                {
+                    "type": [
+                        "null",
+                        "int"
+                    ],
+                    "default": 32,
+                    "doc": "GB of RAM to allocate to this task",
+                    "id": "#samtools_fastq.cwl/ram"
                 }
             ],
             "outputs": [
@@ -3553,7 +3573,7 @@
                     "outputBinding": {
                         "glob": "*.bam_readlength",
                         "loadContents": true,
-                        "outputEval": "${\n  var rows = self[0].contents.split(/\\r?\\n/).slice(0,-1);\n  return rows[0].split(/\\s/).pop();\n}\n"
+                        "outputEval": "${\n  var rows = self[0].contents.split(/\\r?\\n/).slice(0,-1);\n  return parseInt(rows[0].split(/\\s/).pop());\n}\n"
                     },
                     "id": "#samtools_readlength_bam.cwl/top_readlength"
                 },
@@ -3586,7 +3606,7 @@
                 {
                     "class": "ResourceRequirement",
                     "coresMin": "$(inputs.cores)",
-                    "ramMin": "${ return inputs.cores * 1000 }"
+                    "ramMin": "$(inputs.ram * 1000)"
                 }
             ],
             "baseCommand": [
@@ -3616,6 +3636,15 @@
                     "doc": "Num cores to use for sorting",
                     "default": 16,
                     "id": "#samtools_sort.cwl/cores"
+                },
+                {
+                    "type": [
+                        "null",
+                        "int"
+                    ],
+                    "doc": "GB of RAM to allocate to this task.",
+                    "default": 32,
+                    "id": "#samtools_sort.cwl/ram"
                 },
                 {
                     "type": "File",
@@ -4693,7 +4722,7 @@
                 {
                     "class": "ResourceRequirement",
                     "coresMin": 4,
-                    "ramMin": 1600
+                    "ramMin": 8000
                 }
             ],
             "baseCommand": [
@@ -6560,6 +6589,7 @@
                         },
                         {
                             "source": "#/samtools_split/bam_files",
+                            "valueFrom": "$(self.reduce(function(e,i) { return e.concat(i) }, []))\n",
                             "id": "#lists_to_reads_records/input_alignment_files"
                         },
                         {
