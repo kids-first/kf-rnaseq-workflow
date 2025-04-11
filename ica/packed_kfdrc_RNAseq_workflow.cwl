@@ -843,7 +843,7 @@
             ],
             "steps": [
                 {
-                    "run": "#basename_picker.cwl",
+                    "run": "#clt_basename_picker.cwl",
                     "in": [
                         {
                             "source": "#preprocess_reads.cwl/reads_record",
@@ -1805,57 +1805,6 @@
             ]
         },
         {
-            "class": "ExpressionTool",
-            "id": "#basename_picker.cwl",
-            "requirements": [
-                {
-                    "class": "InlineJavascriptRequirement"
-                }
-            ],
-            "inputs": [
-                {
-                    "type": [
-                        "null",
-                        "string"
-                    ],
-                    "id": "#basename_picker.cwl/output_basename"
-                },
-                {
-                    "type": "string",
-                    "id": "#basename_picker.cwl/root_name"
-                },
-                {
-                    "type": [
-                        "null",
-                        "string"
-                    ],
-                    "id": "#basename_picker.cwl/sample_name"
-                },
-                {
-                    "type": [
-                        "null",
-                        "string"
-                    ],
-                    "id": "#basename_picker.cwl/star_rg_line"
-                }
-            ],
-            "outputs": [
-                {
-                    "type": "string",
-                    "id": "#basename_picker.cwl/outname"
-                },
-                {
-                    "type": "string",
-                    "id": "#basename_picker.cwl/outrg"
-                },
-                {
-                    "type": "string",
-                    "id": "#basename_picker.cwl/outsample"
-                }
-            ],
-            "expression": "${\n  var name = inputs.output_basename ? inputs.output_basename : inputs.root_name;\n  var sample = inputs.sample_name ? inputs.sample_name : inputs.root_name;\n  var rgid = \"ID:\" + sample + \"_1\"\n  var rglb = \"LB:\" + sample\n  var rgsm = \"SM:\" + sample\n  var rgpl = \"PL:Illumina\"\n  var rgds = \"DS:\\\"Values for this read group were auto-generated and may not reflect the true read group information.\\\"\"\n  var rg = inputs.star_rg_line ? inputs.star_rg_line : [rgid, rgpl, rglb, rgsm, rgds].join(\"\\t\")\n  return {\n    'outname' : name,\n    'outsample' : sample,\n    'outrg' : rg\n  }\n}\n"
-        },
-        {
             "class": "CommandLineTool",
             "requirements": [
                 {
@@ -1979,6 +1928,159 @@
                 }
             ],
             "id": "#build_reads_record.cwl"
+        },
+        {
+            "class": "CommandLineTool",
+            "id": "#clt_basename_picker.cwl",
+            "requirements": [
+                {
+                    "class": "InlineJavascriptRequirement"
+                }
+            ],
+            "baseCommand": [
+                "echo",
+                "done"
+            ],
+            "inputs": [
+                {
+                    "type": [
+                        "null",
+                        "string"
+                    ],
+                    "id": "#clt_basename_picker.cwl/output_basename"
+                },
+                {
+                    "type": "string",
+                    "id": "#clt_basename_picker.cwl/root_name"
+                },
+                {
+                    "type": [
+                        "null",
+                        "string"
+                    ],
+                    "id": "#clt_basename_picker.cwl/sample_name"
+                },
+                {
+                    "type": [
+                        "null",
+                        "string"
+                    ],
+                    "id": "#clt_basename_picker.cwl/star_rg_line"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "string",
+                    "outputBinding": {
+                        "outputEval": "$(inputs.output_basename ? inputs.output_basename : inputs.root_name)\n"
+                    },
+                    "id": "#clt_basename_picker.cwl/outname"
+                },
+                {
+                    "type": "string",
+                    "outputBinding": {
+                        "outputEval": "${\n  var sample = inputs.sample_name ? inputs.sample_name : inputs.root_name;\n  var rgid = \"ID:\" + sample + \"_1\"\n  var rgid = \"ID:\" + sample + \"_1\"\n  var rglb = \"LB:\" + sample\n  var rgsm = \"SM:\" + sample\n  var rgpl = \"PL:Illumina\"\n  var rgds = \"DS:\\\"Values for this read group were auto-generated and may not reflect the true read group information.\\\"\"\n  var rg = inputs.star_rg_line ? inputs.star_rg_line : [rgid, rgpl, rglb, rgsm, rgds].join(\"\\t\")\n  return rg\n}\n"
+                    },
+                    "id": "#clt_basename_picker.cwl/outrg"
+                },
+                {
+                    "type": "string",
+                    "outputBinding": {
+                        "outputEval": "$(inputs.sample_name ? inputs.sample_name : inputs.root_name)\n"
+                    },
+                    "id": "#clt_basename_picker.cwl/outsample"
+                }
+            ]
+        },
+        {
+            "class": "CommandLineTool",
+            "id": "#clt_parse_strand_param.cwl",
+            "requirements": [
+                {
+                    "class": "InlineJavascriptRequirement"
+                }
+            ],
+            "baseCommand": [
+                "echo",
+                "done"
+            ],
+            "inputs": [
+                {
+                    "type": {
+                        "type": "enum",
+                        "name": "#clt_parse_strand_param.cwl/wf_strand_param/wf_strand_param",
+                        "symbols": [
+                            "#clt_parse_strand_param.cwl/wf_strand_param/wf_strand_param/default",
+                            "#clt_parse_strand_param.cwl/wf_strand_param/wf_strand_param/rf-stranded",
+                            "#clt_parse_strand_param.cwl/wf_strand_param/wf_strand_param/fr-stranded"
+                        ]
+                    },
+                    "doc": "use 'default' for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript",
+                    "id": "#clt_parse_strand_param.cwl/wf_strand_param"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": [
+                        "null",
+                        {
+                            "type": "enum",
+                            "name": "#clt_parse_strand_param.cwl/arriba_std/arriba_std",
+                            "symbols": [
+                                "#clt_parse_strand_param.cwl/arriba_std/arriba_std/auto",
+                                "#clt_parse_strand_param.cwl/arriba_std/arriba_std/reverse",
+                                "#clt_parse_strand_param.cwl/arriba_std/arriba_std/yes"
+                            ]
+                        }
+                    ],
+                    "outputBinding": {
+                        "outputEval": "${\n  var parse_dict = {\n    'default': 'auto',\n    'rf-stranded': 'reverse',\n    'fr-stranded': 'yes'\n  }\n  return parse_dict[inputs.wf_strand_param]\n}\n"
+                    },
+                    "id": "#clt_parse_strand_param.cwl/arriba_std"
+                },
+                {
+                    "type": "string",
+                    "outputBinding": {
+                        "outputEval": "${\n  var parse_dict = {\n    'default': 'default',\n    'rf-stranded': 'rf-stranded',\n    'fr-stranded': 'fr-stranded'\n  }\n  return parse_dict[inputs.wf_strand_param]\n}\n"
+                    },
+                    "id": "#clt_parse_strand_param.cwl/kallisto_std"
+                },
+                {
+                    "type": [
+                        "null",
+                        {
+                            "type": "enum",
+                            "name": "#clt_parse_strand_param.cwl/rnaseqc_std/rnaseqc_std",
+                            "symbols": [
+                                "#clt_parse_strand_param.cwl/rnaseqc_std/rnaseqc_std/rf",
+                                "#clt_parse_strand_param.cwl/rnaseqc_std/rnaseqc_std/fr"
+                            ]
+                        }
+                    ],
+                    "outputBinding": {
+                        "outputEval": "${\n  var parse_dict = {\n    'default': null,\n    'rf-stranded': 'rf',\n    'fr-stranded': 'fr'\n  }\n  return parse_dict[inputs.wf_strand_param]\n}\n"
+                    },
+                    "id": "#clt_parse_strand_param.cwl/rnaseqc_std"
+                },
+                {
+                    "type": [
+                        "null",
+                        {
+                            "type": "enum",
+                            "name": "#clt_parse_strand_param.cwl/rsem_std/rsem_std",
+                            "symbols": [
+                                "#clt_parse_strand_param.cwl/rsem_std/rsem_std/none",
+                                "#clt_parse_strand_param.cwl/rsem_std/rsem_std/forward",
+                                "#clt_parse_strand_param.cwl/rsem_std/rsem_std/reverse"
+                            ]
+                        }
+                    ],
+                    "outputBinding": {
+                        "outputEval": "${\n  var parse_dict = {\n    'default': 'none',\n    'rf-stranded': 'reverse',\n    'fr-stranded': 'forward'\n  }\n  return parse_dict[inputs.wf_strand_param]\n}\n"
+                    },
+                    "id": "#clt_parse_strand_param.cwl/rsem_std"
+                }
+            ]
         },
         {
             "class": "CommandLineTool",
@@ -2135,93 +2237,6 @@
                         "glob": "${ if (inputs.readFilesIn2){ return \"*TRIMMED.\" + inputs.readFilesIn2.basename; } else{ return null; } }"
                     },
                     "id": "#cutadapter_3.4.cwl/trimmedReadsR2"
-                }
-            ]
-        },
-        {
-            "class": "ExpressionTool",
-            "id": "#expression_parse_strand_param.cwl",
-            "requirements": [
-                {
-                    "class": "InlineJavascriptRequirement"
-                }
-            ],
-            "inputs": [
-                {
-                    "type": [
-                        {
-                            "type": "enum",
-                            "name": "#expression_parse_strand_param.cwl/wf_strand_param/wf_strand_param",
-                            "symbols": [
-                                "#expression_parse_strand_param.cwl/wf_strand_param/wf_strand_param/default",
-                                "#expression_parse_strand_param.cwl/wf_strand_param/wf_strand_param/rf-stranded",
-                                "#expression_parse_strand_param.cwl/wf_strand_param/wf_strand_param/fr-stranded"
-                            ]
-                        }
-                    ],
-                    "doc": "use 'default' for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript",
-                    "id": "#expression_parse_strand_param.cwl/wf_strand_param"
-                }
-            ],
-            "outputs": [
-                {
-                    "type": [
-                        "null",
-                        {
-                            "type": "enum",
-                            "name": "#expression_parse_strand_param.cwl/arriba_std/arriba_std",
-                            "symbols": [
-                                "#expression_parse_strand_param.cwl/arriba_std/arriba_std/auto",
-                                "#expression_parse_strand_param.cwl/arriba_std/arriba_std/reverse",
-                                "#expression_parse_strand_param.cwl/arriba_std/arriba_std/yes"
-                            ]
-                        }
-                    ],
-                    "id": "#expression_parse_strand_param.cwl/arriba_std"
-                },
-                {
-                    "type": "string",
-                    "id": "#expression_parse_strand_param.cwl/kallisto_std"
-                },
-                {
-                    "type": [
-                        "null",
-                        {
-                            "type": "enum",
-                            "name": "#expression_parse_strand_param.cwl/rnaseqc_std/rnaseqc_std",
-                            "symbols": [
-                                "#expression_parse_strand_param.cwl/rnaseqc_std/rnaseqc_std/rf",
-                                "#expression_parse_strand_param.cwl/rnaseqc_std/rnaseqc_std/fr"
-                            ]
-                        }
-                    ],
-                    "id": "#expression_parse_strand_param.cwl/rnaseqc_std"
-                },
-                {
-                    "type": [
-                        "null",
-                        {
-                            "type": "enum",
-                            "name": "#expression_parse_strand_param.cwl/rsem_std/rsem_std",
-                            "symbols": [
-                                "#expression_parse_strand_param.cwl/rsem_std/rsem_std/none",
-                                "#expression_parse_strand_param.cwl/rsem_std/rsem_std/forward",
-                                "#expression_parse_strand_param.cwl/rsem_std/rsem_std/reverse"
-                            ]
-                        }
-                    ],
-                    "id": "#expression_parse_strand_param.cwl/rsem_std"
-                }
-            ],
-            "expression": "${ var parse_dict = { 'default': {'rsem_std': 'none', 'kallisto_std': 'default', 'rnaseqc_std': null, 'arriba_std': 'auto'}, 'rf-stranded': {'rsem_std': 'reverse', 'kallisto_std': 'rf-stranded', 'rnaseqc_std': 'rf', 'arriba_std': 'reverse'}, 'fr-stranded': {'rsem_std': 'forward', 'kallisto_std': 'fr-stranded', 'rnaseqc_std': 'fr', 'arriba_std': 'yes'} }; return parse_dict[inputs.wf_strand_param]; }",
-            "hints": [
-                {
-                    "class": "LoadListingRequirement",
-                    "loadListing": "deep_listing"
-                },
-                {
-                    "class": "NetworkAccess",
-                    "networkAccess": true
                 }
             ]
         },
@@ -6510,7 +6525,7 @@
                     "id": "#bam_strandness"
                 },
                 {
-                    "run": "#basename_picker.cwl",
+                    "run": "#clt_basename_picker.cwl",
                     "in": [
                         {
                             "source": "#output_basename",
@@ -7092,7 +7107,7 @@
                     "id": "#star_fusion_1-10-1"
                 },
                 {
-                    "run": "#expression_parse_strand_param.cwl",
+                    "run": "#clt_parse_strand_param.cwl",
                     "in": [
                         {
                             "source": [

@@ -586,7 +586,7 @@ steps:
       quality_cutoff: quality_cutoff
     out: [am_reads_records, pe_fq_reads_records, se_fq_reads_records]
   basename_picker:
-    run: ../tools/basename_picker.cwl
+    run: ../tools/clt_basename_picker.cwl
     in:
       root_name:
         source: [lists_to_reads_records/am_reads_records, lists_to_reads_records/pe_fq_reads_records, lists_to_reads_records/se_fq_reads_records]
@@ -727,7 +727,7 @@ steps:
     out: [filtered_alternative_3_prime_splice_sites_jc, filtered_alternative_5_prime_splice_sites_jc, filtered_mutually_exclusive_exons_jc,
       filtered_retained_introns_jc, filtered_skipped_exons_jc]
   strand_parse:
-    run: ../tools/expression_parse_strand_param.cwl
+    run: ../tools/clt_parse_strand_param.cwl
     in:
       wf_strand_param:
         source: [wf_strand_param, bam_strandness/strandedness]

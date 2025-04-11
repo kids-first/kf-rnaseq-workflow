@@ -28,7 +28,7 @@ outputs:
   cutadapt_stats: {type: 'File?', outputSource: cutadapt_3-4/cutadapt_stats, doc: "Cutadapt stats output, only if adapter is supplied."}
 steps:
   basename_picker:
-    run: ../tools/basename_picker.cwl
+    run: ../tools/clt_basename_picker.cwl
     in:
       root_name:
         source: reads_record
