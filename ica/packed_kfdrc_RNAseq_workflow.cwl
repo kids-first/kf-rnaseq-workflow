@@ -2500,7 +2500,7 @@
                 },
                 {
                     "class": "DockerRequirement",
-                    "dockerPull": "xinglab/rmats:v4.1.2"
+                    "dockerPull": "pgc-images.sbgenomics.com/danmiller/rmats-turbo:4.1.2"
                 },
                 {
                     "class": "ResourceRequirement",
@@ -2521,7 +2521,10 @@
                     ]
                 }
             ],
-            "baseCommand": [],
+            "baseCommand": [
+                "python",
+                "/rmats/rmats.py"
+            ],
             "arguments": [
                 {
                     "position": 3,
@@ -5265,7 +5268,10 @@
                     "id": "#t1k.cwl/allele_tsv"
                 },
                 {
-                    "type": "File",
+                    "type": [
+                        "null",
+                        "File"
+                    ],
                     "outputBinding": {
                         "glob": "*_allele.vcf"
                     },
