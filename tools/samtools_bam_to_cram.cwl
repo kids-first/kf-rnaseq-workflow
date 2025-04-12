@@ -13,6 +13,8 @@ requirements:
     coresMin: $(inputs.cores)
     ramMin: $(inputs.ram * 1000)
     https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: hicpu
+    https://platform.illumina.com/rdf/ica/resources:size: small
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9'
 baseCommand: [samtools, view]

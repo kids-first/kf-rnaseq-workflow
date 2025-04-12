@@ -9,6 +9,8 @@ requirements:
   coresMin: 4
   ramMin: 4000
   https://platform.illumina.com/rdf/ica/resources:tier: economy
+  https://platform.illumina.com/rdf/ica/resources:type: standard
+  https://platform.illumina.com/rdf/ica/resources:size: medium
 baseCommand: [echo, done]
 inputs:
   reads1: { type: 'File', secondaryFiles: [{"pattern": "^.bai", required: false }, {"pattern": ".bai", required: false }, {"pattern": "^.crai", required: false }, {"pattern": ".crai", required: false}] } 

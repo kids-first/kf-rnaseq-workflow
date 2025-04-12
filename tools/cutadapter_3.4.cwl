@@ -11,6 +11,8 @@ requirements:
     coresMin: 8
     ramMin: 16000
     https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: standard
+    https://platform.illumina.com/rdf/ica/resources:size: large
 
 baseCommand: [cutadapt, -j 8]
 arguments:

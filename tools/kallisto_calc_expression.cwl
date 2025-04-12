@@ -10,6 +10,8 @@ requirements:
     coresMin: 8
     ramMin: 10000
     https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: standard
+    https://platform.illumina.com/rdf/ica/resources:size: large
   - class: SchemaDefRequirement
     types:
     - $import: ../schema/reads_record_type.yml

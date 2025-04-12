@@ -11,6 +11,8 @@ requirements:
     coresMin: $(inputs.num_threads)
     ramMin: 24000
     https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: hicpu
+    https://platform.illumina.com/rdf/ica/resources:size: small
 
 baseCommand: [tar]
 arguments:

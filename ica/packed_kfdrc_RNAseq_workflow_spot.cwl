@@ -1165,7 +1165,9 @@
                     "class": "ResourceRequirement",
                     "coresMin": 4,
                     "ramMin": 8000,
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "standard",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "medium"
                 },
                 {
                     "class": "InitialWorkDirRequirement",
@@ -1252,7 +1254,9 @@
                     "class": "ResourceRequirement",
                     "coresMin": 8,
                     "ramMin": "${ return inputs.memory * 1000 }",
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "himem",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "small"
                 }
             ],
             "baseCommand": [
@@ -1395,7 +1399,9 @@
                     "class": "ResourceRequirement",
                     "coresMin": 8,
                     "ramMin": "${ return inputs.memory * 1000 }",
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "himem",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "small"
                 }
             ],
             "baseCommand": [
@@ -1607,7 +1613,9 @@
                     "class": "ResourceRequirement",
                     "ramMin": "$(inputs.ram * 1000)",
                     "coresMin": "$(inputs.threads)",
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "standard",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "small"
                 }
             ],
             "baseCommand": [],
@@ -1681,7 +1689,9 @@
                     "class": "ResourceRequirement",
                     "coresMin": "$(inputs.cpu)",
                     "ramMin": "$(inputs.ram * 1000)",
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "hicpu",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "small"
                 },
                 {
                     "class": "DockerRequirement",
@@ -1838,7 +1848,9 @@
                     "class": "ResourceRequirement",
                     "coresMin": 4,
                     "ramMin": 4000,
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "standard",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "medium"
                 }
             ],
             "baseCommand": [
@@ -2118,7 +2130,9 @@
                     "class": "ResourceRequirement",
                     "coresMin": 8,
                     "ramMin": 16000,
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "standard",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "large"
                 }
             ],
             "baseCommand": [
@@ -2441,7 +2455,9 @@
                     "class": "ResourceRequirement",
                     "coresMin": 8,
                     "ramMin": 10000,
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "standard",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "large"
                 },
                 {
                     "class": "SchemaDefRequirement",
@@ -2527,7 +2543,9 @@
                     "class": "ResourceRequirement",
                     "ramMin": "$(inputs.ram * 1000)",
                     "coresMin": "$(inputs.threads)",
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "standard",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "small"
                 },
                 {
                     "class": "InitialWorkDirRequirement",
@@ -2940,7 +2958,9 @@
                     "class": "ResourceRequirement",
                     "coresMin": 8,
                     "ramMin": 16000,
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "standard",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "large"
                 }
             ],
             "baseCommand": [
@@ -3124,7 +3144,9 @@
                     "class": "ResourceRequirement",
                     "coresMin": "$(inputs.num_threads)",
                     "ramMin": 24000,
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "hicpu",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "small"
                 }
             ],
             "baseCommand": [
@@ -3301,7 +3323,9 @@
                     "class": "ResourceRequirement",
                     "coresMin": "$(inputs.cores)",
                     "ramMin": "$(inputs.ram * 1000)",
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "hicpu",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "small"
                 },
                 {
                     "class": "DockerRequirement",
@@ -3651,7 +3675,9 @@
                     "class": "ResourceRequirement",
                     "coresMin": "$(inputs.cores)",
                     "ramMin": "$(inputs.ram * 1000)",
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "hicpu",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "small"
                 }
             ],
             "baseCommand": [
@@ -3839,7 +3865,9 @@
                     "class": "ResourceRequirement",
                     "coresMin": "$(inputs.runThreadN)",
                     "ramMin": 60000,
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "hicpu",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "medium"
                 },
                 {
                     "class": "InitialWorkDirRequirement",
@@ -4646,7 +4674,10 @@
                 {
                     "class": "ResourceRequirement",
                     "coresMin": "$(inputs.cores)",
-                    "ramMin": 64000
+                    "ramMin": 64000,
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "standard",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "xlarge"
                 }
             ],
             "baseCommand": [
@@ -4770,7 +4801,9 @@
                     "class": "ResourceRequirement",
                     "coresMin": 4,
                     "ramMin": 8000,
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "standard",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "medium"
                 }
             ],
             "baseCommand": [
@@ -4836,7 +4869,9 @@
                     "class": "ResourceRequirement",
                     "ramMin": "$(inputs.ram * 1000)",
                     "coresMin": "$(inputs.threads)",
-                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy"
+                    "https://platform.illumina.com/rdf/ica/resources:tier": "economy",
+                    "https://platform.illumina.com/rdf/ica/resources:type": "standard",
+                    "https://platform.illumina.com/rdf/ica/resources:size": "large"
                 },
                 {
                     "class": "DockerRequirement",
