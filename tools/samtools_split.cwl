@@ -16,6 +16,7 @@ requirements:
   - class: ResourceRequirement
     ramMin: $(inputs.ram * 1000)
     coresMin: $(inputs.cpu)
+    https://platform.illumina.com/rdf/ica/resources:tier: economy
   - class: InitialWorkDirRequirement
     listing:
       - entryname: split_bam.sh

@@ -10,6 +10,7 @@ requirements:
   - class: ResourceRequirement
     coresMin: $(inputs.num_threads)
     ramMin: 24000
+    https://platform.illumina.com/rdf/ica/resources:tier: economy
 
 baseCommand: [tar]
 arguments:

@@ -10,6 +10,7 @@ requirements:
   - class: ResourceRequirement
     coresMin: $(inputs.cores)
     ramMin: $(inputs.ram * 1000)
+    https://platform.illumina.com/rdf/ica/resources:tier: economy
 
 baseCommand: [samtools]
 arguments:

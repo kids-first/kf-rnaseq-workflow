@@ -358,7 +358,7 @@ requirements:
   types:
   - $import: ../schema/reads_record_type.yml
 - class: ResourceRequirement
-  https://platform.illumina.com/rdf/ica/resources:tier: standard
+  https://platform.illumina.com/rdf/ica/resources:tier: economy
   
 inputs:
   # many tool

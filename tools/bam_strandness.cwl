@@ -28,6 +28,7 @@ requirements:
   - class: ResourceRequirement
     coresMin: $(inputs.cpu)
     ramMin: $(inputs.ram * 1000)
+    https://platform.illumina.com/rdf/ica/resources:tier: economy
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/stranded:1.1.0'
 baseCommand: []

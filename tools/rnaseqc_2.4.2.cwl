@@ -10,6 +10,7 @@ requirements:
   - class: ResourceRequirement
     coresMin: 8
     ramMin: 16000
+    https://platform.illumina.com/rdf/ica/resources:tier: economy
 
 baseCommand: [rnaseqc]
 

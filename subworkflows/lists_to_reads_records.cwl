@@ -87,6 +87,7 @@ steps:
       class: CommandLineTool
       cwlVersion: v1.2
       baseCommand: [echo, done]
+      requirements: [{class: InlineJavascriptRequirement}]
       inputs:
         in_filelist: { type: { type: array, items: ['null', string] } }
       outputs:
@@ -117,6 +118,7 @@ steps:
       class: CommandLineTool
       cwlVersion: v1.2
       baseCommand: [echo, done]
+      requirements: [{class: InlineJavascriptRequirement}]
       inputs:
         in_filelist: { type: { type: array, items: ['null', string] } }
       outputs:
