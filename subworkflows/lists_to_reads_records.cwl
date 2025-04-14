@@ -30,12 +30,12 @@ requirements:
   types:
   - $import: ../schema/reads_record_type.yml
 inputs:
-  input_alignment_files: { type: 'File[]?', secondaryFiles: [{"pattern": "^.bai", required: false }, {"pattern": ".bai", required: false }, {"pattern": "^.crai", required: false }, {"pattern": ".crai", required: false}] }
-  input_pe_reads: { type: 'File[]?' }
-  input_pe_mates: { type: 'File[]?' }
-  input_se_reads: { type: 'File[]?' }
-  input_pe_rg_strs: { type: 'string[]?' }
-  input_se_rg_strs: { type: 'string[]?' }
+  input_alignment_files: { type: 'File[]?', default: [], secondaryFiles: [{"pattern": "^.bai", required: false }, {"pattern": ".bai", required: false }, {"pattern": "^.crai", required: false }, {"pattern": ".crai", required: false}] }
+  input_pe_reads: { type: 'File[]?', default: [] }
+  input_pe_mates: { type: 'File[]?', default: [] }
+  input_se_reads: { type: 'File[]?', default: [] }
+  input_pe_rg_strs: { type: 'string[]?', default: [] }
+  input_se_rg_strs: { type: 'string[]?', default: [] }
   is_paired_end: { type: 'boolean?', doc: "Are the alignment files provided paried end?" }
   cram_reference: { type: 'File?', secondaryFiles: [.fai], doc: "If any input alignment files are CRAM, provide the reference used to create them" }
   r1_adapter: { type: 'string?', doc: "!Warning this will be applied to all R1 reads (PE, SE, and reads from alignment files)! If you have multiple adapters, manually trim your reads before input. If they share the same adapter, supply adapter here" }
@@ -70,10 +70,7 @@ steps:
     run: ../tools/build_reads_record.cwl
     scatter: [reads1]
     in:
-      reads1:
-        source: input_alignment_files
-        linkMerge: merge_flattened
-        pickValue: all_non_null
+      reads1: input_alignment_files
       cram_reference: cram_reference
       is_paired_end: is_paired_end
       r1_adapter: r1_adapter
@@ -96,17 +93,14 @@ steps:
       in_filelist:
         source: [input_se_rg_strs, input_se_reads]
         valueFrom: |
-          $(self[0] != null ? self[0] : self[1] != null ? self[1].map(function(e) { return null }) : [])
+          $(self[0].length > 0 ? self[0] : self[1].map(function(e) { return null }))
     out: [out_filelist]
   create_reads_records_se_fq:
     run: ../tools/build_reads_record.cwl
     scatter: [reads1, outSAMattrRGline]
     scatterMethod: dotproduct
     in:
-      reads1:
-        source: input_se_reads
-        linkMerge: merge_flattened
-        pickValue: all_non_null
+      reads1: input_se_reads
       outSAMattrRGline: create_se_reads_null_array/out_filelist
       r1_adapter: r1_adapter
       min_len: min_len
@@ -127,21 +121,15 @@ steps:
       in_filelist:
         source: [input_pe_rg_strs, input_pe_reads]
         valueFrom: |
-          $(self[0] != null ? self[0] : self[1] != null ? self[1].map(function(e) { return null }) : [])
+          $(self[0].length > 0 ? self[0] : self[1].map(function(e) { return null }))
     out: [out_filelist]
   create_reads_records_pe_fq:
     run: ../tools/build_reads_record.cwl
     scatter: [reads1, reads2, outSAMattrRGline]
     scatterMethod: dotproduct
     in:
-      reads1:
-        source: input_pe_reads
-        linkMerge: merge_flattened
-        pickValue: all_non_null
-      reads2:
-        source: input_pe_mates
-        linkMerge: merge_flattened
-        pickValue: all_non_null
+      reads1: input_pe_reads
+      reads2: input_pe_mates
       outSAMattrRGline: create_pe_reads_null_array/out_filelist
       r1_adapter: r1_adapter
       r2_adapter: r2_adapter

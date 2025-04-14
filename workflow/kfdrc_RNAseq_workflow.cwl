@@ -366,13 +366,13 @@ inputs:
       name: GRCh38.primary_assembly.genome.fa, secondaryFiles: [{class: File, path: 62866da14d85bc2e02ba52db, name: GRCh38.primary_assembly.genome.fa.fai}]},
     secondaryFiles: ['.fai']}
   output_basename: {type: 'string?', doc: "String to use as basename for outputs. Will use read1 file basename if null"}
-  input_alignment_files: {type: 'File[]?', secondaryFiles: [{"pattern": "^.bai", required: false}, {"pattern": ".bai", required: false},
+  input_alignment_files: {type: 'File[]?', default: [], secondaryFiles: [{"pattern": "^.bai", required: false}, {"pattern": ".bai", required: false},
       {"pattern": "^.crai", required: false}, {"pattern": ".crai", required: false}], doc: "List of input SAM/BAM/CRAM files to process"}
-  input_pe_reads: {type: 'File[]?', doc: "List of R1 paired end FASTQ files to process"}
-  input_pe_mates: {type: 'File[]?', doc: "List of R2 paired end FASTQ files to process"}
-  input_se_reads: {type: 'File[]?', doc: "List of single end FASTQ files to process"}
-  input_pe_rg_strs: {type: 'string[]?', doc: "List of RG strings to use in PE processing"}
-  input_se_rg_strs: {type: 'string[]?', doc: "List of RG strings to use in SE processing"}
+  input_pe_reads: {type: 'File[]?', default: [], doc: "List of R1 paired end FASTQ files to process"}
+  input_pe_mates: {type: 'File[]?', default: [], doc: "List of R2 paired end FASTQ files to process"}
+  input_se_reads: {type: 'File[]?', default: [], doc: "List of single end FASTQ files to process"}
+  input_pe_rg_strs: {type: 'string[]?', default: [], doc: "List of RG strings to use in PE processing"}
+  input_se_rg_strs: {type: 'string[]?', default: [], doc: "List of RG strings to use in SE processing"}
   cram_reference: {type: 'File?', secondaryFiles: [.fai], doc: "If any input alignment files are CRAM, provide the reference used
       to create them"}
   is_paired_end: {type: 'boolean?', doc: "For alignment files inputs, are the reads paired end?"}
@@ -559,10 +559,7 @@ steps:
     run: ../tools/samtools_split.cwl
     scatter: [input_reads]
     in:
-      input_reads:
-        source: input_alignment_files
-        linkMerge: merge_flattened
-        pickValue: all_non_null
+      input_reads: input_alignment_files
       reference: cram_reference
     out: [bam_files]
   lists_to_reads_records:

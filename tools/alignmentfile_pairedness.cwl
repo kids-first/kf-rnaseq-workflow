@@ -29,6 +29,8 @@ requirements:
     coresMin: $(inputs.cpu)
     ramMin: $(inputs.ram * 1000)
     https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: standard
+    https://platform.illumina.com/rdf/ica/resources:size: large
   - class: InitialWorkDirRequirement
     listing:
       - entryname: alignmentfile_pairedness.py

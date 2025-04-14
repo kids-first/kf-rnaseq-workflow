@@ -17,6 +17,8 @@ requirements:
     ramMin: $(inputs.ram * 1000)
     coresMin: $(inputs.cpu)
     https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: hicpu
+    https://platform.illumina.com/rdf/ica/resources:size: small
   - class: InitialWorkDirRequirement
     listing:
       - entryname: split_bam.sh
@@ -24,7 +26,7 @@ requirements:
           set -xeo pipefail
           RG_NUM=`samtools head $(inputs.input_reads.path) | grep -c ^@RG`
           if [ $RG_NUM != 1 ]; then
-            samtools split -f '%*_%#.bam' -@ $(inputs.cores) $(inputs.reference ? '--reference ' + inputs.reference.path : '') $(inputs.input_reads.path)
+            samtools split -f '%*_%#.bam' -@ $(inputs.cpu) $(inputs.reference ? '--reference ' + inputs.reference.path : '') $(inputs.input_reads.path)
           fi
 baseCommand: []
 arguments:
@@ -35,8 +37,8 @@ arguments:
 inputs:
   input_reads: { type: File, doc: "Input bam file" }
   reference: { type: 'File?', doc: "Reference fasta file" }
-  ram: { type: 'int?', default: 36, doc: "GB of RAM to allocate to the task." }
-  cpu: { type: 'int?', default: 36, doc: "Minimum reserved number of CPU cores for the task." }
+  ram: { type: 'int?', default: 16, doc: "GB of RAM to allocate to the task." }
+  cpu: { type: 'int?', default: 32, doc: "Minimum reserved number of CPU cores for the task." }
 outputs:
   bam_files:
     type: File[]

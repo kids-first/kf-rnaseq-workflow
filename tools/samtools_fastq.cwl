@@ -11,6 +11,8 @@ requirements:
     coresMin: $(inputs.cores)
     ramMin: $(inputs.ram * 1000)
     https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: hicpu
+    https://platform.illumina.com/rdf/ica/resources:size: small
 
 baseCommand: ["/bin/bash", "-c"]
 arguments:
