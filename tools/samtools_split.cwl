@@ -37,8 +37,8 @@ arguments:
 inputs:
   input_reads: { type: File, doc: "Input bam file" }
   reference: { type: 'File?', doc: "Reference fasta file" }
-  ram: { type: 'int?', default: 16, doc: "GB of RAM to allocate to the task." }
-  cpu: { type: 'int?', default: 32, doc: "Minimum reserved number of CPU cores for the task." }
+  ram: { type: 'int?', default: 32, doc: "GB of RAM to allocate to the task." }
+  cpu: { type: 'int?', default: 16, doc: "Minimum reserved number of CPU cores for the task." }
 outputs:
   bam_files:
     type: File[]

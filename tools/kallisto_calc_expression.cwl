@@ -40,7 +40,7 @@ inputs:
       type: array
       items: ../schema/reads_record_type.yml#reads_record
   SampleID: string
-  std_dev: long?
+  std_dev: float?
   avg_frag_len: int?
 
 outputs:
