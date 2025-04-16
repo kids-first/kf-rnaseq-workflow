@@ -32,7 +32,7 @@ steps:
     in:
       root_name:
         source: reads_record
-        valueFrom: $(self.reads1.basename.split('.')[0])
+        valueFrom: $(self.reads1.basename.replace(/\.(fastq|fq|bam)?(\.gz)?$/, ""))
       sample_name: sample_name
       star_rg_line:
         source: reads_record

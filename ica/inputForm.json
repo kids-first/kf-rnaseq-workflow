@@ -71,9 +71,21 @@
       "type": "data"
     },
     {
+      "choices": [
+        {
+          "selected": false,
+          "text": "True",
+          "value": true
+        },
+        {
+          "selected": false,
+          "text": "False",
+          "value": false
+        }
+      ],
       "helpText": "For alignment files inputs, are the reads paired end?",
       "id": "is_paired_end",
-      "type": "checkbox"
+      "type": "select"
     },
     {
       "helpText": "!Warning this will be applied to all R1 reads (PE, SE, and reads from alignment files)! If you have multiple adapters, manually trim your reads before input. If they share the same adapter, supply adapter here",
@@ -653,10 +665,21 @@
       "type": "data"
     },
     {
+      "choices": [
+        {
+          "selected": true,
+          "text": "True",
+          "value": true
+        },
+        {
+          "selected": false,
+          "text": "False",
+          "value": false
+        }
+      ],
       "helpText": "If part of a workflow, recommend compressing this file as final output",
       "id": "compress_chimeric_junction",
-      "type": "checkbox",
-      "value": true
+      "type": "select"
     },
     {
       "dataFilter": {
@@ -686,10 +709,21 @@
       "type": "data"
     },
     {
+      "choices": [
+        {
+          "selected": true,
+          "text": "True",
+          "value": true
+        },
+        {
+          "selected": false,
+          "text": "False",
+          "value": false
+        }
+      ],
       "helpText": "Set this option if you want to estimate the read start position distribution (RSPD) from data",
       "id": "estimate_rspd",
-      "type": "checkbox",
-      "value": true
+      "type": "select"
     },
     {
       "helpText": "Sample ID of the input reads. If not provided, will use reads1 file basename.",
@@ -712,25 +746,72 @@
       "type": "data"
     },
     {
+      "choices": [
+        {
+          "selected": true,
+          "text": "True",
+          "value": true
+        },
+        {
+          "selected": false,
+          "text": "False",
+          "value": false
+        }
+      ],
       "helpText": "Allow reads with lengths that differ from --readLength to be processed. --readLength will still be used to determine IncFormLen and SkipFormLen.",
       "id": "rmats_variable_read_length",
-      "type": "checkbox",
-      "value": true
+      "type": "select"
     },
     {
+      "choices": [
+        {
+          "selected": false,
+          "text": "True",
+          "value": true
+        },
+        {
+          "selected": false,
+          "text": "False",
+          "value": false
+        }
+      ],
       "helpText": "Select for novel splice site detection or unannotated splice sites. 'true' to detect or add this parameter, 'false' to disable denovo detection. Tool Default: false",
       "id": "rmats_novel_splice_sites",
-      "type": "checkbox"
+      "type": "select"
     },
     {
+      "choices": [
+        {
+          "selected": false,
+          "text": "True",
+          "value": true
+        },
+        {
+          "selected": false,
+          "text": "False",
+          "value": false
+        }
+      ],
       "helpText": "Select to skip statistical analysis, either between two groups or on single sample group. 'true' to add this parameter. Tool default: false",
       "id": "rmats_stat_off",
-      "type": "checkbox"
+      "type": "select"
     },
     {
+      "choices": [
+        {
+          "selected": false,
+          "text": "True",
+          "value": true
+        },
+        {
+          "selected": false,
+          "text": "False",
+          "value": false
+        }
+      ],
       "helpText": "Allow alignments with soft or hard clipping to be used.",
       "id": "rmats_allow_clipping",
-      "type": "checkbox"
+      "type": "select"
     },
     {
       "helpText": "Threads to allocate to RMATs.",
@@ -743,10 +824,21 @@
       "type": "integer"
     },
     {
+      "choices": [
+        {
+          "selected": true,
+          "text": "True",
+          "value": true
+        },
+        {
+          "selected": false,
+          "text": "False",
+          "value": false
+        }
+      ],
       "helpText": "Set to false to disable T1k HLA typing",
       "id": "run_t1k",
-      "type": "checkbox",
-      "value": true
+      "type": "select"
     },
     {
       "dataFilter": {
@@ -765,10 +857,21 @@
       "type": "data"
     },
     {
+      "choices": [
+        {
+          "selected": true,
+          "text": "True",
+          "value": true
+        },
+        {
+          "selected": false,
+          "text": "False",
+          "value": false
+        }
+      ],
       "helpText": "Set if the flag in BAM for the unmapped read-pair is nonconcordant",
       "id": "t1k_abnormal_unmap_flag",
-      "type": "checkbox",
-      "value": true
+      "type": "select"
     },
     {
       "helpText": "GB of RAM to allocate to T1k.",

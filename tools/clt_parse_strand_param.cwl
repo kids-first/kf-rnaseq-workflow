@@ -3,16 +3,16 @@ class: CommandLineTool
 id: clt_strand_params
 requirements:
   - class: InlineJavascriptRequirement
+  - class: ShellCommandRequirement
 
 baseCommand: [echo, done]
 
 inputs:
-  wf_strand_param: {type: {type: enum, name: wf_strand_param, symbols: ["default", "rf-stranded", "fr-stranded"]}, doc: "use 'default' for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript"}
+  wf_strand_param: {type: ['null', {type: enum, name: wf_strand_param, symbols: ["default", "rf-stranded", "fr-stranded"]}], default: "default", doc: "use 'default' for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript"}
 
 outputs:
   rsem_std:
     type:
-    - 'null'
     - type: enum
       name: rsem_std
       symbols: ["none", "forward", "reverse"]
@@ -56,7 +56,6 @@ outputs:
         }
   arriba_std:
     type:
-    - 'null'
     - type: enum
       name: arriba_std
       symbols: ["auto", "reverse", "yes"]
@@ -67,6 +66,22 @@ outputs:
             'default': 'auto',
             'rf-stranded': 'reverse',
             'fr-stranded': 'yes'
+          }
+          return parse_dict[inputs.wf_strand_param]
+        }
+  rmats_std:
+    type:
+    - 'null'
+    - type: enum
+      name: rmats_std
+      symbols: ["fr-firststrand", "fr-secondstrand", "fr-unstranded"]
+    outputBinding:
+      outputEval: |
+        ${
+          var parse_dict = {
+            "rf-stranded": "fr-firststrand",
+            "fr-stranded": "fr-secondstrand",
+            "default": "fr-unstranded"
           }
           return parse_dict[inputs.wf_strand_param]
         }

@@ -696,6 +696,14 @@ steps:
         valueFrom: |
           $(self.some(function(e) { return e.is_paired_end }))
     out: [output, strandedness, read_length_median, read_length_stddev, is_paired_end]
+  strand_parse:
+    run: ../tools/clt_parse_strand_param.cwl
+    in:
+      wf_strand_param:
+        source: [wf_strand_param, bam_strandness/strandedness]
+        valueFrom: |
+          $(self[0] != null ? self[0] : self[1])
+    out: [rsem_std, kallisto_std, rnaseqc_std, arriba_std, rmats_std]
   rmats:
     run: ../workflow/rmats_wf.cwl
     in:
@@ -710,11 +718,7 @@ steps:
         source: bam_strandness/is_paired_end
         valueFrom: |
           $(self ? "paired" : "single")
-      strandedness:
-        source: [wf_strand_param, bam_strandness/strandedness]
-        pickValue: first_non_null
-        valueFrom: |
-          $(self == "rf-stranded" ? "fr-firststrand" : self == "fr-stranded" ? "fr-secondstrand" : "fr-unstranded")
+      strandedness: strand_parse/rmats_std
       novel_splice_sites: rmats_novel_splice_sites
       stat_off: rmats_stat_off
       allow_clipping: rmats_allow_clipping
@@ -723,13 +727,6 @@ steps:
       rmats_ram: rmats_ram
     out: [filtered_alternative_3_prime_splice_sites_jc, filtered_alternative_5_prime_splice_sites_jc, filtered_mutually_exclusive_exons_jc,
       filtered_retained_introns_jc, filtered_skipped_exons_jc]
-  strand_parse:
-    run: ../tools/clt_parse_strand_param.cwl
-    in:
-      wf_strand_param:
-        source: [wf_strand_param, bam_strandness/strandedness]
-        pickValue: first_non_null
-    out: [rsem_std, kallisto_std, rnaseqc_std, arriba_std]
   star_fusion_1-10-1:
     run: ../tools/star_fusion_1.10.1_call.cwl
     in:

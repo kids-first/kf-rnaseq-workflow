@@ -855,7 +855,7 @@
                     "in": [
                         {
                             "source": "#preprocess_reads.cwl/reads_record",
-                            "valueFrom": "$(self.reads1.basename.split('.')[0])",
+                            "valueFrom": "$(self.reads1.basename.replace(/\\.(fastq|fq|bam)?(\\.gz)?$/, \"\"))",
                             "id": "#preprocess_reads.cwl/basename_picker/root_name"
                         },
                         {
@@ -2027,6 +2027,9 @@
             "requirements": [
                 {
                     "class": "InlineJavascriptRequirement"
+                },
+                {
+                    "class": "ShellCommandRequirement"
                 }
             ],
             "baseCommand": [
@@ -2035,15 +2038,19 @@
             ],
             "inputs": [
                 {
-                    "type": {
-                        "type": "enum",
-                        "name": "#clt_parse_strand_param.cwl/wf_strand_param/wf_strand_param",
-                        "symbols": [
-                            "#clt_parse_strand_param.cwl/wf_strand_param/wf_strand_param/default",
-                            "#clt_parse_strand_param.cwl/wf_strand_param/wf_strand_param/rf-stranded",
-                            "#clt_parse_strand_param.cwl/wf_strand_param/wf_strand_param/fr-stranded"
-                        ]
-                    },
+                    "type": [
+                        "null",
+                        {
+                            "type": "enum",
+                            "name": "#clt_parse_strand_param.cwl/wf_strand_param/wf_strand_param",
+                            "symbols": [
+                                "#clt_parse_strand_param.cwl/wf_strand_param/wf_strand_param/default",
+                                "#clt_parse_strand_param.cwl/wf_strand_param/wf_strand_param/rf-stranded",
+                                "#clt_parse_strand_param.cwl/wf_strand_param/wf_strand_param/fr-stranded"
+                            ]
+                        }
+                    ],
+                    "default": "default",
                     "doc": "use 'default' for unstranded/auto, rf_stranded if read1 in the fastq read pairs is reverse complement to the transcript, fr-stranded if read1 same sense as transcript",
                     "id": "#clt_parse_strand_param.cwl/wf_strand_param"
                 }
@@ -2051,7 +2058,6 @@
             "outputs": [
                 {
                     "type": [
-                        "null",
                         {
                             "type": "enum",
                             "name": "#clt_parse_strand_param.cwl/arriba_std/arriba_std",
@@ -2079,6 +2085,24 @@
                         "null",
                         {
                             "type": "enum",
+                            "name": "#clt_parse_strand_param.cwl/rmats_std/rmats_std",
+                            "symbols": [
+                                "#clt_parse_strand_param.cwl/rmats_std/rmats_std/fr-firststrand",
+                                "#clt_parse_strand_param.cwl/rmats_std/rmats_std/fr-secondstrand",
+                                "#clt_parse_strand_param.cwl/rmats_std/rmats_std/fr-unstranded"
+                            ]
+                        }
+                    ],
+                    "outputBinding": {
+                        "outputEval": "${\n  var parse_dict = {\n    \"rf-stranded\": \"fr-firststrand\",\n    \"fr-stranded\": \"fr-secondstrand\",\n    \"default\": \"fr-unstranded\"\n  }\n  return parse_dict[inputs.wf_strand_param]\n}\n"
+                    },
+                    "id": "#clt_parse_strand_param.cwl/rmats_std"
+                },
+                {
+                    "type": [
+                        "null",
+                        {
+                            "type": "enum",
                             "name": "#clt_parse_strand_param.cwl/rnaseqc_std/rnaseqc_std",
                             "symbols": [
                                 "#clt_parse_strand_param.cwl/rnaseqc_std/rnaseqc_std/rf",
@@ -2093,7 +2117,6 @@
                 },
                 {
                     "type": [
-                        "null",
                         {
                             "type": "enum",
                             "name": "#clt_parse_strand_param.cwl/rsem_std/rsem_std",
@@ -6826,12 +6849,7 @@
                             "id": "#rmats/stat_off"
                         },
                         {
-                            "source": [
-                                "#wf_strand_param",
-                                "#/bam_strandness/strandedness"
-                            ],
-                            "pickValue": "first_non_null",
-                            "valueFrom": "$(self == \"rf-stranded\" ? \"fr-firststrand\" : self == \"fr-stranded\" ? \"fr-secondstrand\" : \"fr-unstranded\")\n",
+                            "source": "#/strand_parse/rmats_std",
                             "id": "#rmats/strandedness"
                         },
                         {
@@ -7198,7 +7216,7 @@
                                 "#wf_strand_param",
                                 "#/bam_strandness/strandedness"
                             ],
-                            "pickValue": "first_non_null",
+                            "valueFrom": "$(self[0] != null ? self[0] : self[1])\n",
                             "id": "#strand_parse/wf_strand_param"
                         }
                     ],
@@ -7206,7 +7224,8 @@
                         "#/strand_parse/rsem_std",
                         "#/strand_parse/kallisto_std",
                         "#/strand_parse/rnaseqc_std",
-                        "#/strand_parse/arriba_std"
+                        "#/strand_parse/arriba_std",
+                        "#/strand_parse/rmats_std"
                     ],
                     "id": "#strand_parse"
                 },

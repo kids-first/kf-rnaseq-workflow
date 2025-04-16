@@ -1,5 +1,5 @@
 {
-    "is_paired_end": false,
+    "is_paired_end": null,
     "input_pe_reads": null,
     "input_pe_mates": null,
     "cram_reference": null,

@@ -19,12 +19,14 @@ def interpret_string(in_type: str, default: str | None = None) -> dict[str, str]
         "string": "textbox",
         "float": "number",
         "int": "integer",
-        "boolean": "checkbox",
         "File": "data",
         "Directory": "data"
     }
     if in_type == "null":
         out["minValues"] = 0
+    elif in_type == "boolean":
+        if "value" in out: del out["value"]
+        out.update(interpret_bool(default))
     elif in_type in converter:
         out["type"] = converter[in_type]
     else:
@@ -41,6 +43,10 @@ def interpret_enum(enum_type: dict[str, str], default: str | None = None) -> dic
            "choices": [{"value": i, "text": i, "selected": i == default} for i in enum_type["symbols"]]}
     return out
 
+def interpret_bool(default: str | None = None) -> dict[str, str]:
+    out = {"type": "select",
+           "choices": [{"value": i, "text": str(i), "selected": i == default} for i in [True, False]]}
+    return out
 
 def interpret_list(list_type: list[str], default: str | None = None) -> dict[str, str]:
     out = {"minValues": 1}
