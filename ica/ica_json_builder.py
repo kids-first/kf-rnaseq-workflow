@@ -5,7 +5,7 @@ import yaml
 import sys
 
 def interpret_string(in_type: str, default: str | None = None) -> dict[str, str]:
-    out = {}
+    out: dict[str, Any] = {}
     if default:
         out["value"] = default
     if in_type.endswith("?"):
@@ -15,7 +15,7 @@ def interpret_string(in_type: str, default: str | None = None) -> dict[str, str]
     if "[]" in in_type:
         out["maxValues"] = 1000
         in_type = in_type.replace("[]", "")
-    converter = {
+    converter: dict[str, str] = {
         "string": "textbox",
         "float": "number",
         "int": "integer",
@@ -39,7 +39,7 @@ def interpret_string(in_type: str, default: str | None = None) -> dict[str, str]
 
 
 def interpret_enum(enum_type: dict[str, str], default: str | None = None) -> dict[str, str]:
-    out = {"type": "select",
+    out: dict[str, Any] = {"type": "select",
            "choices": [{"value": i, "text": i, "selected": i == default} for i in enum_type["symbols"]]}
     return out
 
