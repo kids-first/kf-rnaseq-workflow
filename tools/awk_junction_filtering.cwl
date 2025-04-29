@@ -10,6 +10,9 @@ requirements:
   - class: ResourceRequirement
     ramMin: $(inputs.ram * 1000)
     coresMin: $(inputs.threads)
+    https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: standard
+    https://platform.illumina.com/rdf/ica/resources:size: small
 baseCommand: []
 arguments:
   - position: 1

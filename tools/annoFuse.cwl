@@ -9,6 +9,9 @@ requirements:
   - class: ResourceRequirement
     coresMin: 4
     ramMin: 8000
+    https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: standard
+    https://platform.illumina.com/rdf/ica/resources:size: medium
   - class: InitialWorkDirRequirement
     listing:
       - entryname: annoFusePerSample.R

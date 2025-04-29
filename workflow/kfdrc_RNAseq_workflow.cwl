@@ -354,19 +354,25 @@ requirements:
 - class: SubworkflowFeatureRequirement
 - class: InlineJavascriptRequirement
 - class: StepInputExpressionRequirement
+- class: SchemaDefRequirement
+  types:
+  - $import: ../schema/reads_record_type.yml
+- class: ResourceRequirement
+  https://platform.illumina.com/rdf/ica/resources:tier: economy
+  
 inputs:
   # many tool
   reference_fasta: {type: 'File', doc: "GRCh38.primary_assembly.genome.fa", "sbg:suggestedValue": {class: File, path: 5f500135e4b0370371c051b4,
       name: GRCh38.primary_assembly.genome.fa, secondaryFiles: [{class: File, path: 62866da14d85bc2e02ba52db, name: GRCh38.primary_assembly.genome.fa.fai}]},
     secondaryFiles: ['.fai']}
   output_basename: {type: 'string?', doc: "String to use as basename for outputs. Will use read1 file basename if null"}
-  input_alignment_files: {type: 'File[]?', secondaryFiles: [{"pattern": "^.bai", required: false}, {"pattern": ".bai", required: false},
+  input_alignment_files: {type: 'File[]?', default: [], secondaryFiles: [{"pattern": "^.bai", required: false}, {"pattern": ".bai", required: false},
       {"pattern": "^.crai", required: false}, {"pattern": ".crai", required: false}], doc: "List of input SAM/BAM/CRAM files to process"}
-  input_pe_reads: {type: 'File[]?', doc: "List of R1 paired end FASTQ files to process"}
-  input_pe_mates: {type: 'File[]?', doc: "List of R2 paired end FASTQ files to process"}
-  input_se_reads: {type: 'File[]?', doc: "List of single end FASTQ files to process"}
-  input_pe_rg_strs: {type: 'string[]?', doc: "List of RG strings to use in PE processing"}
-  input_se_rg_strs: {type: 'string[]?', doc: "List of RG strings to use in SE processing"}
+  input_pe_reads: {type: 'File[]?', default: [], doc: "List of R1 paired end FASTQ files to process"}
+  input_pe_mates: {type: 'File[]?', default: [], doc: "List of R2 paired end FASTQ files to process"}
+  input_se_reads: {type: 'File[]?', default: [], doc: "List of single end FASTQ files to process"}
+  input_pe_rg_strs: {type: 'string[]?', default: [], doc: "List of RG strings to use in PE processing"}
+  input_se_rg_strs: {type: 'string[]?', default: [], doc: "List of RG strings to use in SE processing"}
   cram_reference: {type: 'File?', secondaryFiles: [.fai], doc: "If any input alignment files are CRAM, provide the reference used
       to create them"}
   is_paired_end: {type: 'boolean?', doc: "For alignment files inputs, are the reads paired end?"}
@@ -551,9 +557,7 @@ outputs:
 steps:
   samtools_split:
     run: ../tools/samtools_split.cwl
-    when: $(inputs.input_reads != null)
     scatter: [input_reads]
-    scatterMethod: dotproduct
     in:
       input_reads: input_alignment_files
       reference: cram_reference
@@ -564,7 +568,7 @@ steps:
       input_alignment_files:
         source: samtools_split/bam_files
         valueFrom: |
-          $(self == null || self.every(function(e) { return e == null}) ? null : self.filter(function(e) { return e != null }).reduce(function(e,i) { return e.concat(i) }))
+          $(self.reduce(function(e,i) { return e.concat(i) }, []))
       input_pe_reads: input_pe_reads
       input_pe_mates: input_pe_mates
       input_se_reads: input_se_reads
@@ -579,7 +583,7 @@ steps:
       quality_cutoff: quality_cutoff
     out: [am_reads_records, pe_fq_reads_records, se_fq_reads_records]
   basename_picker:
-    run: ../tools/basename_picker.cwl
+    run: ../tools/clt_basename_picker.cwl
     in:
       root_name:
         source: [lists_to_reads_records/am_reads_records, lists_to_reads_records/pe_fq_reads_records, lists_to_reads_records/se_fq_reads_records]
@@ -692,6 +696,14 @@ steps:
         valueFrom: |
           $(self.some(function(e) { return e.is_paired_end }))
     out: [output, strandedness, read_length_median, read_length_stddev, is_paired_end]
+  strand_parse:
+    run: ../tools/clt_parse_strand_param.cwl
+    in:
+      wf_strand_param:
+        source: [wf_strand_param, bam_strandness/strandedness]
+        valueFrom: |
+          $(self[0] != null ? self[0] : self[1])
+    out: [rsem_std, kallisto_std, rnaseqc_std, arriba_std, rmats_std]
   rmats:
     run: ../workflow/rmats_wf.cwl
     in:
@@ -706,11 +718,7 @@ steps:
         source: bam_strandness/is_paired_end
         valueFrom: |
           $(self ? "paired" : "single")
-      strandedness:
-        source: [wf_strand_param, bam_strandness/strandedness]
-        pickValue: first_non_null
-        valueFrom: |
-          $(self == "rf-stranded" ? "fr-firststrand" : self == "fr-stranded" ? "fr-secondstrand" : "fr-unstranded")
+      strandedness: strand_parse/rmats_std
       novel_splice_sites: rmats_novel_splice_sites
       stat_off: rmats_stat_off
       allow_clipping: rmats_allow_clipping
@@ -719,13 +727,6 @@ steps:
       rmats_ram: rmats_ram
     out: [filtered_alternative_3_prime_splice_sites_jc, filtered_alternative_5_prime_splice_sites_jc, filtered_mutually_exclusive_exons_jc,
       filtered_retained_introns_jc, filtered_skipped_exons_jc]
-  strand_parse:
-    run: ../tools/expression_parse_strand_param.cwl
-    in:
-      wf_strand_param:
-        source: [wf_strand_param, bam_strandness/strandedness]
-        pickValue: first_non_null
-    out: [rsem_std, kallisto_std, rnaseqc_std, arriba_std]
   star_fusion_1-10-1:
     run: ../tools/star_fusion_1.10.1_call.cwl
     in:

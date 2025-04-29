@@ -9,6 +9,9 @@ requirements:
   - class: ResourceRequirement
     coresMin: 8
     ramMin: 10000
+    https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: standard
+    https://platform.illumina.com/rdf/ica/resources:size: large
   - class: SchemaDefRequirement
     types:
     - $import: ../schema/reads_record_type.yml
@@ -37,7 +40,7 @@ inputs:
       type: array
       items: ../schema/reads_record_type.yml#reads_record
   SampleID: string
-  std_dev: long?
+  std_dev: float?
   avg_frag_len: int?
 
 outputs:

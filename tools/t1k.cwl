@@ -8,6 +8,9 @@ requirements:
   - class: ResourceRequirement
     ramMin: $(inputs.ram * 1000)
     coresMin: $(inputs.threads)
+    https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: standard
+    https://platform.illumina.com/rdf/ica/resources:size: large
   - class: DockerRequirement
     dockerPull: pgc-images.sbgenomics.com/d3b-bixu/t1k:v1.0.5
 baseCommand: []
@@ -63,7 +66,7 @@ inputs:
 outputs:
   aligned_fasta: { type: 'File[]', outputBinding: { glob: '*_aligned_*.fa' } }
   allele_tsv: { type: File, outputBinding: { glob: '*_allele.tsv' } }
-  allele_vcf: { type: File, outputBinding: { glob: '*_allele.vcf' } }
+  allele_vcf: { type: 'File?', outputBinding: { glob: '*_allele.vcf' } }
   candidate_fastqs: { type: 'File[]', outputBinding: { glob: '*_candidate_*.fq' } }
   genotype_tsv: { type: File, outputBinding: { glob: '*_genotype.tsv' } }
   read_assignments: { type: 'File?', outputBinding: { glob: '*_assign.tsv' } }

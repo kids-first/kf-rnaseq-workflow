@@ -28,11 +28,11 @@ outputs:
   cutadapt_stats: {type: 'File?', outputSource: cutadapt_3-4/cutadapt_stats, doc: "Cutadapt stats output, only if adapter is supplied."}
 steps:
   basename_picker:
-    run: ../tools/basename_picker.cwl
+    run: ../tools/clt_basename_picker.cwl
     in:
       root_name:
         source: reads_record
-        valueFrom: $(self.reads1.basename.split('.')[0])
+        valueFrom: $(self.reads1.basename.replace(/\.(fastq|fq|bam)?(\.gz)?$/, ""))
       sample_name: sample_name
       star_rg_line:
         source: reads_record
@@ -50,31 +50,27 @@ steps:
   cutadapt_3-4:
     # Skip if no adapter given, get fastq from prev step if not null or wf input
     run: ../tools/cutadapter_3.4.cwl
-    when: $(inputs.r1_adapter.r1_adapter != null)
+    when: $(inputs.reads_record.r1_adapter != null)
     in:
+      reads_record: reads_record
       readFilesIn1:
-        source: [prepare_aligned_reads/reads1, reads_record]
+        source: prepare_aligned_reads/reads1
         valueFrom: |
-          $(self[0] != null ? self[0] : self[1].reads1)
+          $(self != null ? self : inputs.reads_record.reads1)
       readFilesIn2:
-        source: [prepare_aligned_reads/reads2, reads_record]
+        source: prepare_aligned_reads/reads2
         valueFrom: |
-          $(self[0] != null ? self[0] : self[1].reads2)
+          $(self != null ? self : inputs.reads_record.reads2)
       r1_adapter:
-        source: reads_record
-        valueFrom: $(self.r1_adapter)
+        valueFrom: $(inputs.reads_record.r1_adapter)
       r2_adapter:
-        source: reads_record
-        valueFrom: $(self.r2_adapter)
+        valueFrom: $(inputs.reads_record.r2_adapter)
       min_len:
-        source: reads_record
-        valueFrom: $(self.min_len)
+        valueFrom: $(inputs.reads_record.min_len)
       quality_base:
-        source: reads_record
-        valueFrom: $(self.quality_base)
+        valueFrom: $(inputs.reads_record.quality_base)
       quality_cutoff:
-        source: reads_record
-        valueFrom: $(self.quality_cutoff)
+        valueFrom: $(inputs.reads_record.quality_cutoff)
       sample_name:
         source: [output_basename, basename_picker/outname]
         valueFrom: |

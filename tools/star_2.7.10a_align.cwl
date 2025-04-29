@@ -10,6 +10,9 @@ requirements:
   - class: ResourceRequirement
     coresMin: $(inputs.runThreadN)
     ramMin: 60000
+    https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: hicpu
+    https://platform.illumina.com/rdf/ica/resources:size: medium
   - class: InitialWorkDirRequirement
     listing:
     - entryname: reads_manifest.tsv

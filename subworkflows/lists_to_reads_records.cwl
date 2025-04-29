@@ -30,12 +30,12 @@ requirements:
   types:
   - $import: ../schema/reads_record_type.yml
 inputs:
-  input_alignment_files: { type: 'File[]?', secondaryFiles: [{"pattern": "^.bai", required: false }, {"pattern": ".bai", required: false }, {"pattern": "^.crai", required: false }, {"pattern": ".crai", required: false}] }
-  input_pe_reads: { type: 'File[]?' }
-  input_pe_mates: { type: 'File[]?' }
-  input_se_reads: { type: 'File[]?' }
-  input_pe_rg_strs: { type: 'string[]?' }
-  input_se_rg_strs: { type: 'string[]?' }
+  input_alignment_files: { type: 'File[]?', default: [], secondaryFiles: [{"pattern": "^.bai", required: false }, {"pattern": ".bai", required: false }, {"pattern": "^.crai", required: false }, {"pattern": ".crai", required: false}] }
+  input_pe_reads: { type: 'File[]?', default: [] }
+  input_pe_mates: { type: 'File[]?', default: [] }
+  input_se_reads: { type: 'File[]?', default: [] }
+  input_pe_rg_strs: { type: 'string[]?', default: [] }
+  input_se_rg_strs: { type: 'string[]?', default: [] }
   is_paired_end: { type: 'boolean?', doc: "Are the alignment files provided paried end?" }
   cram_reference: { type: 'File?', secondaryFiles: [.fai], doc: "If any input alignment files are CRAM, provide the reference used to create them" }
   r1_adapter: { type: 'string?', doc: "!Warning this will be applied to all R1 reads (PE, SE, and reads from alignment files)! If you have multiple adapters, manually trim your reads before input. If they share the same adapter, supply adapter here" }
@@ -69,7 +69,6 @@ steps:
   create_reads_records_am:
     run: ../tools/build_reads_record.cwl
     scatter: [reads1]
-    when: $(inputs.reads1 != null)
     in:
       reads1: input_alignment_files
       cram_reference: cram_reference
@@ -85,25 +84,21 @@ steps:
       class: CommandLineTool
       cwlVersion: v1.2
       baseCommand: [echo, done]
+      requirements: [{class: InlineJavascriptRequirement}]
       inputs:
         in_filelist: { type: { type: array, items: ['null', string] } }
       outputs:
         out_filelist: { type: { type: array, items: ['null', string] }, outputBinding: { outputEval: $(inputs.in_filelist) } }
-    when: $(inputs.reads != null)
     in:
-      reads:
-        source: input_se_reads
-        valueFrom: $(self.length)
       in_filelist:
         source: [input_se_rg_strs, input_se_reads]
         valueFrom: |
-          $(self[0] != null ? self[0] : self[1].map(function(e) { return null }))
+          $(self[0].length > 0 ? self[0] : self[1].map(function(e) { return null }))
     out: [out_filelist]
   create_reads_records_se_fq:
     run: ../tools/build_reads_record.cwl
     scatter: [reads1, outSAMattrRGline]
     scatterMethod: dotproduct
-    when: $(inputs.reads1 != null)
     in:
       reads1: input_se_reads
       outSAMattrRGline: create_se_reads_null_array/out_filelist
@@ -117,25 +112,21 @@ steps:
       class: CommandLineTool
       cwlVersion: v1.2
       baseCommand: [echo, done]
+      requirements: [{class: InlineJavascriptRequirement}]
       inputs:
         in_filelist: { type: { type: array, items: ['null', string] } }
       outputs:
         out_filelist: { type: { type: array, items: ['null', string] }, outputBinding: { outputEval: $(inputs.in_filelist) } }
-    when: $(inputs.reads != null)
     in:
-      reads:
-        source: input_pe_reads
-        valueFrom: $(self.length)
       in_filelist:
         source: [input_pe_rg_strs, input_pe_reads]
         valueFrom: |
-          $(self[0] != null ? self[0] : self[1].map(function(e) { return null }))
+          $(self[0].length > 0 ? self[0] : self[1].map(function(e) { return null }))
     out: [out_filelist]
   create_reads_records_pe_fq:
     run: ../tools/build_reads_record.cwl
     scatter: [reads1, reads2, outSAMattrRGline]
     scatterMethod: dotproduct
-    when: $(inputs.reads1 != null)
     in:
       reads1: input_pe_reads
       reads2: input_pe_mates

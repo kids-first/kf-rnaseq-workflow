@@ -5,10 +5,13 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: 'xinglab/rmats:v4.1.2'
+    dockerPull: 'pgc-images.sbgenomics.com/danmiller/rmats-turbo:4.1.2'
   - class: ResourceRequirement
     ramMin: $(inputs.ram * 1000)
     coresMin: $(inputs.threads)
+    https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: standard
+    https://platform.illumina.com/rdf/ica/resources:size: small
   - class: InitialWorkDirRequirement
     listing:
     - entryname: sample_1.txt
@@ -17,7 +20,7 @@ requirements:
     - entryname: sample_2.txt
       entry: |
         $(inputs.sample_2 ? inputs.sample_2.map(function(e){return e.path}).join() : '')
-baseCommand: []
+baseCommand: [python, /rmats/rmats.py]
 arguments:
   - position: 3
     shellQuote: false
