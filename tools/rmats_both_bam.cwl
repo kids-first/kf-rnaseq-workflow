@@ -95,4 +95,14 @@ outputs:
   retained_introns_jc: { type: 'File', outputBinding: { glob: '*.RI.*JC.txt' } }
   skipped_exons_jc: { type: 'File', outputBinding: { glob: '*.SE.*JC.txt' } }
   temp_read_outcomes: { type: File, outputBinding: { glob: 'temp/*_read_outcomes_by_bam.txt'} }
-  summary_file: { type: File, outputBinding: { glob: '$(inputs.output_directory)/summary.txt' }}
+  summary_file: { type: File, outputBinding: { glob: '*summary.txt' }}
+  fromGTF:
+    type: 'File[]?'
+    outputBinding:
+      glob: '*fromGTF*'
+      outputEval: |
+        ${
+          if (inputs.novel_splice_sites) {
+            return self;
+          }
+        }
