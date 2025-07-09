@@ -5,7 +5,7 @@ label: RNA-SeQC 2.4.2
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/brownm28/rnaseqc:v2.4.2'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/rnaseqc:v2.4.2'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: 8
