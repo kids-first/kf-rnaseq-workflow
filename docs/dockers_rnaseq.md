@@ -16,7 +16,7 @@ format_arriba_fusion_file.cwl|pgc-images.sbgenomics.com/d3b-bixu/annofuse:0.92.0
 fusion_annotator.cwl|pgc-images.sbgenomics.com/d3b-bixu/fusionannotator:0.1.1
 kallisto_calc_expression.cwl|images.sbgenomics.com/uros_sipetic/kallisto:0.43.1
 rmats_both_bam.cwl|xinglab/rmats:v4.1.2
-rnaseqc_2.4.2.cwl|gcr.io/broad-cga-aarong-gtex/rnaseqc:2.4.2
+rnaseqc_2.4.2.cwl|pgc-images.sbgenomics.com/d3b-bixu/rnaseqc:v2.4.2
 rsem_calc_expression.cwl|images.sbgenomics.com/uros_sipetic/rsem:1.3.1
 samtools_bam_to_cram.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9
 samtools_fastq.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9
