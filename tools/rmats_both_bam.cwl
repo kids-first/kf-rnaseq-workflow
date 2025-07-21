@@ -72,6 +72,8 @@ inputs:
       a .rmats file. post: load .rmats file(s) into memory, detect and count
       alternative splicing events, and calculate P value (if not --statoff).
       both: prep + post. Tool default: both
+      Additionally, if the novel_splice_sites option is listed, the tool generates
+      itermediate files (fromGTF*) useful in novel splicing analysis. Tool default: false
   read_length: { type: 'int', inputBinding: { position: 2, prefix: '--readLength' }, doc: "Input read length for sample reads." }
   variable_read_length: { type: 'boolean?', inputBinding: { position: 2, prefix: '--variable-read-length' }, doc: "Allow reads with lengths that differ from --readLength to be processed. --readLength will still be used to determine IncFormLen and SkipFormLen.", default: true }
   anchor_length: { type: 'int?', inputBinding: { position: 2, prefix: '--anchorLength' }, doc: "The anchor length. Tool default: 1" }
