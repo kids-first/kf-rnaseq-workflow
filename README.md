@@ -333,6 +333,13 @@ These are the defaults set by the workflow:
 - `rmats_filtered_mutually_exclusive_exons_jc`: Mutually exclusive exons JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
 - `rmats_filtered_retained_introns_jc`: Retained introns JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
 - `rmats_filtered_skipped_exons_jc`: Skipped exons JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
+- `rmats_raw_alternative_3_prime_splice_sites_jc`: Alternative 3 prime splice sites JC.txt output from RMATs containing all calls with junction spanning read counts of support
+- `rmats_raw_alternative_5_prime_splice_sites_jc`: Alternative 5 prime splice sites JC.txt output from RMATs containing all calls with junction spanning read counts of support
+- `rmats_raw_mutually_exclusive_exons_jc`: Mutually exclusive exons JC.txt output from RMATs containing all calls with junction spanning read counts of support
+- `rmats_raw_retained_introns_jc`: Retained introns JC.txt output from RMATs containing all calls with junction spanning read counts of support
+- `rmats_raw_skipped_exons_jc`: Skipped exons JC.txt output from RMATs containing only all calls with junction spanning read counts of support
+- `rmats_raw_summary_file`: Table from rMATS providing counts of all calls
+- `rmats_fromGTF`: Array of intermediary files produced by RMATs that are useful for novel splicing analysis
 - `t1k_genotype_tsv`: Genotyping results from T1k
 
 ### Reference build notes

@@ -338,6 +338,13 @@ doc: |
   - `rmats_filtered_mutually_exclusive_exons_jc`: Mutually exclusive exons JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
   - `rmats_filtered_retained_introns_jc`: Retained introns JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
   - `rmats_filtered_skipped_exons_jc`: Skipped exons JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
+  - `rmats_raw_alternative_3_prime_splice_sites_jc`: Alternative 3 prime splice sites JC.txt output from RMATs containing all calls with junction spanning read counts of support
+  - `rmats_raw_alternative_5_prime_splice_sites_jc`: Alternative 5 prime splice sites JC.txt output from RMATs containing all calls with junction spanning read counts of support
+  - `rmats_raw_mutually_exclusive_exons_jc`: Mutually exclusive exons JC.txt output from RMATs containing all calls with junction spanning read counts of support
+  - `rmats_raw_retained_introns_jc`: Retained introns JC.txt output from RMATs containing all calls with junction spanning read counts of support
+  - `rmats_raw_skipped_exons_jc`: Skipped exons JC.txt output from RMATs containing only all calls with junction spanning read counts of support
+  - `rmats_raw_summary_file`: Table from rMATS providing counts of all calls
+  - `rmats_fromGTF`: Array of intermediary files produced by RMATs that are useful for novel splicing analysis
   - `t1k_genotype_tsv`: Genotyping results from T1k
 
   ### Reference build notes
@@ -547,6 +554,14 @@ outputs:
       output from RMATs containing only those calls with 10 or more junction spanning read counts of support"}
   rmats_filtered_skipped_exons_jc: {type: 'File', outputSource: rmats/filtered_skipped_exons_jc, doc: "Skipped exons JC.txt output
       from RMATs containing only those calls with 10 or more junction spanning read counts of support"}
+  rmats_raw_alternative_3_prime_splice_sites_jc: {type: 'File', outputSource: rmats/raw_alternative_3_prime_splice_sites_jc}
+  rmats_raw_alternative_5_prime_splice_sites_jc: {type: 'File', outputSource: rmats/raw_alternative_5_prime_splice_sites_jc}
+  rmats_raw_mutually_exclusive_exons_jc: {type: 'File', outputSource: rmats/raw_mutually_exclusive_exons_jc}
+  rmats_raw_retained_introns_jc: {type: 'File', outputSource: rmats/raw_retained_introns_jc}
+  rmats_raw_skipped_exons_jc: {type: 'File', outputSource: rmats/raw_skipped_exons_jc}
+  rmats_raw_temp_read_outcomes: {type: 'File', outputSource: rmats/raw_temp_read_outcomes}
+  rmats_raw_summary_file: {type: 'File', outputSource: rmats/raw_summary_file}
+  rmats_fromGTF: {type: 'File[]?', outputSource: rmats/rmats_fromGTF}
   t1k_genotype_tsv: {type: 'File?', outputSource: t1k/genotype_tsv, doc: "Genotyping results from T1k"}
 steps:
   samtools_split:
@@ -718,7 +733,8 @@ steps:
       rmats_threads: rmats_threads
       rmats_ram: rmats_ram
     out: [filtered_alternative_3_prime_splice_sites_jc, filtered_alternative_5_prime_splice_sites_jc, filtered_mutually_exclusive_exons_jc,
-      filtered_retained_introns_jc, filtered_skipped_exons_jc]
+      filtered_retained_introns_jc, filtered_skipped_exons_jc, raw_alternative_3_prime_splice_sites_jc, raw_alternative_5_prime_splice_sites_jc,
+      raw_mutually_exclusive_exons_jc, raw_retained_introns_jc, raw_skipped_exons_jc, raw_temp_read_outcomes, raw_summary_file, rmats_fromGTF]
   strand_parse:
     run: ../tools/expression_parse_strand_param.cwl
     in:

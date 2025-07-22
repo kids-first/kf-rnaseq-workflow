@@ -93,6 +93,15 @@ outputs:
   filtered_skipped_exons_jc: {type: 'File', outputSource: filter_skipped_exons/output,
     doc: "Skipped exons JC.txt output from RMATs containing only those calls with\
       \ 10 or more read counts of support"}
+  raw_alternative_3_prime_splice_sites_jc: {type: 'File', outputSource: rmats_both_bam/alternative_3_prime_splice_sites_jc}
+  raw_alternative_5_prime_splice_sites_jc: {type: 'File', outputSource: rmats_both_bam/alternative_5_prime_splice_sites_jc}
+  raw_mutually_exclusive_exons_jc: {type: 'File', outputSource: rmats_both_bam/mutually_exclusive_exons_jc}
+  raw_retained_introns_jc: {type: 'File', outputSource: rmats_both_bam/retained_introns_jc}
+  raw_skipped_exons_jc: {type: 'File', outputSource: rmats_both_bam/skipped_exons_jc}
+  raw_temp_read_outcomes: {type: 'File', outputSource: rmats_both_bam/temp_read_outcomes}
+  raw_summary_file: {type: 'File', outputSource: rmats_both_bam/summary_file}
+  rmats_fromGTF: {type: 'File[]?', outputSource: rmats_both_bam/fromGTF}
+
 steps:
   samtools_readlength_bam:
     run: ../tools/samtools_readlength_bam.cwl
@@ -124,7 +133,7 @@ steps:
       ram: rmats_ram
     out: [alternative_3_prime_splice_sites_jc, alternative_5_prime_splice_sites_jc,
       mutually_exclusive_exons_jc, retained_introns_jc, skipped_exons_jc, temp_read_outcomes,
-      summary_file]
+      summary_file, fromGTF]
   filter_alt_3_prime:
     run: ../tools/awk_junction_filtering.cwl
     in:

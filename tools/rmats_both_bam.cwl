@@ -72,6 +72,8 @@ inputs:
       a .rmats file. post: load .rmats file(s) into memory, detect and count
       alternative splicing events, and calculate P value (if not --statoff).
       both: prep + post. Tool default: both
+      Additionally, if the novel_splice_sites option is listed, the tool generates
+      itermediate files (fromGTF*) useful in novel splicing analysis. Tool default: false
   read_length: { type: 'int', inputBinding: { position: 2, prefix: '--readLength' }, doc: "Input read length for sample reads." }
   variable_read_length: { type: 'boolean?', inputBinding: { position: 2, prefix: '--variable-read-length' }, doc: "Allow reads with lengths that differ from --readLength to be processed. --readLength will still be used to determine IncFormLen and SkipFormLen.", default: true }
   anchor_length: { type: 'int?', inputBinding: { position: 2, prefix: '--anchorLength' }, doc: "The anchor length. Tool default: 1" }
@@ -95,4 +97,14 @@ outputs:
   retained_introns_jc: { type: 'File', outputBinding: { glob: '*.RI.*JC.txt' } }
   skipped_exons_jc: { type: 'File', outputBinding: { glob: '*.SE.*JC.txt' } }
   temp_read_outcomes: { type: File, outputBinding: { glob: 'temp/*_read_outcomes_by_bam.txt'} }
-  summary_file: { type: File, outputBinding: { glob: '$(inputs.output_directory)/summary.txt' }}
+  summary_file: { type: File, outputBinding: { glob: '*summary.txt' }}
+  fromGTF:
+    type: 'File[]?'
+    outputBinding:
+      glob: '*fromGTF*'
+      outputEval: |
+        ${
+          if (inputs.novel_splice_sites) {
+            return self;
+          }
+        }
