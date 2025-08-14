@@ -263,6 +263,7 @@ doc: |
   - `fusion_annotator_ref`: Tar ball with fusion_annot_lib.idx and blast_pairs.idx from STAR-Fusion CTAT Genome lib. Can be same as FusionGenome, but only two files needed from that package
 
   ### rmats
+  - `run_rmats`: Set to false to disable rmats
   - `rmats_variable_read_length`: Allow reads with lengths that differ from --readLength to be processed. --readLength will still be used to determine IncFormLen and SkipFormLen.
   - `rmats_novel_splice_sites`: Select for novel splice site detection or unannotated splice sites. 'true' to detect or add this parameter, 'false' to disable denovo detection. Tool Default: false
   - `rmats_stat_off`: Select to skip statistical analysis, either between two groups or on single sample group. 'true' to add this parameter. Tool default: false
@@ -504,6 +505,7 @@ inputs:
   fusion_annotator_ref: {type: 'File', doc: "Tar ball with fusion_annot_lib.idx and blast_pairs.idx from STAR-Fusion CTAT Genome lib.
       Can be same as FusionGenome, but only two files needed from that package", "sbg:suggestedValue": {class: 'File', path: '63cff818facdd82011c8d6fe',
       name: 'GRCh38_v39_fusion_annot_custom.tar.gz'}}
+  run_rmats: {type: 'boolean?', default: true, doc: "Set to false to disable rmats"}
   rmats_variable_read_length: {type: 'boolean?', default: true, doc: "Allow reads with lengths that differ from --readLength to be
       processed. --readLength will still be used to determine IncFormLen and SkipFormLen."}
   rmats_novel_splice_sites: {type: 'boolean?', doc: "Select for novel splice site detection or unannotated splice sites. 'true' to
@@ -530,7 +532,7 @@ outputs:
   STAR_junctions_out: {type: 'File', outputSource: star_2-7-10a/junctions_out, doc: "STARjunction reads"}
   STAR_final_log: {type: 'File', outputSource: star_2-7-10a/log_final_out, doc: "STAR metricslog file of unique, multi-mapping, unmapped,
       and chimeric reads"}
-  STAR-Fusion_results: {type: 'File', outputSource: star_fusion_1-10-1/abridged_coding, doc: "STAR fusion detection from chimeric
+  STAR-Fusion_results: {type: 'File?', outputSource: star_fusion_1-10-1/abridged_coding, doc: "STAR fusion detection from chimeric
       reads"}
   arriba_fusion_results: {type: 'File', outputSource: arriba_fusion_2-2-1/arriba_fusions, doc: "Fusion output from Arriba"}
   arriba_fusion_viz: {type: 'File', outputSource: arriba_draw_2-2-1/arriba_pdf, doc: "pdf output from Arriba"}
@@ -542,25 +544,25 @@ outputs:
   kallisto_Abundance: {type: 'File', outputSource: kallisto/abundance_out, doc: "Gene abundance output from STAR genomic bam file"}
   annofuse_filtered_fusions_tsv: {type: 'File?', outputSource: annofuse/annofuse_filtered_fusions_tsv, doc: "Filtered fusions called
       by annoFuse."}
-  rmats_filtered_alternative_3_prime_splice_sites_jc: {type: 'File', outputSource: rmats/filtered_alternative_3_prime_splice_sites_jc,
+  rmats_filtered_alternative_3_prime_splice_sites_jc: {type: 'File?', outputSource: rmats/filtered_alternative_3_prime_splice_sites_jc,
     doc: "Alternative 3 prime splice sites JC.txt output from RMATs containing only those calls with 10 or more junction spanning
       read counts of support"}
-  rmats_filtered_alternative_5_prime_splice_sites_jc: {type: 'File', outputSource: rmats/filtered_alternative_5_prime_splice_sites_jc,
+  rmats_filtered_alternative_5_prime_splice_sites_jc: {type: 'File?', outputSource: rmats/filtered_alternative_5_prime_splice_sites_jc,
     doc: "Alternative 5 prime splice sites JC.txt output from RMATs containing only those calls with 10 or more junction spanning
       read counts of support"}
-  rmats_filtered_mutually_exclusive_exons_jc: {type: 'File', outputSource: rmats/filtered_mutually_exclusive_exons_jc, doc: "Mutually
+  rmats_filtered_mutually_exclusive_exons_jc: {type: 'File?', outputSource: rmats/filtered_mutually_exclusive_exons_jc, doc: "Mutually
       exclusive exons JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support"}
-  rmats_filtered_retained_introns_jc: {type: 'File', outputSource: rmats/filtered_retained_introns_jc, doc: "Retained introns JC.txt
+  rmats_filtered_retained_introns_jc: {type: 'File?', outputSource: rmats/filtered_retained_introns_jc, doc: "Retained introns JC.txt
       output from RMATs containing only those calls with 10 or more junction spanning read counts of support"}
-  rmats_filtered_skipped_exons_jc: {type: 'File', outputSource: rmats/filtered_skipped_exons_jc, doc: "Skipped exons JC.txt output
+  rmats_filtered_skipped_exons_jc: {type: 'File?', outputSource: rmats/filtered_skipped_exons_jc, doc: "Skipped exons JC.txt output
       from RMATs containing only those calls with 10 or more junction spanning read counts of support"}
-  rmats_raw_alternative_3_prime_splice_sites_jc: {type: 'File', outputSource: rmats/raw_alternative_3_prime_splice_sites_jc}
-  rmats_raw_alternative_5_prime_splice_sites_jc: {type: 'File', outputSource: rmats/raw_alternative_5_prime_splice_sites_jc}
-  rmats_raw_mutually_exclusive_exons_jc: {type: 'File', outputSource: rmats/raw_mutually_exclusive_exons_jc}
-  rmats_raw_retained_introns_jc: {type: 'File', outputSource: rmats/raw_retained_introns_jc}
-  rmats_raw_skipped_exons_jc: {type: 'File', outputSource: rmats/raw_skipped_exons_jc}
-  rmats_raw_temp_read_outcomes: {type: 'File', outputSource: rmats/raw_temp_read_outcomes}
-  rmats_raw_summary_file: {type: 'File', outputSource: rmats/raw_summary_file}
+  rmats_raw_alternative_3_prime_splice_sites_jc: {type: 'File?', outputSource: rmats/raw_alternative_3_prime_splice_sites_jc}
+  rmats_raw_alternative_5_prime_splice_sites_jc: {type: 'File?', outputSource: rmats/raw_alternative_5_prime_splice_sites_jc}
+  rmats_raw_mutually_exclusive_exons_jc: {type: 'File?', outputSource: rmats/raw_mutually_exclusive_exons_jc}
+  rmats_raw_retained_introns_jc: {type: 'File?', outputSource: rmats/raw_retained_introns_jc}
+  rmats_raw_skipped_exons_jc: {type: 'File?', outputSource: rmats/raw_skipped_exons_jc}
+  rmats_raw_temp_read_outcomes: {type: 'File?', outputSource: rmats/raw_temp_read_outcomes}
+  rmats_raw_summary_file: {type: 'File?', outputSource: rmats/raw_summary_file}
   rmats_fromGTF: {type: 'File[]?', outputSource: rmats/rmats_fromGTF}
   t1k_genotype_tsv: {type: 'File?', outputSource: t1k/genotype_tsv, doc: "Genotyping results from T1k"}
 steps:
@@ -709,7 +711,9 @@ steps:
     out: [output, strandedness, read_length_median, read_length_stddev, is_paired_end]
   rmats:
     run: ../workflow/rmats_wf.cwl
+    when: $(inputs.run_rmats)
     in:
+      run_rmats: run_rmats
       gtf_annotation: gtf_anno
       sample_1_bams:
         source: samtools_sort/sorted_bam
