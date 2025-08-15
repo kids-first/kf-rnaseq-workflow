@@ -43,59 +43,46 @@ outputs:
   arriba_fusion_viz: {type: 'File?', outputSource: arriba_draw_2-2-1/arriba_pdf, doc: "pdf output from Arriba"}
   annofuse_filtered_fusions_tsv: {type: 'File?', outputSource: annofuse/annofuse_filtered_fusions_tsv, doc: "Filtered fusions called
       by annoFuse."}
+  STAR_chimeric_junctions: {type: 'File?', outputSource: star_fusion_1-10-1/chimeric_junction_compressed, doc: "STAR chimeric junctions"}
 steps:
   star_fusion_1-10-1:
     run: ../tools/star_fusion_1.10.1_call.cwl
     in:
-      Chimeric_junction: star_2-7-10a/chimeric_junctions
+      Chimeric_junction: Chimeric_junction
       genome_tar: FusionGenome
-      output_basename: basename_picker/outname
-      genome_untar_path: star_fusion_genome_untar_path
+      output_basename: output_basename
+      genome_untar_path: genome_untar_path
       compress_chimeric_junction: compress_chimeric_junction
     out: [abridged_coding, chimeric_junction_compressed]
   arriba_fusion_2-2-1:
     run: ../tools/arriba_fusion_2.2.1.cwl
     in:
-      genome_aligned_bam:
-        source: [samtools_sort/sorted_bam, samtools_sort/sorted_bai]
-        valueFrom: |
-          ${
-            var bundle = self[0];
-            bundle.secondaryFiles = [self[1]];
-            return bundle;
-          }
+      genome_aligned_bam: genome_aligned_bam
       memory: arriba_memory
       reference_fasta: reference_fasta
       gtf_anno: gtf_anno
-      outFileNamePrefix: basename_picker/outname
-      arriba_strand_flag: strand_parse/arriba_std
+      outFileNamePrefix: output_basename
+      arriba_strand_flag: arriba_strand_flag
     out: [arriba_fusions]
   arriba_draw_2-2-1:
     run: ../tools/arriba_draw_2.2.1.cwl
     in:
       fusions: arriba_fusion_2-2-1/arriba_fusions
-      genome_aligned_bam:
-        source: [samtools_sort/sorted_bam, samtools_sort/sorted_bai]
-        valueFrom: |
-          ${
-            var bundle = self[0];
-            bundle.secondaryFiles = [self[1]];
-            return bundle;
-          }
+      genome_aligned_bam: genome_aligned_bam
       gtf_anno: gtf_anno
       memory: arriba_memory
     out: [arriba_pdf]
   annofuse:
     run: ../workflow/kfdrc_annoFuse_wf.cwl
     in:
-      sample_name: basename_picker/outsample
+      sample_name: sample_name
       FusionGenome: fusion_annotator_ref
-      genome_untar_path: star_fusion_genome_untar_path
-      rsem_expr_file: rsem/gene_out
+      genome_untar_path: genome_untar_path
+      rsem_expr_file: rsem_expr_file
       arriba_output_file: arriba_fusion_2-2-1/arriba_fusions
       star_fusion_output_file: star_fusion_1-10-1/abridged_coding
       col_num: annofuse_col_num
-      output_basename: basename_picker/outname
+      output_basename: output_basename
     out: [annofuse_filtered_fusions_tsv]
 $namespaces:
   sbg: https://sevenbridges.com

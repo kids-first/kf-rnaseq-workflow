@@ -241,9 +241,11 @@ doc: |
   - `peOverlapNbasesMin`: 10
 
   ### Arriba
+  - `run_fusions`: Set to false to disable fusion detection
   - `arriba_memory`: Mem intensive tool. Set in GB
 
   ### STAR Fusion
+  - `run_fusions`: Set to false to disable fusion detection
   - `FusionGenome`: STAR-Fusion Cancer Transcriptome Analysis Toolkit (CTAT) Genome lib
   - `compress_chimeric_junction`: If part of a workflow, recommend compressing this file as final output
 
@@ -258,6 +260,7 @@ doc: |
   - `estimate_rspd`: Set this option if you want to estimate the read start position distribution (RSPD) from data
 
   ### annoFuse:
+  - `run_fusions`: Set to false to disable fusion detection
   - `sample_name`: Sample ID of the input reads. If not provided, will use reads1 file basename.
   - `annofuse_col_num`: 0-based column number in file of fusion name.
   - `fusion_annotator_ref`: Tar ball with fusion_annot_lib.idx and blast_pairs.idx from STAR-Fusion CTAT Genome lib. Can be same as FusionGenome, but only two files needed from that package
@@ -488,8 +491,9 @@ inputs:
   peOverlapMMp: {type: 'float?', default: 0.01, doc: "maximum proportion of mismatched bases in the overlap area. SF recommends 0.1"}
   peOverlapNbasesMin: {type: 'int?', default: 10, doc: "minimum number of overlap bases to trigger mates merging and realignment.
       Specify >0 value to switch on the 'merging of overlapping mates'algorithm. SF recommends 12,  AR recommends 10"}
+  run_fusions: {type: 'boolean?', default: true, doc: "Set to false to disable fusion detection"}
   arriba_memory: {type: 'int?', doc: "Mem intensive tool. Set in GB", default: 64}
-  FusionGenome: {type: 'File', doc: "STAR-Fusion CTAT Genome lib", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a8,
+  FusionGenome: {type: 'File?', doc: "STAR-Fusion CTAT Genome lib", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a8,
       name: GRCh38_v39_CTAT_lib_Mar242022.CUSTOM.tar.gz}}
   compress_chimeric_junction: {type: 'boolean?', default: true, doc: 'If part of a workflow, recommend compressing this file as final
       output'}
@@ -502,7 +506,7 @@ inputs:
       data", default: true}
   sample_name: {type: 'string?', doc: "Sample ID of the input reads. If not provided, will use reads1 file basename."}
   annofuse_col_num: {type: 'int?', doc: "0-based column number in file of fusion name.", default: 30}
-  fusion_annotator_ref: {type: 'File', doc: "Tar ball with fusion_annot_lib.idx and blast_pairs.idx from STAR-Fusion CTAT Genome lib.
+  fusion_annotator_ref: {type: 'File?', doc: "Tar ball with fusion_annot_lib.idx and blast_pairs.idx from STAR-Fusion CTAT Genome lib.
       Can be same as FusionGenome, but only two files needed from that package", "sbg:suggestedValue": {class: 'File', path: '63cff818facdd82011c8d6fe',
       name: 'GRCh38_v39_fusion_annot_custom.tar.gz'}}
   run_rmats: {type: 'boolean?', default: true, doc: "Set to false to disable rmats"}
@@ -527,22 +531,22 @@ outputs:
       supplied."}
   STAR_sorted_genomic_cram: {type: 'File', outputSource: samtools_bam_to_cram/output, doc: "STAR sorted and indexed genomic alignment
       cram"}
-  STAR_chimeric_junctions: {type: 'File?', outputSource: star_fusion_1-10-1/chimeric_junction_compressed, doc: "STAR chimeric junctions"}
+  STAR_chimeric_junctions: {type: 'File?', outputSource: fusion_workflow/STAR_chimeric_junctions, doc: "STAR chimeric junctions"}
   STAR_gene_count: {type: 'File', outputSource: star_2-7-10a/gene_counts, doc: "STAR genecounts"}
   STAR_junctions_out: {type: 'File', outputSource: star_2-7-10a/junctions_out, doc: "STARjunction reads"}
   STAR_final_log: {type: 'File', outputSource: star_2-7-10a/log_final_out, doc: "STAR metricslog file of unique, multi-mapping, unmapped,
       and chimeric reads"}
-  STAR-Fusion_results: {type: 'File?', outputSource: fusion_wf/abridged_coding, doc: "STAR fusion detection from chimeric
+  STAR-Fusion_results: {type: 'File?', outputSource: fusion_workflow/STAR-Fusion_results, doc: "STAR fusion detection from chimeric
       reads"}
-  arriba_fusion_results: {type: 'File?', outputSource: fusion_wf/arriba_fusions, doc: "Fusion output from Arriba"}
-  arriba_fusion_viz: {type: 'File?', outputSource: fusion_wf/arriba_pdf, doc: "pdf output from Arriba"}
+  arriba_fusion_results: {type: 'File?', outputSource: fusion_workflow/arriba_fusion_results, doc: "Fusion output from Arriba"}
+  arriba_fusion_viz: {type: 'File?', outputSource: fusion_workflow/arriba_fusion_viz, doc: "pdf output from Arriba"}
   RSEM_isoform: {type: 'File', outputSource: rsem/isoform_out, doc: "RSEM isoform expression estimates"}
   RSEM_gene: {type: 'File', outputSource: rsem/gene_out, doc: "RSEM gene expression estimates"}
   RNASeQC_Metrics: {type: 'File', outputSource: rna_seqc/Metrics, doc: "Metrics on mapping, intronic, exonic rates, count information,
       etc"}
   RNASeQC_counts: {type: 'File', outputSource: supplemental/RNASeQC_counts, doc: "Contains gene tpm, gene read, and exon counts"}
   kallisto_Abundance: {type: 'File', outputSource: kallisto/abundance_out, doc: "Gene abundance output from STAR genomic bam file"}
-  annofuse_filtered_fusions_tsv: {type: 'File?', outputSource: fusion_wf/annofuse_filtered_fusions_tsv, doc: "Filtered fusions called
+  annofuse_filtered_fusions_tsv: {type: 'File?', outputSource: fusion_workflow/annofuse_filtered_fusions_tsv, doc: "Filtered fusions called
       by annoFuse."}
   rmats_filtered_alternative_3_prime_splice_sites_jc: {type: 'File?', outputSource: rmats/filtered_alternative_3_prime_splice_sites_jc,
     doc: "Alternative 3 prime splice sites JC.txt output from RMATs containing only those calls with 10 or more junction spanning
@@ -794,6 +798,7 @@ steps:
     out: [abundance_out]
   fusion_workflow:
     run: ../workflow/fusion_wf.cwl
+    when: $(inputs.run_fusions)
     in:
       run_fusions: run_fusions
       Chimeric_junction: star_2-7-10a/chimeric_junctions
@@ -817,7 +822,7 @@ steps:
       rsem_expr_file: rsem/gene_out
       annofuse_col_num: annofuse_col_num
       output_basename: basename_picker/outname
-    out: [STAR-Fusion_results, arriba_fusion_results, arriba_fusion_viz, annofuse_filtered_fusions_tsv]
+    out: [STAR-Fusion_results, arriba_fusion_results, arriba_fusion_viz, annofuse_filtered_fusions_tsv, STAR_chimeric_junctions]
   samtools_bam_to_cram:
     run: ../tools/samtools_bam_to_cram.cwl
     in:
