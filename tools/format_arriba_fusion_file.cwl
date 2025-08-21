@@ -7,6 +7,9 @@ requirements:
   - class: ResourceRequirement
     ramMin: 4000
     coresMin: 2
+    https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: standard
+    https://platform.illumina.com/rdf/ica/resources:size: small
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/annofuse:0.92.0'
   - class: InitialWorkDirRequirement

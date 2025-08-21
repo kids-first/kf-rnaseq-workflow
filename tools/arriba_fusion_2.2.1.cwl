@@ -10,6 +10,9 @@ requirements:
   - class: ResourceRequirement
     coresMin: 8
     ramMin: ${ return inputs.memory * 1000 }
+    https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: himem
+    https://platform.illumina.com/rdf/ica/resources:size: small
 
 baseCommand: [/arriba_v2.2.1/arriba]
 arguments:

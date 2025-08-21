@@ -9,7 +9,10 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: $(inputs.cores)
-    ramMin: $(inputs.cores * 1000)
+    ramMin: $(inputs.ram * 1000)
+    https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: hicpu
+    https://platform.illumina.com/rdf/ica/resources:size: small
 
 baseCommand: ["/bin/bash", "-c"]
 arguments:
@@ -41,6 +44,7 @@ inputs:
   input_reads_1: {type: File, doc: "Input alignment file"}
   SampleID: string
   cores: { type: 'int?', default: 16 } 
+  ram: { type: 'int?', default: 32, doc: "GB of RAM to allocate to this task" } 
   is_paired_end: { type: boolean, doc: "Is the input_reads_1 file paired end?" }
   cram_reference: { type: 'File?', secondaryFiles: [.fai], doc: "If input align is cram and you are uncertain all contigs are registered at http://www.ebi.ac.uk/ena/cram/md5/, provide here" }
 

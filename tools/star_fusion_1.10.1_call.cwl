@@ -10,6 +10,9 @@ requirements:
   - class: ResourceRequirement
     coresMin: $(inputs.cores)
     ramMin: 64000
+    https://platform.illumina.com/rdf/ica/resources:tier: economy
+    https://platform.illumina.com/rdf/ica/resources:type: standard
+    https://platform.illumina.com/rdf/ica/resources:size: xlarge
 
 baseCommand: [tar, -I pigz, -xf]
 arguments:
