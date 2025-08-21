@@ -362,6 +362,7 @@ inputs:
   output_basename: {type: 'string?', doc: "String to use as basename for outputs. Will use read1 file basename if null"}
   input_alignment_files: {type: 'File[]?', secondaryFiles: [{"pattern": "^.bai", required: false}, {"pattern": ".bai", required: false},
       {"pattern": "^.crai", required: false}, {"pattern": ".crai", required: false}], doc: "List of input SAM/BAM/CRAM files to process"}
+  orphan_read_rescue_rg_str: {type: 'string?', doc: "RG string to use for reads in input_alignment_files with no assigned read group. If your input_alignment_files has zero read groups, processing will fail unless you provide a read group string here!"}
   input_pe_reads: {type: 'File[]?', doc: "List of R1 paired end FASTQ files to process"}
   input_pe_mates: {type: 'File[]?', doc: "List of R2 paired end FASTQ files to process"}
   input_se_reads: {type: 'File[]?', doc: "List of single end FASTQ files to process"}
@@ -556,6 +557,7 @@ steps:
     scatterMethod: dotproduct
     in:
       input_reads: input_alignment_files
+      orphan_readgroup_text: orphan_read_rescue_rg_str
       reference: cram_reference
     out: [bam_files]
   lists_to_reads_records:
