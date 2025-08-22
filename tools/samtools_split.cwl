@@ -22,7 +22,7 @@ requirements:
       - entryname: split_bam.sh
         entry: |-
           set -xeo pipefail
-          $(inputs.orphan_readgroup_text ? ["samtools addreplacerg -m orphan_only -o rg_rescue.bam", "--threads", inputs.cpu, "-r", inputs.orphan_readgroup_text, (inputs.reference ? "--reference " + inputs.reference.path : ""), inputs.input_reads.path].join(' ') : "echo 'Orphan ReadGroup Text Not Provided'")
+          $(inputs.orphan_readgroup_text ? ["samtools addreplacerg -m orphan_only -o rg_rescue.bam", "--threads", inputs.cpu, "-r", inputs.orphan_readgroup_text.replace(/\\t/g,"\\\\t"), (inputs.reference ? "--reference " + inputs.reference.path : ""), inputs.input_reads.path].join(' ') : "echo 'Orphan ReadGroup Text Not Provided'")
           RG_NUM=`samtools head $(inputs.orphan_readgroup_text ? "rg_rescue.bam" : inputs.input_reads.path) | grep -c ^@RG` || :
           if [ $RG_NUM = 0 ]; then
             echo "INPUT HAS NO READGROUPS! READGROUPS ARE REQUIRED FOR BAM INPUTS!"
