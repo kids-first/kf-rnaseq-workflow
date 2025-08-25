@@ -864,5 +864,5 @@ hints:
 - SE
 - STAR
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v5.0.2'
+- id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v5.1.0'
   label: github-release
