@@ -55,7 +55,7 @@ Arriba v2.2.1 Fusion caller that uses `STAR` aligned reads and chimeric reads ou
 ### annoFuse
 annoFuse 0.92.0 Filter and prioritize fusion calls.
  - [Github](https://github.com/d3b-center/annoFuse/releases/tag/v0.92.0)
- - [Publication](https://www.biorxiv.org/content/10.1101/839738v3)
+ - [Publication](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-020-03922-7)
  - [README](docs/D3B_ANNOFUSE.md)
 ### RNA-SeQC
 RNA-SeQC v2.3.4 Generate metrics such as gene and transcript counts, sense/antisense mapping, mapping rates, etc.
