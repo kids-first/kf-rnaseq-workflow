@@ -18,7 +18,7 @@ arguments:
       mkdir $(inputs.output_prefix)
       && gunzip -c $(inputs.gtf.path) > annotations.gtf
       && gunzip -c $(inputs.reference.path) > genome.fa
-      && rsem-prepare-reference --gtf annotations.gtf --bowtie
+      && rsem-prepare-reference --gtf annotations.gtf
   - position: 9
     shellQuote: false
     valueFrom: >-
