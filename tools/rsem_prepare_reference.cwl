@@ -1,35 +1,42 @@
-cwlVersion: v1.0
+cwlVersion: v1.2
 class: CommandLineTool
-id: rsem-prepare-reference
-label: "RSEM v1.3.1 Prepare Reference"
+id: rsem_prepare_reference
 requirements:
   - class: ShellCommandRequirement
+  - class: InlineJavascriptRequirement
+  - class: ResourceRequirement
+    coresMin: $(inputs.cpu)
+    ramMin: $(inputs.ram * 1000)
   - class: DockerRequirement
     dockerPull: 'images.sbgenomics.com/uros_sipetic/rsem:1.3.1'
-  - class: InlineJavascriptRequirement
 
-baseCommand: [mkdir]
+baseCommand: []
 arguments:
-  - position: 1
+  - position: 0
     shellQuote: false
     valueFrom: >-
-      $(inputs.reference_name)
-      && rsem-prepare-reference
-  - position: 4
+      mkdir $(inputs.output_prefix)
+      && gunzip -c $(inputs.gtf.path) > annotations.gtf
+      && gunzip -c $(inputs.reference.path) > genome.fa
+      && rsem-prepare-reference --gtf annotations.gtf --bowtie
+  - position: 9
     shellQuote: false
     valueFrom: >-
-      && mv $(inputs.reference_name).* $(inputs.reference_name)/
-      && tar -czf $(inputs.reference_name).tar.gz $(inputs.reference_name)
+      genome.fa $(inputs.output_prefix)/$(inputs.output_prefix)
+  - position: 10
+    shellQuote: false
+    valueFrom: >-
+      && tar -czf $(inputs.output_prefix).tar.gz $(inputs.output_prefix)
 
 inputs:
-  reference_fasta: { type: File, doc: "Reference fasta file", inputBinding: { position: 3} }
-  reference_name: { type: string, doc: "Output file prefix. Recommend format: RSEM_<SOURCE><Version>/", inputBinding: { position: 3}}
-  reference_gtf: { type: 'File?', doc: "gene model definitions. This OR gff required" , inputBinding: { position: 2, prefix: '--gtf' } }
-  reference_gff: { type: 'File?', doc: "gene model definitions. This OR gtf required" , inputBinding: { position: 2, prefix: '--gff' } }
+  gtf: { type: 'File', doc: "GTF file" }
+  reference: { type: 'File', doc: "Reference fasta" }
+  output_prefix: { type: 'string?', default: "rsem1.3.1", doc: "Name for output" }
+  cpu: { type: 'int?', default: 8, inputBinding: { position: 2, prefix: "--num-threads" }, doc: "CPUs to allocate to this task." }
+  ram: { type: 'int?', default: 16, doc: "GB of RAM to allocate to this task." }
 
 outputs:
-  rsem_reference:
+  genome_tar:
     type: File
     outputBinding: 
       glob: '*tar.gz'
-

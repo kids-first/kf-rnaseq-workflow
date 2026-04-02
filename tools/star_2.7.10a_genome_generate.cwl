@@ -11,16 +11,18 @@ requirements:
     coresMin: $(inputs.runThreadN)
     ramMin: 60000
 
-baseCommand: [mkdir]
+baseCommand: []
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      $(inputs.genomeDir)
+      mkdir $(inputs.genomeDir)
+      && gunzip -c $(inputs.genome_fa.path) > genome.fa
+      && gunzip -c $(inputs.gtf.path) > annotations.gtf
   - position: 2
     shellQuote: false
     valueFrom: >-
-      && STAR --runMode genomeGenerate
+      && STAR --runMode genomeGenerate --genomeFastaFiles genome.fa --sjdbGTFfile annotations.gtf
   - position: 4
     shellQuote: false
     valueFrom: >-
@@ -28,8 +30,8 @@ arguments:
 
 inputs:
   genomeDir: { type: string, doc: "Output dirname. Recommend STAR_{version}_GENCODE{version num}", inputBinding: { position: 3, prefix: '--genomeDir' } }
-  genome_fa: { type: File, doc: "Fasta file to index. Recommend from GENCODE, PRI assembly. Must unzip first if compressed", inputBinding: { position: 3, prefix: '--genomeFastaFiles' } }
-  gtf: { type: File, doc: "Matched GTF file to index. Recommend from GENCODE, PRI assembly", inputBinding: { position: 3, prefix: '--sjdbGTFfile' } }
+  genome_fa: { type: File, doc: "Fasta file to index. Recommend from GENCODE, PRI assembly." }
+  gtf: { type: File, doc: "Matched GTF file to index. Recommend from GENCODE, PRI assembly" }
   runThreadN: { type: 'int?', default: 16, inputBinding: { position: 3, prefix: '--runThreadN' } }
   sjdbOverhang: { type: 'int?', default: 100, doc: "Ideal value is read len minus 1, but default 100 ok for most cases", inputBinding: { position: 3, prefix: '--sjdbOverhang' } }
 
