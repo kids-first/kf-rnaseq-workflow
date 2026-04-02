@@ -29,8 +29,8 @@ arguments:
       && tar -czf $(inputs.output_prefix).tar.gz $(inputs.output_prefix)
 
 inputs:
-  gtf: { type: 'File', doc: "GTF file" }
-  reference: { type: 'File', doc: "Reference fasta" }
+  gtf: { type: 'File', doc: "GTF file. MUST BE GZIPPED." }
+  reference: { type: 'File', doc: "Reference fasta. MUST BE GZIPPED." }
   output_prefix: { type: 'string?', default: "rsem1.3.1", doc: "Name for output" }
   cpu: { type: 'int?', default: 8, inputBinding: { position: 2, prefix: "--num-threads" }, doc: "CPUs to allocate to this task." }
   ram: { type: 'int?', default: 16, doc: "GB of RAM to allocate to this task." }

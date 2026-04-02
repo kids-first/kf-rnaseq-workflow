@@ -39,12 +39,12 @@ arguments:
 inputs:
   resource_manifest: { type: 'File?', doc: "Manifest of resources used to build the fusion reference." }
   ctat_source: { type: File, inputBinding: { position: 2 }, doc: "Resource file from https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/" }
-  genome_fa: { type: File, doc: "GENCODE primary assembly reference fasta file" }
+  genome_fa: { type: File, doc: "GENCODE primary assembly reference fasta file. MUST BE GZIPPED" }
   fusion_annot_lib: { type: File, inputBinding: { position: 22, prefix: "--fusion_annot_lib"}, doc: "Can be extracted from ctat source, for from https://github.com/FusionAnnotator/CTAT_HumanFusionLib/releases" }
   annot_filter_rule: {type: File, inputBinding: { position: 22, prefix: "--annot_filter_rule"}, doc: "target AnnotFilterRule.pm, from https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB" }
-  pfam_db: { type: 'File', doc: "Pfam-A.hmm.gz from from ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/" }
+  pfam_db: { type: 'File', doc: "Pfam-A.hmm.gz (MUST BE GZIPPED) from from ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/" }
   dfam_db: { type: 'File', secondaryFiles: [{"pattern":".h3f", "required": true},{"pattern":".h3i", "required": true},{"pattern":".h3m", "required": true},{"pattern":".h3p", "required": true}], inputBinding: { position: 22, prefix: '--dfam_db' }, doc: "DNA transposable element database (Dfam.hmm), required for repeat masking. Obtain from http://dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/" }
-  reference_gtf: { type: File, doc: "gene model definitions." }
+  reference_gtf: { type: File, doc: "gene model definitions. MUST BE GZIPPED" }
   human_gencode_filter: { type: 'string?', default: "--human_gencode_filter", doc: "flag for customized prep operations for human/gencode genome and annotation data." }
   output_dir: { type: 'string', default: "star_fusion", inputBinding: { position: 22, prefix: "--output_dir"}, doc: "Name for prep_genome_lib output directory. Will also serve as basename for TAR.GZ file." }
   cpu: { type: 'int?', default: 16, inputBinding: { position: 22, prefix: '--CPU' }, doc: "CPUs to allocate to this task" }

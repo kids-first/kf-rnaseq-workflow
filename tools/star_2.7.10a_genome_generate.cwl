@@ -30,8 +30,8 @@ arguments:
 
 inputs:
   genomeDir: { type: string, doc: "Output dirname. Recommend STAR_{version}_GENCODE{version num}", inputBinding: { position: 3, prefix: '--genomeDir' } }
-  genome_fa: { type: File, doc: "Fasta file to index. Recommend from GENCODE, PRI assembly." }
-  gtf: { type: File, doc: "Matched GTF file to index. Recommend from GENCODE, PRI assembly" }
+  genome_fa: { type: File, doc: "Fasta file to index. Recommend from GENCODE, PRI assembly. MUST BE GZIPPED" }
+  gtf: { type: File, doc: "Matched GTF file to index. Recommend from GENCODE, PRI assembly. MUST BE GZIPPED" }
   runThreadN: { type: 'int?', default: 16, inputBinding: { position: 3, prefix: '--runThreadN' } }
   sjdbOverhang: { type: 'int?', default: 100, doc: "Ideal value is read len minus 1, but default 100 ok for most cases", inputBinding: { position: 3, prefix: '--sjdbOverhang' } }
 
