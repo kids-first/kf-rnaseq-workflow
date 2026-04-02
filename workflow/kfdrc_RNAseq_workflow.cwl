@@ -653,11 +653,10 @@ steps:
     out: [chimeric_junctions, chimeric_sam_out, gene_counts, genomic_bam_out, junctions_out, log_final_out, log_out, log_progress_out,
       transcriptome_bam_out]
   samtools_sort:
-    run: ../tools/samtools_sort.cwl
+    run: ../tools/samtools_v1.20_sort.cwl
     in:
       unsorted_bam: star_2-7-10a/genomic_bam_out
-      chimeric_sam_out: star_2-7-10a/chimeric_sam_out
-    out: [sorted_bam, sorted_bai, chimeric_bam_out]
+    out: [sorted_bam, sorted_bai]
   t1k:
     run: ../tools/t1k.cwl
     when: $(inputs.run_t1k)
