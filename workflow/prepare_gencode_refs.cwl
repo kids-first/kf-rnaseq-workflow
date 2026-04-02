@@ -22,6 +22,7 @@ outputs:
   kallisto_idx: { type: 'File', outputSource: kallisto_index/index }
   star_genome: { type: 'File', outputSource: star_genome_generate/star_ref }
   star_fusion_genome: { type: 'File', outputSource: star_fusion_genome_generate/star_fusion_reference }
+  star_fusion_annot: { type: 'File', outputSource: generate_fusion_annot/fusion_annot_ref }
   hla_rna_ref_seqs: {type: 'File', outputSource: t1k_build/rna_ref_seqs }
   hla_rna_gene_coords: {type: 'File', outputSource: t1k_build/rna_gene_coords }
 steps:
@@ -104,6 +105,14 @@ steps:
         valueFrom: |
           $("GRCh38_v" + inputs.gencode_version + "_CTAT_lib_" + inputs.date + ".CUSTOM")
     out: [ star_fusion_reference ]
+  generate_fusion_annot:
+    run: ../tools/generate_fusion_annot.cwl
+    in:
+      fusion_tar: star_fusion_genome_generate/star_fusion_reference
+      output_basename:
+        valueFrom: |
+          $(inputs.fusion_tar.basename.replace(/CUSTOM.tar.gz/, "fusion_annot"))
+    out: [ fusion_annot_ref ]
 hints:
 - class: "sbg:maxNumberOfParallelInstances"
   value: 3
