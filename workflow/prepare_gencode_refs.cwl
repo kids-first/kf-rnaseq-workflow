@@ -51,7 +51,7 @@ steps:
       gtf: download_gencode/gencode_annotation
       output_filename:
         valueFrom: |
-          $("gencode.v" + inputs.gencode_version + ".primary_assembly.rnaseqc." + (inputs.stranded ? "stranded" : "unstranded") + ".gtf")
+          $("gencode.v" + inputs.gencode_version + ".primary_assembly.rnaseqc.stranded.gtf")
       stranded:
         valueFrom: |
           $(true)
