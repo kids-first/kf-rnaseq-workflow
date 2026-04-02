@@ -17,6 +17,7 @@ outputs:
   resource_manifest: { type: 'File', outputSource: download_gencode/manifest }
   gencode_genome: { type: 'File', outputSource: download_gencode/gencode_genome }
   gencode_annotation: { type: 'File', outputSource: download_gencode/gencode_annotation }
+  gtex_collapsed_annotation: { type: 'File', outputSource: gtex_collapse_annotation/collapsed_gtf }
   rsem_genome: { type: 'File', outputSource: rsem_generate_genome/genome_tar }
   kallisto_idx: { type: 'File', outputSource: kallisto_index/index }
   star_genome: { type: 'File', outputSource: star_genome_generate/star_ref }
