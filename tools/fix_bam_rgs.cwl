@@ -23,7 +23,7 @@ arguments:
 
 inputs:
   inbam: { type: 'File', inputBinding: {position: 2, prefix: "--input"}, doc: "BAM/CRAM to fix" }
-  cram_reference: { type: 'File', inputBinding: {position: 2, prefix: "--reference"}, doc: "Reference to decode CRAMs" }
+  cram_reference: { type: 'File?', inputBinding: {position: 2, prefix: "--reference"}, doc: "Reference to decode CRAMs" }
   output_basename: { type: 'string' }
   rg_sm: { type: 'string?', inputBinding: {position: 2, prefix: "--sm"}, doc: "Value for @RG SM (default: inherit from input header, else SAMPLE)" }
   rg_pl: { type: 'string?', inputBinding: {position: 2, prefix: "--pl"}, doc: "Value for @RG PL (default: inherit from input header, else SAMPLE)" }
