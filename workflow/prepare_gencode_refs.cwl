@@ -35,7 +35,7 @@ steps:
       hla_version: hla_version
       dfam_version: dfam_version
       pfam_version: pfam_version
-    out: [ manifest, annot_filter_rule, gencode_genome, gencode_transcripts, gencode_annotation, ctat_resource, ctat_fusion, hla, pfam, dfam ]
+    out: [ manifest, annot_filter_rule, gencode_genome, gencode_annotation, ctat_resource, ctat_fusion, hla, pfam, dfam ]
   rsem_generate_genome:
     run: ../tools/rsem_prepare_reference.cwl
     in:
@@ -45,7 +45,7 @@ steps:
       output_prefix:
         valueFrom: |
           $("RSEM_GENCODE" + inputs.gencode_version)
-    out: [ genome_tar ]
+    out: [ genome_tar, transcripts_fasta ]
   gtex_collapse_annotation:
     run: ../tools/gtex_collapse_annotation.cwl
     in:
@@ -72,7 +72,7 @@ steps:
     run: ../tools/kallisto_index.cwl
     in:
       gencode_version: gencode_version
-      transcripts_fasta: download_gencode/gencode_transcripts
+      transcripts_fasta: rsem_generate_genome/transcripts_fasta
       output_filename:
         valueFrom: |
           $("RSEM_GENCODE" + inputs.gencode_version + ".transcripts.kallisto.idx")

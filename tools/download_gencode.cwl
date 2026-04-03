@@ -36,7 +36,6 @@ outputs:
   manifest: { type: 'File', outputBinding: { glob: "gencode_reference_manifest.txt" }}
   annot_filter_rule: { type: 'File', outputBinding: { glob: "AnnotFilterRule.pm" }}
   gencode_genome: { type: 'File', outputBinding: { glob: "*primary_assembly.genome.fa.gz" }}
-  gencode_transcripts: { type: 'File', outputBinding: { glob: "*transcripts.fa.gz" }}
   gencode_annotation: { type: 'File', outputBinding: { glob: "*annotation.gtf.gz" }}
   ctat_resource: { type: 'File', outputBinding: { glob: "*source.tar.gz" }}
   ctat_fusion: { type: 'File', outputBinding: { glob: "*dat.gz" }}
