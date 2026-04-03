@@ -388,9 +388,11 @@ inputs:
   read_length_median: {type: 'int?', doc: "The median read length for the reads provided."}
   read_length_stddev: {type: 'float?', doc: "Standard Deviation of the median read length."}
   samtools_fastq_cores: {type: 'int?', doc: "Num cores for align2fastq conversion, if input is an alignment file", default: 16}
+  sentieon_license: {type: 'string?', default: "10.5.64.221:8990", doc: "License server host and port"}
   STARgenome: {type: File, doc: "Tar gzipped reference that will be unzipped at run time", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a7,
       name: STAR_2.7.10a_GENCODE39.tar.gz}}
   runThreadN: {type: 'int?', default: 36, doc: "Adjust this value to change number of cores used by STAR."}
+  star_ram: { type: 'int?', default: 60, doc: "Min run time RAM to run STAR" }
   twopassMode: {type: ['null', {type: enum, name: twopassMode, symbols: ["Basic", "None"]}], default: "Basic", doc: "Enable two pass
       mode to detect novel splice events. Default is basic (on)."}
   alignSJoverhangMin: {type: 'int?', default: 8, doc: "minimum overhang for unannotated junctions. ENCODE default used."}
@@ -481,6 +483,9 @@ inputs:
   peOverlapMMp: {type: 'float?', default: 0.01, doc: "maximum proportion of mismatched bases in the overlap area. SF recommends 0.1"}
   peOverlapNbasesMin: {type: 'int?', default: 10, doc: "minimum number of overlap bases to trigger mates merging and realignment.
       Specify >0 value to switch on the 'merging of overlapping mates'algorithm. SF recommends 12,  AR recommends 10"}
+  alignTranscriptsPerReadNmax: { type: 'int?', default: 10000, doc: "max number of diﬀerent alignments per read to consider, \
+    may need to adjust for WARNING: not enough space allocated for transcript" }
+  alignTranscriptsPerWindowNmax: { type: 'int?', default: 100, doc: "max number of transcripts per window" }
   arriba_memory: {type: 'int?', doc: "Mem intensive tool. Set in GB", default: 64}
   FusionGenome: {type: 'File', doc: "STAR-Fusion CTAT Genome lib", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a8,
       name: GRCh38_v39_CTAT_lib_Mar242022.CUSTOM.tar.gz}}
@@ -603,14 +608,18 @@ steps:
       output_basename: output_basename
       samtools_fastq_cores: samtools_fastq_cores
     out: [processed_reads_record, cutadapt_stats]
+  
   star_2-7-10a:
     # will get fastq from first non-null in this order - cutadapt, align2fastq, wf input
     run: ../tools/star_2.7.10a_align.cwl
+    when: $(inputs.sentieon_license == null)
     in:
+      sentieon_license: sentieon_license
       reads_records: preprocess_reads/processed_reads_record
       outFileNamePrefix: basename_picker/outname
       genomeDir: STARgenome
       runThreadN: runThreadN
+      ram: star_ram
       twopassMode: twopassMode
       alignSJoverhangMin: alignSJoverhangMin
       outFilterMismatchNoverLmax: outFilterMismatchNoverLmax
@@ -650,12 +659,72 @@ steps:
       outFilterMultimapNmax: outFilterMultimapNmax
       peOverlapMMp: peOverlapMMp
       peOverlapNbasesMin: peOverlapNbasesMin
+      alignTranscriptsPerReadNmax: alignTranscriptsPerReadNmax
+      alignTranscriptsPerWindowNmax: alignTranscriptsPerWindowNmax
     out: [chimeric_junctions, chimeric_sam_out, gene_counts, genomic_bam_out, junctions_out, log_final_out, log_out, log_progress_out,
       transcriptome_bam_out]
+
+  star_2-7-10b_sentieon:
+    # will get fastq from first non-null in this order - cutadapt, align2fastq, wf input
+    run: ../tools/star_2.7.10b_align_sentieon.cwl
+    when: $(inputs.sentieon_license != null)
+    in:
+      sentieon_license: sentieon_license
+      reads_records: preprocess_reads/processed_reads_record
+      outFileNamePrefix: basename_picker/outname
+      genomeDir: STARgenome
+      runThreadN: runThreadN
+      ram: star_ram
+      twopassMode: twopassMode
+      alignSJoverhangMin: alignSJoverhangMin
+      outFilterMismatchNoverLmax: outFilterMismatchNoverLmax
+      outFilterType: outFilterType
+      outFilterScoreMinOverLread: outFilterScoreMinOverLread
+      outFilterMatchNminOverLread: outFilterMatchNminOverLread
+      outReadsUnmapped: outReadsUnmapped
+      limitSjdbInsertNsj: limitSjdbInsertNsj
+      outSAMstrandField: outSAMstrandField
+      outFilterIntronMotifs: outFilterIntronMotifs
+      alignSoftClipAtReferenceEnds: alignSoftClipAtReferenceEnds
+      quantMode: quantMode
+      outSAMtype: outSAMtype
+      outSAMunmapped: outSAMunmapped
+      genomeLoad: genomeLoad
+      chimMainSegmentMultNmax: chimMainSegmentMultNmax
+      outSAMattributes: outSAMattributes
+      alignInsertionFlush: alignInsertionFlush
+      alignIntronMax: alignIntronMax
+      alignMatesGapMax: alignMatesGapMax
+      alignSJDBoverhangMin: alignSJDBoverhangMin
+      outFilterMismatchNmax: outFilterMismatchNmax
+      alignSJstitchMismatchNmax: alignSJstitchMismatchNmax
+      alignSplicedMateMapLmin: alignSplicedMateMapLmin
+      alignSplicedMateMapLminOverLmate: alignSplicedMateMapLminOverLmate
+      chimJunctionOverhangMin: chimJunctionOverhangMin
+      chimMultimapNmax: chimMultimapNmax
+      chimMultimapScoreRange: chimMultimapScoreRange
+      chimNonchimScoreDropMin: chimNonchimScoreDropMin
+      chimOutJunctionFormat: chimOutJunctionFormat
+      chimOutType: chimOutType
+      chimScoreDropMax: chimScoreDropMax
+      chimScoreJunctionNonGTAG: chimScoreJunctionNonGTAG
+      chimScoreSeparation: chimScoreSeparation
+      chimSegmentMin: chimSegmentMin
+      chimSegmentReadGapMax: chimSegmentReadGapMax
+      outFilterMultimapNmax: outFilterMultimapNmax
+      peOverlapMMp: peOverlapMMp
+      peOverlapNbasesMin: peOverlapNbasesMin
+      alignTranscriptsPerReadNmax: alignTranscriptsPerReadNmax
+      alignTranscriptsPerWindowNmax: alignTranscriptsPerWindowNmax
+    out: [chimeric_junctions, chimeric_sam_out, gene_counts, genomic_bam_out, junctions_out, log_final_out, log_out, log_progress_out,
+      transcriptome_bam_out]
+
   samtools_sort:
     run: ../tools/samtools_v1.20_sort.cwl
     in:
-      unsorted_bam: star_2-7-10a/genomic_bam_out
+      unsorted_bam:
+        source: [star_2-7-10a/genomic_bam_out, star_2-7-10b_sentieon/genomic_bam_out]
+        pickValue: first_non_null
     out: [sorted_bam, sorted_bai]
   t1k:
     run: ../tools/t1k.cwl
@@ -730,7 +799,9 @@ steps:
   star_fusion_1-10-1:
     run: ../tools/star_fusion_1.10.1_call.cwl
     in:
-      Chimeric_junction: star_2-7-10a/chimeric_junctions
+      Chimeric_junction:
+        source: [star_2-7-10a/chimeric_junctions, star_2-7-10b_sentieon/chimeric_junctions]
+        pickValue: first_non_null
       genome_tar: FusionGenome
       output_basename: basename_picker/outname
       genome_untar_path: star_fusion_genome_untar_path
@@ -771,7 +842,9 @@ steps:
   rsem:
     run: ../tools/rsem_calc_expression.cwl
     in:
-      bam: star_2-7-10a/transcriptome_bam_out
+      bam:
+        source: [star_2-7-10a/transcriptome_bam_out, star_2-7-10b_sentieon/transcriptome_bam_out]
+        pickValue: first_non_null
       paired_end:
         source: bam_strandness/is_paired_end
       estimate_rspd: estimate_rspd

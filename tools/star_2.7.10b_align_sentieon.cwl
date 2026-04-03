@@ -2,7 +2,7 @@ cwlVersion: v1.2
 class: CommandLineTool
 id: star-2.7.10b-alignReads-sentieon
 label: "STAR Aligner v2.7.10b Sentieon"
-doc: "Sentieon implementation of STAR. If SAM out or "
+doc: "Sentieon implementation of STAR."
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
@@ -10,7 +10,7 @@ requirements:
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: $(inputs.runThreadN)
-    ramMin: 60000
+    ramMin: $(inputs.ram * 1000)
   - class: InitialWorkDirRequirement
     listing:
     - entryname: reads_manifest.tsv
@@ -19,13 +19,16 @@ requirements:
   - class: SchemaDefRequirement
     types:
     - $import: ../schema/reads_record_type.yml
+  - class: EnvVarRequirement
+    envDef:
+    - envName: SENTIEON_LICENSE
+      envValue: $(inputs.sentieon_license)
 baseCommand: [tar, -xvf]
 arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
       $(inputs.genomeDir.path)
-      && export SENTIEON_LICENSE=10.5.64.221:8990
   - position: 2
     shellQuote: false
     valueFrom: >-
@@ -40,6 +43,7 @@ arguments:
       && gzip *ReadsPerGene.out.tab *SJ.out.tab
 
 inputs:
+  sentieon_license: {type: string, doc: "License server host and port"}
   reads_records:
     type:
       type: array
@@ -48,6 +52,7 @@ inputs:
   outFileNamePrefix: { type: string, doc: "output files name prefix (including full or relative path). Can only be defined on the command line. \
     Tool will add '.' after prefix to easily delineate between file name and suffix" }
   runThreadN: { type: 'int?', default: 16, doc: "Adjust this value to change number of cores used.", inputBinding: { position: 3, prefix: '--runThreadN' } }
+  ram: { type: 'int?', default: 60, doc: "Min RAM in GB" }
   twopassMode: { type: ['null', {type: enum, name: twopassMode, symbols: ["Basic", "None"]}], default: "Basic",
     doc: "Enable two pass mode to detect novel splice events. Default is basic (on).", inputBinding: { position: 3, prefix: '--twopassMode' } }
   alignSJoverhangMin: { type: 'int?', default: 8, doc: "minimum overhang for unannotated junctions. ENCODE default used.",
@@ -105,7 +110,7 @@ inputs:
    inputBinding: { position: 3, prefix: '--genomeLoad', shellQuote: false } }
   chimMainSegmentMultNmax: { type: 'int?', default: 1, doc: "maximum number of multi-alignments for the main chimeric segment. =1 will prohibit multimapping main segments",
     inputBinding: { position: 3, prefix: '--chimMainSegmentMultNmax' } }
-  outSAMattributes: { type: 'string?', default: 'NH HI AS nM NM ch', doc: "a string of desired SAM attributes, in the order desired for the output SAM. Tags can be listed in any combination/order. \
+  outSAMattributes: { type: 'string?', default: 'NH HI AS nM NM ch RG', doc: "a string of desired SAM attributes, in the order desired for the output SAM. Tags can be listed in any combination/order. \
     Please refer to the STAR manual, as there are numerous combinations: https://raw.githubusercontent.com/alexdobin/STAR/master/doc/STARmanual.pdf",
     inputBinding: { position: 3, prefix: '--outSAMattributes', shellQuote: false } }
   # fusion specific
@@ -182,6 +187,10 @@ inputs:
     doc: "minimum number of overlap bases to trigger mates merging and realignment. Specify >0 value to switch \
     on the 'merging of overlapping mates'algorithm. SF recommends 12,  AR recommends 10",
     inputBinding: { position: 3, prefix: '--peOverlapNbasesMin' } }
+  alignTranscriptsPerReadNmax: { type: 'int?', default: 10000, doc: "max number of diﬀerent alignments per read to consider, \
+    may need to adjust for WARNING: not enough space allocated for transcript", inputBinding: { position: 3, prefix: '--alignTranscriptsPerReadNmax' }}
+  alignTranscriptsPerWindowNmax: { type: 'int?', default: 100, doc: "max number of transcripts per window",
+    inputBinding: { position: 3, prefix: '--alignTranscriptsPerWindowNmax'} }
 
 outputs:
   log_progress_out: { type: File, doc: "Simple progress output. Can use to gauge speed and run time", outputBinding: {glob: '*Log.progress.out'} }
