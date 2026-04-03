@@ -40,3 +40,7 @@ outputs:
     type: File
     outputBinding: 
       glob: '*tar.gz'
+  transcripts_fasta:
+    type: File
+    outputBinding:
+      glob: '$(inputs.output_prefix)/*transcripts.fa'

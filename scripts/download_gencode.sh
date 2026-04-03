@@ -30,7 +30,6 @@ fetch_and_echo() {
 fetch_and_echo "https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/\${CTAT_RESOURCE_VER}.source.tar.gz"
 
 fetch_and_echo "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_\${GENCODE_VER}/gencode.v\${GENCODE_VER}.primary_assembly.annotation.gtf.gz"
-fetch_and_echo "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_\${GENCODE_VER}/gencode.v\${GENCODE_VER}.transcripts.fa.gz"
 fetch_and_echo "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_\${GENCODE_VER}/GRCh38.primary_assembly.genome.fa.gz"
 
 curl -s "https://api.github.com/repos/FusionAnnotator/CTAT_HumanFusionLib/releases/tags/v\${CTAT_FUSION_VER}" \
