@@ -29,14 +29,6 @@ versions will result in:
 - `target_genes`: TSV containing target ENSGs for heatmap and tsne plots. Recommendation: stable housekeeping gene list
 - `output_basename`: Basename for output files
 
-outputs:
-  heatmap: {type: 'File', outputSource: corr_heatmap/plot }
-  corr: {type: 'File', outputSource: corr_heatmap/csv }
-  tsne: {type: 'File', outputSource: tsne_plot/plot }
-  fusion_comp_raw: {type: 'File', outputSource: compare_annofuse_raw/plot }
-  fusion_comp_pct: {type: 'File', outputSource: compare_annofuse_pct/plot }
-  fusion_comp_uniqs: {type: 'File[]', outputSource:  compare_annofuse_pct/unique_fusions }
-
 ### Outputs
 
 - `heatmap`: Heatmap plot comparing baseline and call samples by RSEM gene TPM values for ENSGs in the target_genes file
