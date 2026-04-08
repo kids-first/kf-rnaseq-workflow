@@ -16,21 +16,19 @@ arguments:
     shellQuote: false
     valueFrom: >-
       mkdir $(inputs.output_prefix)
-      && gunzip -c $(inputs.gtf.path) > annotations.gtf
-      && gunzip -c $(inputs.reference.path) > genome.fa
-      && rsem-prepare-reference --gtf annotations.gtf
+      && rsem-prepare-reference
   - position: 9
     shellQuote: false
     valueFrom: >-
-      genome.fa $(inputs.output_prefix)/$(inputs.output_prefix)
+      $(inputs.output_prefix)/$(inputs.output_prefix)
   - position: 10
     shellQuote: false
     valueFrom: >-
       && tar -czf $(inputs.output_prefix).tar.gz $(inputs.output_prefix)
 
 inputs:
-  gtf: { type: 'File', doc: "GTF file. MUST BE GZIPPED." }
-  reference: { type: 'File', doc: "Reference fasta. MUST BE GZIPPED." }
+  gtf: { type: 'File', inputBinding: { position: 2, prefix: "--gtf" }, doc: "GTF file. MUST BE UNZIPPED." }
+  reference: { type: 'File', inputBinding: { position: 8 }, doc: "Reference fasta. MUST BE UNZIPPED." }
   output_prefix: { type: 'string?', default: "rsem1.3.1", doc: "Name for output" }
   cpu: { type: 'int?', default: 8, inputBinding: { position: 2, prefix: "--num-threads" }, doc: "CPUs to allocate to this task." }
   ram: { type: 'int?', default: 16, doc: "GB of RAM to allocate to this task." }
@@ -38,7 +36,7 @@ inputs:
 outputs:
   genome_tar:
     type: File
-    outputBinding: 
+    outputBinding:
       glob: '*tar.gz'
   transcripts_fasta:
     type: File
