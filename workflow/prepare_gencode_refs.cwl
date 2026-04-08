@@ -97,6 +97,9 @@ outputs:
   hla_rna_gene_coords: {type: 'File', outputSource: t1k_build/rna_gene_coords}
 steps:
   download_gencode:
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c6i.xlarge
     run: ../tools/download_gencode.cwl
     in:
       gencode_version: gencode_version
@@ -138,9 +141,10 @@ steps:
       output_filename:
         valueFrom: |
           $("gencode.v" + inputs.gencode_version + ".primary_assembly.rnaseqc.stranded.gtf")
+      collapse_only:
+        valueFrom: '$(true)'
       stranded:
-        valueFrom: |
-          $(true)
+        valueFrom: '$(true)'
     out: [collapsed_gtf]
   gtex_collapse_annotation_unstranded:
     run: ../tools/gtex_collapse_annotation.cwl
