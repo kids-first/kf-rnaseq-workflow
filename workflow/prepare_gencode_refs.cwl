@@ -83,8 +83,8 @@ inputs:
   date_today: {type: 'string', doc: "Todays date in the following format: Mar012021 (MonthDayYear)"}
 outputs:
   resource_manifest: {type: 'File', outputSource: download_gencode/manifest}
-  gencode_genome: {type: 'File', outputSource: download_gencode/gencode_genome}
-  gencode_annotation: {type: 'File', outputSource: download_gencode/gencode_annotation}
+  gencode_genome: {type: 'File', outputSource: gunzip_genome/outfile}
+  gencode_annotation: {type: 'File', outputSource: gunzip_annotation/outfile}
   gtex_collapsed_annotation: {type: 'File', outputSource: gtex_collapse_annotation/collapsed_gtf}
   rsem_genome: {type: 'File', outputSource: rsem_generate_genome/genome_tar}
   kallisto_idx: {type: 'File', outputSource: kallisto_index/index}
@@ -104,12 +104,26 @@ steps:
       dfam_version: dfam_version
       pfam_version: pfam_version
     out: [manifest, annot_filter_rule, gencode_genome, gencode_annotation, ctat_resource, ctat_fusion, hla, pfam, dfam]
+  gunzip_genome:
+    run: ../tools/gzip.cwl
+    in:
+      infile: download_gencode/gencode_genome
+      decompress:
+        valueFrom: '$(true)'
+    out: [outfile]
+  gunzip_annotation:
+    run: ../tools/gzip.cwl
+    in:
+      infile: download_gencode/gencode_annotation
+      decompress:
+        valueFrom: '$(true)'
+    out: [outfile]
   rsem_generate_genome:
     run: ../tools/rsem_prepare_reference.cwl
     in:
       gencode_version: gencode_version
-      gtf: download_gencode/gencode_annotation
-      reference: download_gencode/gencode_genome
+      gtf: gunzip_annotation/outfile
+      reference: gunzip_genome/outfile
       output_prefix:
         valueFrom: |
           $("RSEM_GENCODE" + inputs.gencode_version)
@@ -130,8 +144,8 @@ steps:
     run: ../tools/star_2.7.10a_genome_generate.cwl
     in:
       gencode_version: gencode_version
-      genome_fa: download_gencode/gencode_genome
-      gtf: download_gencode/gencode_annotation
+      genome_fa: gunzip_genome/outfile
+      gtf: gunzip_annotation/outfile
       genomeDir:
         valueFrom: |
           $("STAR_2.7.10a_GENCODE" + inputs.gencode_version)
@@ -163,8 +177,8 @@ steps:
       date: date_today
       resource_manifest: download_gencode/manifest
       ctat_source: download_gencode/ctat_resource
-      genome_fa: download_gencode/gencode_genome
-      reference_gtf: download_gencode/gencode_annotation
+      genome_fa: gunzip_genome/outfile
+      reference_gtf: gunzip_annotation/outfile
       fusion_annot_lib: download_gencode/ctat_fusion
       annot_filter_rule: download_gencode/annot_filter_rule
       pfam_db: download_gencode/pfam
