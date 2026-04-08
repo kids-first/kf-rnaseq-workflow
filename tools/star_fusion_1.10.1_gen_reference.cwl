@@ -6,12 +6,12 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/star:fusion-1.10.1'
+    dockerPull: 'pgc-images.sbgenomics.com/danmiller/star:fusion-1.10.2'
   - class: ResourceRequirement
     coresMin: $(inputs.cpu)
     ramMin: $(inputs.ram * 1000)
   - class: InitialWorkDirRequirement
-    listing: [$(inputs.ctat_source)]
+    listing: [$(inputs.ctat_source), $(inputs.reference_gtf), $(inputs.genome_fa)]
 
 baseCommand: []
 arguments:
