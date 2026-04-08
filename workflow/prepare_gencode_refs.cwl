@@ -61,7 +61,8 @@ doc: |
   - `resource_manifest`: This file contains the URLs of all files downloaded. Mostly for recordkeeping purposes, it also ends up in the `star_fusion_genome` TAR
   - `gencode_genome`: GENCODE `*primary_assembly.fa` associated with the `gencode_version`
   - `gencode_annotation`: GENCODE `*primary_assembly.annotation.gtf.gz` associated with the `gencode_version`
-  - `gtex_collapsed_annotation`: Collapsed (i.e., combining all isoforms of a gene into a single transcript) version of `gencode_annotation` created using https://github.com/broadinstitute/gtex-pipeline/tree/master/gene_model with the `--stranded` parameter set
+  - `gtex_collapsed_annotation_stranded`: Collapsed (i.e., combining all isoforms of a gene into a single transcript) version of `gencode_annotation` created using https://github.com/broadinstitute/gtex-pipeline/tree/master/gene_model with the `--stranded` parameter set
+  - `gtex_collapsed_annotation_unstranded`: Collapsed (i.e., combining all isoforms of a gene into a single transcript) version of `gencode_annotation` created using https://github.com/broadinstitute/gtex-pipeline/tree/master/gene_model
   - `rsem_genome`: TAR of transcript references for RSEM created using the `gencode_genome` and `gencode_annotation`
   - `kallisto_idx`: IDX of the transcriptome FASTA within `rsem_genome` for Kallisto
   - `star_genome`: TAR of binary genome sequence, suffix arrays, text chromosome names/lengths, splice junctions coordinates, and transcripts/genes information made using STAR in `--runMode genomeGenerate` from `gencode_genome` and `gencode_annotation`
@@ -85,7 +86,8 @@ outputs:
   resource_manifest: {type: 'File', outputSource: download_gencode/manifest}
   gencode_genome: {type: 'File', outputSource: gunzip_genome/outfile}
   gencode_annotation: {type: 'File', outputSource: gunzip_annotation/outfile}
-  gtex_collapsed_annotation: {type: 'File', outputSource: gtex_collapse_annotation/collapsed_gtf}
+  gtex_collapsed_annotation_stranded: {type: 'File', outputSource: gtex_collapse_annotation_stranded/collapsed_gtf}
+  gtex_collapsed_annotation_unstranded: {type: 'File', outputSource: gtex_collapse_annotation_unstranded/collapsed_gtf}
   rsem_genome: {type: 'File', outputSource: rsem_generate_genome/genome_tar}
   kallisto_idx: {type: 'File', outputSource: kallisto_index/index}
   star_genome: {type: 'File', outputSource: star_genome_generate/star_ref}
@@ -128,7 +130,7 @@ steps:
         valueFrom: |
           $("RSEM_GENCODE" + inputs.gencode_version)
     out: [genome_tar, transcripts_fasta]
-  gtex_collapse_annotation:
+  gtex_collapse_annotation_stranded:
     run: ../tools/gtex_collapse_annotation.cwl
     in:
       gencode_version: gencode_version
@@ -139,6 +141,15 @@ steps:
       stranded:
         valueFrom: |
           $(true)
+    out: [collapsed_gtf]
+  gtex_collapse_annotation_unstranded:
+    run: ../tools/gtex_collapse_annotation.cwl
+    in:
+      gencode_version: gencode_version
+      gtf: download_gencode/gencode_annotation
+      output_filename:
+        valueFrom: |
+          $("gencode.v" + inputs.gencode_version + ".primary_assembly.rnaseqc.unstranded.gtf")
     out: [collapsed_gtf]
   star_genome_generate:
     run: ../tools/star_2.7.10a_genome_generate.cwl
