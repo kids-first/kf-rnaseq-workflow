@@ -44,7 +44,7 @@ inputs:
   pfam_db: { type: 'File', doc: "Pfam-A.hmm.gz (MUST BE GZIPPED) from from ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/" }
   dfam_db: { type: 'File', secondaryFiles: [{"pattern":".h3f", "required": true},{"pattern":".h3i", "required": true},{"pattern":".h3m", "required": true},{"pattern":".h3p", "required": true}], inputBinding: { position: 22, prefix: '--dfam_db' }, doc: "DNA transposable element database (Dfam.hmm), required for repeat masking. Obtain from http://dfam.org/releases/Dfam_3.1/infrastructure/dfamscan/" }
   output_dir: { type: 'string', default: "star_fusion", inputBinding: { position: 22, prefix: "--output_dir"}, doc: "Name for prep_genome_lib output directory. Will also serve as basename for TAR.GZ file." }
-  cpu: { type: 'int?', default: 32, inputBinding: { position: 22, prefix: '--CPU' }, doc: "CPUs to allocate to this task" }
+  cpu: { type: 'int?', default: 16, inputBinding: { position: 22, prefix: '--CPU' }, doc: "CPUs to allocate to this task" }
   ram: { type: 'int?', default: 64, doc: "Memory in GB to allocate to this task" }
 
 outputs:
