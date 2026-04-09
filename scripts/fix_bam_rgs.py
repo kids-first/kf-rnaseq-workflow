@@ -4,6 +4,10 @@ import argparse
 import pysam
 
 
+def first_not_none(*values):
+    return next((v for v in values if v is not None), None)
+
+
 def rg_from_qname(qname: str) -> str:
     parts = qname.split(":")
     if len(parts) < 2:
@@ -14,12 +18,8 @@ def rg_from_qname(qname: str) -> str:
 
 
 def pick_rg_defaults_from_header(header_dict: dict):
-    """
-    If the input header already has @RG lines, pick SM/LB/PL defaults from them.
-    We take the first non-empty value we find for each field.
-    """
     sm = lb = pl = None
-    for rg in header_dict.get("RG", []) or []:
+    for rg in header_dict.get("RG", []):
         if sm is None and rg.get("SM"):
             sm = rg.get("SM")
         if lb is None and rg.get("LB"):
@@ -31,34 +31,29 @@ def pick_rg_defaults_from_header(header_dict: dict):
     return sm, lb, pl
 
 
+def set_rg_field(rg: dict, key: str, value: str | None, force: bool) -> None:
+    if value is None:
+        return
+    if force:
+        rg[key] = value
+    else:
+        rg.setdefault(key, value)
+
+
 def ensure_rg_header_line(header_dict: dict, rg_id: str, sm: str, lb: str, pl: str,
                           force_sm: bool = False, force_lb: bool = False, force_pl: bool = False) -> None:
-    """
-    Ensure an @RG entry with ID exists. Fill SM/LB/PL if missing.
-    If force_* is True, overwrite that field.
-    """
+    # If RG already exists, update its info
     rg_list = header_dict.setdefault("RG", [])
     for rg in rg_list:
-        if rg.get("ID") == rg_id:
-            if force_sm and sm is not None:
-                rg["SM"] = sm
-            else:
-                if sm is not None:
-                    rg.setdefault("SM", sm)
+        if rg.get("ID") != rg_id:
+            continue
 
-            if force_lb and lb is not None:
-                rg["LB"] = lb
-            else:
-                if lb is not None:
-                    rg.setdefault("LB", lb)
+        set_rg_field(rg, "SM", sm, force_sm)
+        set_rg_field(rg, "LB", lb, force_lb)
+        set_rg_field(rg, "PL", pl, force_pl)
+        return
 
-            if force_pl and pl is not None:
-                rg["PL"] = pl
-            else:
-                if pl is not None:
-                    rg.setdefault("PL", pl)
-            return
-
+    # If RG does not exist, add it to the list
     new_rg = {"ID": rg_id}
     if sm is not None:
         new_rg["SM"] = sm
@@ -69,6 +64,14 @@ def ensure_rg_header_line(header_dict: dict, rg_id: str, sm: str, lb: str, pl: s
     rg_list.append(new_rg)
 
 
+def open_in_bam(path, reference, threads):
+    if path.lower().endswith(".cram"):
+        if not reference:
+            raise ValueError("CRAM input requires reference")
+        return pysam.AlignmentFile(path, "rc", reference_filename=reference, threads=threads)
+    return pysam.AlignmentFile(path, "rb", threads=threads)
+
+
 def main():
     ap = argparse.ArgumentParser(
         description="Fix/add RG tags based on QNAME and update @RG header lines."
@@ -77,7 +80,6 @@ def main():
     ap.add_argument("-o", "--output", required=True, help="Output BAM")
     ap.add_argument("-r", "--reference", default=None, help="Reference FASTA (required for CRAM; recommended for CRAM output)")
 
-    # Use None defaults so we can inherit from header when present
     ap.add_argument("--sm", default=None, help="Value for @RG SM (default: inherit from input header, else SAMPLE)")
     ap.add_argument("--lb", default=None, help="Value for @RG LB (default: inherit from input header, else LIB1)")
     ap.add_argument("--pl", default=None, help="Value for @RG PL (default: inherit from input header, else ILLUMINA)")
@@ -85,37 +87,31 @@ def main():
     ap.add_argument("-p", "--hts_threads", type=int, default=6, help="BAM compression/decompression threads")
     ap.add_argument("--fail-on-unknown-qname", action="store_true",
                     help="If set, abort when a QNAME cannot be parsed to derive RG.")
-    ap.add_argument("--keep-existing-header-rg", action="store_true",
-                    help="If set, keep all existing @RG lines; otherwise add missing ones only.")
     args = ap.parse_args()
-
-    if args.input.lower().endswith(".cram"):
-        if not args.reference:
-            raise ValueError("CRAM input requires reference")
-        in_bam = pysam.AlignmentFile(args.input, "rc", reference_filename=args.reference, threads=args.hts_threads)
-    else:
-        in_bam = pysam.AlignmentFile(args.input, "rb", threads=args.hts_threads)
-    header_dict = in_bam.header.to_dict()
-
-    # Derive defaults from header if present, but only for args the user did not set
-    hdr_sm, hdr_lb, hdr_pl = pick_rg_defaults_from_header(header_dict)
-
-    sm = args.sm if args.sm is not None else (hdr_sm if hdr_sm is not None else "SAMPLE")
-    lb = args.lb if args.lb is not None else (hdr_lb if hdr_lb is not None else "LIB1")
-    pl = args.pl if args.pl is not None else (hdr_pl if hdr_pl is not None else "ILLUMINA")
-
-    force_sm = args.sm is not None
-    force_lb = args.lb is not None
-    force_pl = args.pl is not None
-
-    if not args.keep_existing_header_rg:
-        header_dict.setdefault("RG", [])
 
     observed_rg_ids = set()
     stats = {"total": 0, "rg_missing_added": 0, "rg_mismatch_fixed": 0, "rg_already_ok": 0, "qname_parse_failed": 0}
 
-    try:
-        # Pass 1: collect RG IDs
+    # Pass 1: collect RG IDs + build updated header
+    with open_in_bam(args.input, args.reference, args.hts_threads) as in_bam:
+        # Get header and make sure it has RG fields
+        header_dict = in_bam.header.to_dict()
+        header_dict.setdefault("RG", [])
+
+        # Get SM, LB, and PL from existing RGs
+        hdr_sm, hdr_lb, hdr_pl = pick_rg_defaults_from_header(header_dict)
+
+        # Pick defaults for new RGs
+        sm = first_not_none(args.sm, hdr_sm, "SAMPLE")
+        lb = first_not_none(args.lb, hdr_lb, "LIB1")
+        pl = first_not_none(args.pl, hdr_pl, "ILLUMINA")
+
+        # If SM, LB, and PR are set via args, we will overwrite existing RG fields
+        force_sm = args.sm is not None
+        force_lb = args.lb is not None
+        force_pl = args.pl is not None
+
+        # collect RG IDs from input
         for read in in_bam.fetch(until_eof=True):
             stats["total"] += 1
             try:
@@ -127,20 +123,23 @@ def main():
                 continue
             observed_rg_ids.add(desired)
 
-        # Update header with observed RG IDs (fill/override SM/LB/PL as requested)
+        # Keep only RG header lines observed in input
+        existing_rg_lines = header_dict.get("RG", [])
+        header_dict["RG"] = [
+            rg for rg in existing_rg_lines
+            if rg.get("ID") in observed_rg_ids
+        ]
+
+        # Cleanup or add observed RGs to header
         for rg_id in sorted(observed_rg_ids):
             ensure_rg_header_line(
                 header_dict, rg_id, sm, lb, pl,
                 force_sm=force_sm, force_lb=force_lb, force_pl=force_pl
             )
-        in_bam.close()
 
-        # Pass 2: write
-        if args.input.lower().endswith(".cram"):
-            in_bam = pysam.AlignmentFile(args.input, "rc", reference_filename=args.reference, threads=args.hts_threads)
-        else:
-            in_bam = pysam.AlignmentFile(args.input, "rb", threads=args.hts_threads)
-        out_bam = pysam.AlignmentFile(args.output, "wb", header=header_dict, threads=args.hts_threads)
+    # Pass 2: write output
+    with open_in_bam(args.input, args.reference, args.hts_threads) as in_bam, \
+         pysam.AlignmentFile(args.output, "wb", header=header_dict, threads=args.hts_threads) as out_bam:
 
         for read in in_bam.fetch(until_eof=True):
             try:
@@ -163,15 +162,6 @@ def main():
                     stats["rg_already_ok"] += 1
 
             out_bam.write(read)
-
-        out_bam.close()
-        in_bam.close()
-
-    finally:
-        try:
-            in_bam.close()
-        except Exception:
-            pass
 
     print(
         "Done.\n"
