@@ -6,10 +6,10 @@ import pysam
 
 def rg_from_qname(qname: str) -> str:
     parts = qname.split(":")
-    if len(parts) < 4:
+    if len(parts) < 2:
         raise ValueError(f"QNAME not Illumina-like (expected >=4 ':'-fields): {qname!r}")
-    flowcell = parts[2]
-    lane = parts[3]
+    flowcell = parts[0] if len(parts) < 6 else parts[2]
+    lane = parts[1] if len(parts) < 6 else parts[3]
     return f"{flowcell}_{lane}"
 
 

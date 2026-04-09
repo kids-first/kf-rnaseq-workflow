@@ -8,7 +8,7 @@ requirements:
     ramMin: $(inputs.ram * 1000)
     coresMin: $(inputs.cpu)
   - class: DockerRequirement
-    dockerPull: pgc-images.sbgenomics.com/danmiller/pysam:0.1.0
+    dockerPull: quay.io/biocontainers/pysam:0.23.3--py313hd07c5dd_2
   - class: InitialWorkDirRequirement
     listing:
       - entryname: fix_bam_rgs.py
@@ -26,8 +26,8 @@ inputs:
   cram_reference: { type: 'File?', inputBinding: {position: 2, prefix: "--reference"}, doc: "Reference to decode CRAMs" }
   output_basename: { type: 'string' }
   rg_sm: { type: 'string?', inputBinding: {position: 2, prefix: "--sm"}, doc: "Value for @RG SM (default: inherit from input header, else SAMPLE)" }
-  rg_pl: { type: 'string?', inputBinding: {position: 2, prefix: "--pl"}, doc: "Value for @RG PL (default: inherit from input header, else SAMPLE)" }
-  rg_lb: { type: 'string?', inputBinding: {position: 2, prefix: "--lb"}, doc: "Value for @RG LB (default: inherit from input header, else SAMPLE)" }
+  rg_pl: { type: 'string?', inputBinding: {position: 2, prefix: "--pl"}, doc: "Value for @RG PL (default: inherit from input header, else ILLUMINA)" }
+  rg_lb: { type: 'string?', inputBinding: {position: 2, prefix: "--lb"}, doc: "Value for @RG LB (default: inherit from input header, else LIB1)" }
   cpu: { type: 'int?', default: 8, inputBinding: {position: 2, prefix: "--hts_threads" }, doc: "Num processing threads to use" }
   ram: { type: 'int?', doc: "Num GB memory to make available", default: 16 }
 outputs:
