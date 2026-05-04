@@ -6,7 +6,7 @@ The GENCODE benchmark workflow generates a series of plots and other files used 
 the workflow will compare any two sets of KF RNAseq data. In total the workflow generates four plots; two are generated from the annoFuse inputs and two are
 generated from the RSEM gene results of the Kids First RNAseq pipeline. The first of these plots is a raw count comparison of the annoFuse fusions between 
 the two sets. For each sample, it shows the number of fusions that are shared or unique to each sample. The second of these plots is the first plot but
-rather than showing counts it shows percentage of total fusions. The third plot is a heatmap showing the correlation of RSEM TMP values among samples. The 
+rather than showing counts it shows percentage of total fusions. The third plot is a heatmap showing the correlation of RSEM TPM values among samples. The 
 fourth and final plot is an RSEM TPM tSNE plot for all the samples. In additon to the plot the workflow also returns the a CSV containing the raw correlation
 values used to generate the heatmap as well as a series of files that detail the fusions that are unique to each Sample and Set.
 
@@ -33,7 +33,7 @@ versions will result in:
 
 - `heatmap`: Heatmap plot comparing baseline and call samples by RSEM gene TPM values for ENSGs in the target_genes file
 - `corr`: Heatmap CSV comparing baseline and call samples by RSEM gene TPM values for ENSGs in the target_genes file
-- `tsne`: tSNE plot clustering baseline and call samples by RSEM gene TMP values for ENSGs in the target_genes files
+- `tsne`: tSNE plot clustering baseline and call samples by RSEM gene TPM values for ENSGs in the target_genes files
 - `fusion_comp_raw`: Stacked bar chart showing shared and unique fusions for each sample
 - `fusion_comp_pct`: Stacked bar chart showing percente of shared and unique fusions for each sample
 - `fusion_comp_uniqs`: Files with unique fusions for each sample x label
