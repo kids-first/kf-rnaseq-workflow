@@ -26,7 +26,7 @@ requirements:
           return null;
         }
   - class: ResourceRequirement
-    coresMin: $(inputs.cores)
+    coresMin: $(inputs.cpu)
   - class: DockerRequirement
     dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/stranded:1.1.0'
 baseCommand: []
@@ -50,7 +50,7 @@ inputs:
   kallisto_idx: {type: 'File', doc: "Specialized index of a **transcriptome** fasta file for kallisto"}
   n_reads: {type: 'int?', doc: "number of reads to sample", default: 200000}
   paired_end: { type: 'boolean?', doc: "Set to true if reads are paired end." }
-  cpu: { type: 'int?', default: 16, doc: "CPUs to allocate to this task" }
+  cpu: { type: 'int?', default: 8, doc: "CPUs to allocate to this task" }
 outputs:
   output:
     type: File

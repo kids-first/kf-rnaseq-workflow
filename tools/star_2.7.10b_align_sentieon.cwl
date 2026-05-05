@@ -13,7 +13,7 @@ requirements:
     ramMin: $(inputs.ram * 1000)
   - class: InitialWorkDirRequirement
     listing:
-    - entryname: reads_manifest.tsv
+    - entryname: $(inputs.outFileNamePrefix).reads_manifest.tsv
       entry: |
         $(inputs.reads_records.map(function(e) { return [e.reads1.path, (e.reads2 != null ? e.reads2.path : "-"), e.outSAMattrRGline].join('\t') }).join('\n'))
   - class: SchemaDefRequirement
@@ -35,7 +35,7 @@ arguments:
       && sentieon STAR
       --genomeDir ./$(inputs.genomeDir.nameroot.replace(".tar", ""))/
       --readFilesCommand $(inputs.reads_records.some(function(e) { return e.reads1.nameext == '.gz' }) ? 'zcat' : 'cat')
-      --readFilesManifest reads_manifest.tsv
+      --readFilesManifest $(inputs.outFileNamePrefix).reads_manifest.tsv
       --outFileNamePrefix $(inputs.outFileNamePrefix).
   - position: 20
     shellQuote: false
@@ -202,10 +202,10 @@ outputs:
   chimeric_sam_out: { type: 'File?', doc: "Deprecated output. Incompatible with certain options, has chimeric read alignments", outputBinding: {glob: '*Chimeric.out.sam'} }
   chimeric_junctions: { type: File, doc: "Chimeric junctions output file. May be used for downstream tools for fusion analysis", outputBinding: {glob: '*Chimeric.out.junction'} }
   gene_counts: { type: File, doc: "STAR-generated read counts by gene", outputBinding: {glob: '*ReadsPerGene.out.tab.gz'} }
-  reads_manifest: { type: File, doc: "Reads manifest file processed by STAR.", outputBinding: {glob: 'reads_manifest.tsv' }}
+  reads_manifest: { type: File, doc: "Reads manifest file processed by STAR.", outputBinding: {glob: '*reads_manifest.tsv' }}
 
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
 - class: "sbg:SaveLogs"
-  value: "reads_manifest.tsv"
+  value: "*reads_manifest.tsv"

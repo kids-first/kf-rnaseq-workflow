@@ -391,7 +391,7 @@ inputs:
   sentieon_license: {type: 'string?', default: "10.5.64.221:8990", doc: "License server host and port"}
   STARgenome: {type: File, doc: "Tar gzipped reference that will be unzipped at run time", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a7,
       name: STAR_2.7.10a_GENCODE39.tar.gz}}
-  runThreadN: {type: 'int?', default: 36, doc: "Adjust this value to change number of cores used by STAR."}
+  runThreadN: {type: 'int?', default: 16, doc: "Adjust this value to change number of cores used by STAR."}
   star_ram: { type: 'int?', default: 60, doc: "Min run time RAM to run STAR" }
   twopassMode: {type: ['null', {type: enum, name: twopassMode, symbols: ["Basic", "None"]}], default: "Basic", doc: "Enable two pass
       mode to detect novel splice events. Default is basic (on)."}
@@ -525,9 +525,9 @@ outputs:
   STAR_sorted_genomic_cram: {type: 'File', outputSource: samtools_bam_to_cram/output, doc: "STAR sorted and indexed genomic alignment
       cram"}
   STAR_chimeric_junctions: {type: 'File?', outputSource: star_fusion_1-10-1/chimeric_junction_compressed, doc: "STAR chimeric junctions"}
-  STAR_gene_count: {type: 'File', outputSource: star_2-7-10a/gene_counts, doc: "STAR genecounts"}
-  STAR_junctions_out: {type: 'File', outputSource: star_2-7-10a/junctions_out, doc: "STARjunction reads"}
-  STAR_final_log: {type: 'File', outputSource: star_2-7-10a/log_final_out, doc: "STAR metricslog file of unique, multi-mapping, unmapped,
+  STAR_gene_count: {type: 'File', outputSource: [star_2-7-10a/gene_counts, star_2-7-10b_sentieon/gene_counts], pickValue: first_non_null, doc: "STAR genecounts"}
+  STAR_junctions_out: {type: 'File', outputSource: [star_2-7-10a/junctions_out, star_2-7-10b_sentieon/junctions_out], pickValue: first_non_null, doc: "STARjunction reads"}
+  STAR_final_log: {type: 'File', outputSource: [star_2-7-10a/log_final_out, star_2-7-10b_sentieon/log_final_out], pickValue: first_non_null, doc: "STAR metricslog file of unique, multi-mapping, unmapped,
       and chimeric reads"}
   STAR-Fusion_results: {type: 'File', outputSource: star_fusion_1-10-1/abridged_coding, doc: "STAR fusion detection from chimeric
       reads"}
@@ -721,6 +721,9 @@ steps:
 
   samtools_sort:
     run: ../tools/samtools_v1.20_sort.cwl
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c7i.2xlarge
     in:
       unsorted_bam:
         source: [star_2-7-10a/genomic_bam_out, star_2-7-10b_sentieon/genomic_bam_out]
@@ -753,6 +756,9 @@ steps:
     out: [genotype_tsv]
   bam_strandness:
     run: ../tools/bam_strandness.cwl
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c7i.2xlarge
     in:
       input_bam: samtools_sort/sorted_bam
       annotation_gtf: gtf_anno
@@ -764,6 +770,9 @@ steps:
     out: [output, strandedness, read_length_median, read_length_stddev, is_paired_end]
   rmats:
     run: ../workflow/rmats_wf.cwl
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c7i.2xlarge
     in:
       gtf_annotation: gtf_anno
       sample_1_bams:
@@ -791,6 +800,9 @@ steps:
       filtered_retained_introns_jc, filtered_skipped_exons_jc]
   strand_parse:
     run: ../tools/expression_parse_strand_param.cwl
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c7i.xlarge
     in:
       wf_strand_param:
         source: [wf_strand_param, bam_strandness/strandedness]
@@ -873,6 +885,9 @@ steps:
     out: [RNASeQC_counts]
   kallisto:
     run: ../tools/kallisto_calc_expression.cwl
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c7i.2xlarge
     in:
       reads_records: preprocess_reads/processed_reads_record
       transcript_idx: kallisto_idx
@@ -935,6 +950,7 @@ hints:
 - RSEM
 - SE
 - STAR
+- T1K
 "sbg:links":
 - id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v5.1.0'
   label: github-release

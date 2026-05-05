@@ -18,7 +18,8 @@ arguments:
   - position: 1
     shellQuote: false
     valueFrom: >-
-      -C -o $(inputs.input_bam.nameroot).cram##idx##$(inputs.input_bam.nameroot).cram.crai
+      --write-index
+      -C -o $(inputs.input_bam.nameroot).cram
 inputs:
   reference: {type: File, secondaryFiles: [.fai], doc: "Reference fasta with associated fai index",
     inputBinding: {prefix: "-T", position: 2 }}
