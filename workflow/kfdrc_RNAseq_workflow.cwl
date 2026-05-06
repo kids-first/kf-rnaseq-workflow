@@ -305,7 +305,7 @@ doc: |
        double quotes around the `VALUE`. For example if you wanted a `DS` key with a
        `I love read groups` value, the entry would look like: `ID:xxx DS:"I love read
        groups"`. See the STAR documentation on `outSAMattrRGline` for complete details.
-  1. **Note**: If in the output logs you see `WARNING: not enough space allocated for transcript`, increase `alignTranscriptsPerReadNmax` to `50000`, `alignTranscriptsPerWindowNmax` to 500
+  1. **Note**: If in the `{outFileNamePrefix}.Log.out` you see `WARNING: not enough space allocated for transcript`, increase `alignTranscriptsPerReadNmax` to `50000`, `alignTranscriptsPerWindowNmax` to 500
   1. Suggested REFERENCE inputs are:
      - `reference_fasta`: [GRCh38.primary_assembly.genome.fa](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_39/GRCh38.primary_assembly.genome.fa.gz), will need to unzip
      - `gtf_anno`: [gencode.v39.primary_assembly.annotation.gtf](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_39/gencode.v39.primary_assembly.annotation.gtf.gz), will need to unzip
