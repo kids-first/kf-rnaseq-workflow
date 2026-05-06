@@ -22,8 +22,8 @@ samtools_bam_to_cram.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.20-multi-
 samtools_fastq.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.20-multi-arch
 samtools_head.cwl|staphb/samtools:1.20
 samtools_readlength_bam.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.20-multi-arch
+samtools_sort.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.20-multi-arch
 samtools_split.cwl|staphb/samtools:1.20
-samtools_v1.20_sort.cwl|pgc-images.sbgenomics.com/d3b-bixu/samtools:1.20-multi-arch
 star_2.7.10a_align.cwl|pgc-images.sbgenomics.com/d3b-bixu/star:2.7.10a
 star_2.7.10b_align_sentieon.cwl|pgc-images.sbgenomics.com/hdchen/sentieon:202503.01
 star_fusion_1.10.1_call.cwl|pgc-images.sbgenomics.com/d3b-bixu/star:fusion-1.10.1
