@@ -80,7 +80,7 @@ doc: |
   ## Usage
 
   ### Runtime Estimates:
-  Based on a test set of five input BAMs, CAVATICA compute and storage estimates:
+  Based on a test set of five input BAMs, in 2022, CAVATICA compute and storage estimates:
   - Typical 2 hour run time, 10 hours is a higher end possibility
   - Cost:
     - Pure spot instances with no terminations: $2.37 mean
@@ -155,7 +155,7 @@ doc: |
   users can leave these fields default. Kids First favors setting/overriding
   defaults with "arriba-heavy" specified in [STAR docs](docs/STAR_2.7.10a.md),
   however if it is not a tumor sample, then GTEx is preferred.
-  **New:** If a sentieon license server is provided, the Sentieon implementation of v2.7.10b wil be run.
+  As of v5.2.0, if a sentieon license server is provided, the Sentieon implementation of v2.7.10b wil be run.
   It is functionally equivalent and runs 2-3x times faster.
   Here are all of the available options for STAR:
   - `STARgenome`: TAR gzipped reference that will be unzipped at run time
@@ -355,11 +355,6 @@ doc: |
     - Two references needed if data are stranded vs. unstranded
     - Flag `--collapse_only` used for stranded
 
-  # [Kids First STAR Diploid Beta](docs/STAR_2.7.11b_DIPLOID.md)
-  This is an alternative alignment and quantification method currently in beta phase.
-  It uses DNA variant calls from a patient to create a "personal genome" for improved alignment.
-  See doc linked in section header.
-
 
 requirements:
 - class: ScatterFeatureRequirement
@@ -538,9 +533,9 @@ outputs:
   STAR_sorted_genomic_cram: {type: 'File', outputSource: samtools_bam_to_cram/output, doc: "STAR sorted and indexed genomic alignment
       cram"}
   STAR_chimeric_junctions: {type: 'File?', outputSource: star_fusion_1-10-1/chimeric_junction_compressed, doc: "STAR chimeric junctions"}
-  STAR_gene_count: {type: 'File', outputSource: [star_2-7-10a/gene_counts, star_2-7-10b_sentieon/gene_counts], pickValue: first_non_null, doc: "STAR genecounts"}
-  STAR_junctions_out: {type: 'File', outputSource: [star_2-7-10a/junctions_out, star_2-7-10b_sentieon/junctions_out], pickValue: first_non_null, doc: "STARjunction reads"}
-  STAR_final_log: {type: 'File', outputSource: [star_2-7-10a/log_final_out, star_2-7-10b_sentieon/log_final_out], pickValue: first_non_null, doc: "STAR metricslog file of unique, multi-mapping, unmapped,
+  STAR_gene_count: {type: 'File', outputSource: [star_2-7-10a/gene_counts, star_2-7-10b_sentieon/gene_counts], pickValue: the_only_non_null, doc: "STAR genecounts"}
+  STAR_junctions_out: {type: 'File', outputSource: [star_2-7-10a/junctions_out, star_2-7-10b_sentieon/junctions_out], pickValue: the_only_non_null, doc: "STARjunction reads"}
+  STAR_final_log: {type: 'File', outputSource: [star_2-7-10a/log_final_out, star_2-7-10b_sentieon/log_final_out], pickValue: the_only_non_null, doc: "STAR metricslog file of unique, multi-mapping, unmapped,
       and chimeric reads"}
   STAR-Fusion_results: {type: 'File', outputSource: star_fusion_1-10-1/abridged_coding, doc: "STAR fusion detection from chimeric
       reads"}
@@ -733,7 +728,7 @@ steps:
       transcriptome_bam_out]
 
   samtools_sort:
-    run: ../tools/samtools_v1.20_sort.cwl
+    run: ../tools/samtools_sort.cwl
     hints:
       - class: 'sbg:AWSInstanceType'
         value: c7i.2xlarge
@@ -965,5 +960,5 @@ hints:
 - STAR
 - T1K
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v5.1.0'
+- id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v5.2.0'
   label: github-release

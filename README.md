@@ -75,7 +75,7 @@ T1k v1.0.5 Genotype highly polymorphic genes (e.g. HLA) with bulk RNA-seq data.
 ## Usage
 
 ### Runtime Estimates:
-Based on a test set of five input BAMs, CAVATICA compute and storage estimates:
+Based on a test set of five input BAMs, in 2022, CAVATICA compute and storage estimates:
  - Typical 2 hour run time, 10 hours is a higher end possibility
  - Cost:
    - Pure spot instances with no terminations: $2.37 mean
@@ -150,7 +150,7 @@ STAR Align has many options available to the user at runtime. For the most part
 users can leave these fields default. Kids First favors setting/overriding
 defaults with "arriba-heavy" specified in [STAR docs](docs/STAR_2.7.10a.md),
 however if it is not a tumor sample, then GTEx is preferred.
-**New:** If a sentieon license server is provided, the Sentieon implementation of v2.7.10b wil be run.
+As of v5.2.0, if a sentieon license server is provided, the Sentieon implementation of v2.7.10b wil be run.
 It is functionally equivalent and runs 2-3x times faster.
 Here are all of the available options for STAR:
 - `STARgenome`: TAR gzipped reference that will be unzipped at run time
@@ -349,8 +349,3 @@ These are the defaults set by the workflow:
  - RNA-SEQc reference built using [collapse GTF script](https://github.com/broadinstitute/gtex-pipeline/blob/master/gene_model/collapse_annotation.py)
    - Two references needed if data are stranded vs. unstranded
    - Flag `--collapse_only` used for stranded
-
-# [Kids First STAR Diploid Beta](docs/STAR_2.7.11b_DIPLOID.md)
-This is an alternative alignment and quantification method currently in beta phase.
-It uses DNA variant calls from a patient to create a "personal genome" for improved alignment.
-See doc linked in section header.
