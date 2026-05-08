@@ -1,3 +1,44 @@
+#!/usr/bin/env Rscript
+#'
+#' t-SNE visualization of RNA-seq samples using RSEM TPM values
+#'
+#' This script performs an exploratory t-SNE analysis of RNA-seq samples
+#' based on gene-level TPM expression values produced by RSEM. Expression
+#' values are log2-transformed, filtered to retain expressed genes, scaled
+#' per gene, and embedded using t-SNE with Euclidean distance.
+#'
+#' The script is designed for sample-level quality control and comparison
+#' between two sets of samples. It supports gzip-compressed input files,
+#' robust gene ID normalization, and produces a publication-ready t-SNE
+#' scatter plot.
+#'
+#' Main steps:
+#'   1. Read RSEM gene-level TPM files (TSV or TSV.GZ).
+#'   2. Normalize gene identifiers by removing version suffixes.
+#'   3. Filter low-expression and zero-variance genes.
+#'   4. Log2-transform and scale expression values per gene.
+#'   5. Compute a t-SNE embedding of samples.
+#'   6. Generate a labeled t-SNE plot colored by sample set.
+#'
+#' Notes:
+#'   - t-SNE is an exploratory visualization; distances and clusters should
+#'     not be over-interpreted, especially for small sample sizes.
+#'   - Euclidean distance is used on scaled log2(TPM+1) values.
+#'
+#' Usage:
+#'   tsne_samples.R \\
+#'     --gene_list_path genes.tsv \\
+#'     --setA_name SetA --files_setA A1.tsv.gz A2.tsv.gz \\
+#'     --setB_name SetB --files_setB B1.tsv.gz B2.tsv.gz \\
+#'     --output_basename SetA_vs_SetB
+#'
+#' Outputs:
+#'   - <output_basename>.tsne_plot.png
+#'
+#' Requirements:
+#'   R >= 4.0, packages: readr, dplyr, tidyr, purrr, Rtsne, ggplot2, ggrepel
+#'
+
 suppressPackageStartupMessages({
   library(readr)
   library(dplyr)
@@ -10,8 +51,28 @@ suppressPackageStartupMessages({
   library(argparse)
 })
 
+
+#' Read an RSEM TPM file (optionally gzipped)
+#'
+#' Reads an RSEM gene-level expression file containing TPM values.
+#' The file may be plain TSV or gzip-compressed (.gz). Only the
+#' `gene_id` and `TPM` columns are retained.
+#'
+#' @param path Character string giving the path to a TSV or TSV.GZ file
+#'   with columns `gene_id` and `TPM`.
+#'
+#' @return A tibble with two columns:
+#' \describe{
+#'   \item{gene_id}{Gene identifier (e.g., Ensembl ID)}
+#'   \item{TPM}{Transcripts Per Million values}
+#' }
+#'
+#' @examples
+#' \dontrun{
+#' tpm <- read_rsem_tpm_gz("sample.rsem.genes.results.gz")
+#' head(tpm)
+#' }
 read_rsem_tpm_gz <- function(path) {
-  # Works for .gz directly
   read_tsv(path, show_col_types = FALSE, progress = FALSE) %>%
     select(gene_id, TPM)
 }
@@ -93,20 +154,26 @@ x <- x[, nzv, drop = FALSE]
 # scale genes
 x <- scale(x)
 
+# Warn for small groups
+if (nrow(x) < 6) {
+  warning("Very small sample size for t-SNE; interpretation may be unstable.")
+}
+
+
 # final safety: remove any remaining non-finite values
 ok <- is.finite(x)
 if (any(!ok)) {
   x <- x[, colSums(!ok) == 0, drop = FALSE]
 }
 
-sum(is.na(tpm_mat))
-sum(!is.finite(tpm_mat))
-dim(tpm_mat)
-
 # t-SNE (perplexity must be small for ~10 samples)
 set.seed(1)
 perp <- max(2, min(30, floor((nrow(x) - 1) / 3)))
 
+# t-SNE uses Euclidean distance on scaled log2(TPM+1)
+if (any(duplicated(x))) {
+  warning("Duplicate samples detected in expression matrix.")
+}
 ts <- Rtsne(x, perplexity = perp, pca = TRUE, check_duplicates = FALSE)
 
 emb <- as.data.frame(ts$Y)
