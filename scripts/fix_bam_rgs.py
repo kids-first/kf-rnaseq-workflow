@@ -321,6 +321,13 @@ def single_pass_fix_rg(
                 raise
             rg_id = None
 
+        # fail fast on late RG discovery
+        if out_bam is not None and rg_id is not None and rg_id not in observed_rg_ids:
+            raise RuntimeError(
+                f"Late discovery of RG {rg_id!r} after header finalization. "
+                "Try increasing --rg-buffer-reads or disable --single-pass for this input."
+            )
+
         if rg_id:
             if rg_id not in observed_rg_ids:
                 observed_rg_ids.add(rg_id)
@@ -411,7 +418,11 @@ def main() -> None:
         "--rg-buffer-reads",
         type=int,
         default=100000,
-        help="Max reads to buffer during RG discovery (single-pass only)"
+        help=(
+            "Maximum reads to buffer during RG discovery in single-pass mode. "
+            "Increasing this value reduces the chance of late RG discovery at the "
+            "cost of higher memory usage."
+        ),
     )
     args = ap.parse_args()
 

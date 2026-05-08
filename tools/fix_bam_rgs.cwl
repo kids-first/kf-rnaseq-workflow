@@ -29,7 +29,7 @@ inputs:
   rg_pl: { type: 'string?', inputBinding: {position: 2, prefix: "--pl"}, doc: "Value for @RG PL (default: inherit from input header, else ILLUMINA)" }
   rg_lb: { type: 'string?', inputBinding: {position: 2, prefix: "--lb"}, doc: "Value for @RG LB (default: inherit from input header, else LIB1)" }
   single_pass: { type: 'boolean?', inputBinding: {position: 2, prefix: "--single-pass"}, doc: "Use single-pass RG discovery with bounded buffering. Disables stats output" } 
-  extra_args: { type: 'string?', inputBinding: {position: 3}, doc: "Any extra args for this task." }
+  extra_args: { type: 'string?', inputBinding: {position: 3, shellQuote: false}, doc: "Any extra args for this task." }
   cpu: { type: 'int?', default: 8, inputBinding: {position: 2, prefix: "-p" }, doc: "Num processing threads to use" }
   ram: { type: 'int?', doc: "Num GB memory to make available", default: 16 }
 outputs:
