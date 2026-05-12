@@ -306,17 +306,16 @@ doc: |
        `I love read groups` value, the entry would look like: `ID:xxx DS:"I love read
        groups"`. See the STAR documentation on `outSAMattrRGline` for complete details.
   1. **Note**: If in the `{outFileNamePrefix}.Log.out` you see `WARNING: not enough space allocated for transcript`, increase `alignTranscriptsPerReadNmax` to `50000`, `alignTranscriptsPerWindowNmax` to 500
-  1. Suggested REFERENCE inputs are:
-     - `reference_fasta`: [GRCh38.primary_assembly.genome.fa](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_39/GRCh38.primary_assembly.genome.fa.gz), will need to unzip
-     - `gtf_anno`: [gencode.v39.primary_assembly.annotation.gtf](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_39/gencode.v39.primary_assembly.annotation.gtf.gz), will need to unzip
-     - `FusionGenome`: GRCh38_v39_CTAT_lib_Mar242022.CUSTOM.tar.gz. A custom library built using instructions from (https://github.com/STAR-Fusion/STAR-Fusion/wiki/installing-star-fusion#preparing-the-genome-resource-lib), using GENCODE 39 reference.
-     - `RNAseQC_GTF`: gencode.v39.primary_assembly.rnaseqc.stranded.gtf OR gencode.v39.primary_assembly.rnaseqc.unstranded.gtf, built using `gtf_anno` and following build instructions [here](https://github.com/broadinstitute/rnaseqc#usage) and [here](https://github.com/broadinstitute/gtex-pipeline/tree/master/gene_model)
-     - `RSEMgenome`: RSEM_GENCODE39.tar.gz, built using the `reference_fasta` and `gtf_anno`, following `GENCODE` instructions from [here](https://deweylab.github.io/RSEM/README.html), then creating a tar ball of the results.
-     - `STARgenome`: STAR_2.7.10a_GENCODE39.tar.gz, created using the star_2.7.10a_genome_generate.cwl tool, using the `reference_fasta`, `gtf_anno`, and setting `sjdbOverhang` to 100
-     - `kallisto_idx`: RSEM_GENCODE39.transcripts.kallisto.idx, built from RSEM GENCODE 39 transcript fasts, in `RSEMgenome` tar ball, following instructions from [here](https://pachterlab.github.io/kallisto/manual)
-     - `hla_rna_ref_seqs`: hla_v3.43.0_gencode_v39_rna_seq.fa, created using https://github.com/mourisl/T1K/blob/master/t1k-build.pl with [hla.dat v3.43.0](http://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/hla.dat) and [GENCODE v39 primary assembly GTF](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_39/gencode.v39.primary_assembly.annotation.gtf.gz)
-     - `hla_rna_gene_coords`: hla_v3.43.0_gencode_v39_rna_coord.fa, created using https://github.com/mourisl/T1K/blob/master/t1k-build.pl with [hla.dat v3.43.0](http://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/hla.dat) and [GENCODE v39 primary assembly GTF](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_39/gencode.v39.primary_assembly.annotation.gtf.gz)
-  1. rMATS requires the length of the reads in the sample. This workflow will attempt to estimate the read length based on a polling of reads. If the user wishes to override this value they can set `read_length_median` to their desired read length. Additionally, there is a `rmats_variable_read_length` boolean that users can set if their reads are not uniform in length. This workflow will poll the reads and set that value to true if it observes multiple read lengths. Like read length, user-provided input will override this guess.
+  1. GENCODE-based reference inputs corresponding to [these versions](./docs/KF_GENCODE_VERSIONS.tsv) can be made using [our workflow](./workflow/prepare_gencode_refs.cwl):
+     - `reference_fasta`: GRCh38.primary_assembly.genome.fa
+     - `gtf_anno`: gencode.v39.primary_assembly.annotation.gtf
+     - `FusionGenome`: GRCh38_v39_CTAT_lib_Mar242022.CUSTOM.tar.gz
+     - `RNAseQC_GTF`: gencode.v39.primary_assembly.rnaseqc.stranded.gtf OR gencode.v39.primary_assembly.rnaseqc.unstranded.gtf
+     - `RSEMgenome`: RSEM_GENCODE39.tar.gz
+     - `STARgenome`: STAR_2.7.10a_GENCODE39.tar.gz
+     - `kallisto_idx`: RSEM_GENCODE39.transcripts.kallisto.idx
+     - `hla_rna_ref_seqs`: hla_v3.43.0_gencode_v39_rna_seq.fa
+     - `hla_rna_gene_coords`: hla_v3.43.0_gencode_v39_rna_coord.fa  1. rMATS requires the length of the reads in the sample. This workflow will attempt to estimate the read length based on a polling of reads. If the user wishes to override this value they can set `read_length_median` to their desired read length. Additionally, there is a `rmats_variable_read_length` boolean that users can set if their reads are not uniform in length. This workflow will poll the reads and set that value to true if it observes multiple read lengths. Like read length, user-provided input will override this guess.
   1. While `output_basename`, `sample_name`, and the `*rg_str` inputs are optional, it is strongly recommended that the user provide these values for data quality purposes. If the user does not provide these values, the basename of the reads1 file will be substituted in their place.
      - `output_basename` and `sample_name` values will become `reads1.basename.split('.')[0]`
      - The STAR align `outSAMattrRGline` value will become:
@@ -346,15 +345,6 @@ doc: |
   - `rmats_filtered_retained_introns_jc`: Retained introns JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
   - `rmats_filtered_skipped_exons_jc`: Skipped exons JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
   - `t1k_genotype_tsv`: Genotyping results from T1k
-
-  ### Reference build notes
-  - STAR-Fusion reference built with command `/usr/local/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl --gtf gencode.v39.primary_assembly.annotation.gtf --annot_filter_rule ../AnnotFilterRule.pm --CPU 36 --fusion_annot_lib ../fusion_lib.Mar2021.dat.gz --genome_fa ../GRCh38.primary_assembly.genome.fa --output_dir GRCh38_v39_CTAT_lib_Mar242022.CUSTOM --human_gencode_filter --pfam_db current --dfam_db human 2> build.errs > build.out &`
-  - fusion_annotator_ref built by placing GRCh38_v39_CTAT_lib_Mar242022.CUSTOM/fusion_annot_lib.idx and GRCh38_v39_CTAT_lib_Mar242022.CUSTOM/blast_pairs.idx into its own tar ball
-  - kallisto index built using RSEM `RSEM_GENCODE39.transcripts.fa` file as transcriptome FASTA, using command: `kallisto index -i RSEM_GENCODE39.transcripts.kallisto.idx RSEM_GENCODE39.transcripts.fa`
-  - RNA-SEQc reference built using [collapse GTF script](https://github.com/broadinstitute/gtex-pipeline/blob/master/gene_model/collapse_annotation.py)
-    - Two references needed if data are stranded vs. unstranded
-    - Flag `--collapse_only` used for stranded
-
 
 requirements:
 - class: ScatterFeatureRequirement
