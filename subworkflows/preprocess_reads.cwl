@@ -82,6 +82,9 @@ steps:
     out: [trimmedReadsR1, trimmedReadsR2, cutadapt_stats]
   build_out_record:
     run: ../tools/build_reads_record.cwl
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c7i.xlarge
     in:
       reads1:
         source: [cutadapt_3-4/trimmedReadsR1, prepare_aligned_reads/reads1, reads_record]

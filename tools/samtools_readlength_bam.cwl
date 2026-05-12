@@ -11,7 +11,7 @@ requirements:
   - class: ShellCommandRequirement
   - class: InlineJavascriptRequirement
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.20-multi-arch'
 baseCommand: [samtools,view]
 arguments:
   - position: 1

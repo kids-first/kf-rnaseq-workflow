@@ -1,24 +1,29 @@
 cwlVersion: v1.2
 class: CommandLineTool
-id: star_2.7.10a_alignReads
-label: "STAR Aligner v2.7.10a"
+id: star-2.7.10b-alignReads-sentieon
+label: "STAR Aligner v2.7.10b Sentieon"
+doc: "Sentieon implementation of STAR."
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/star:2.7.10a'
+    dockerPull: 'pgc-images.sbgenomics.com/hdchen/sentieon:202503.01'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: $(inputs.runThreadN)
     ramMin: $(inputs.ram * 1000)
   - class: InitialWorkDirRequirement
     listing:
-    - entryname: reads_manifest.tsv
+    - entryname: $(inputs.outFileNamePrefix).reads_manifest.tsv
       entry: |
         $(inputs.reads_records.map(function(e) { return [e.reads1.path, (e.reads2 != null ? e.reads2.path : "-"), e.outSAMattrRGline].join('\t') }).join('\n'))
   - class: SchemaDefRequirement
     types:
     - $import: ../schema/reads_record_type.yml
-baseCommand: [tar, -I pigz, -xvf]
+  - class: EnvVarRequirement
+    envDef:
+    - envName: SENTIEON_LICENSE
+      envValue: $(inputs.sentieon_license)
+baseCommand: [tar, -xvf]
 arguments:
   - position: 1
     shellQuote: false
@@ -27,17 +32,18 @@ arguments:
   - position: 2
     shellQuote: false
     valueFrom: >-
-      && STAR
+      && sentieon STAR
       --genomeDir ./$(inputs.genomeDir.nameroot.replace(".tar", ""))/
       --readFilesCommand $(inputs.reads_records.some(function(e) { return e.reads1.nameext == '.gz' }) ? 'zcat' : 'cat')
-      --readFilesManifest reads_manifest.tsv
+      --readFilesManifest $(inputs.outFileNamePrefix).reads_manifest.tsv
       --outFileNamePrefix $(inputs.outFileNamePrefix).
-  - position: 4 
+  - position: 20
     shellQuote: false
     valueFrom: >-
-      && pigz *ReadsPerGene.out.tab *SJ.out.tab
+      && gzip *ReadsPerGene.out.tab *SJ.out.tab
 
 inputs:
+  sentieon_license: {type: string, doc: "License server host and port"}
   reads_records:
     type:
       type: array
@@ -190,16 +196,16 @@ outputs:
   log_progress_out: { type: File, doc: "Simple progress output. Can use to gauge speed and run time", outputBinding: {glob: '*Log.progress.out'} }
   log_out: { type: File, doc: "Contains a summary of all params used and reference files", outputBinding: {glob: '*Log.out'} }
   log_final_out: { type: File, doc: "Overall summary of read mapping statistics", outputBinding: {glob: '*Log.final.out'} }
-  genomic_bam_out: { type: File, doc: "UNSORTED read mapping to genomic coordinates", outputBinding: {glob: '*Aligned.out.bam'} }
+  genomic_bam_out: { type: 'File?', doc: "UNSORTED read mapping to genomic coordinates", outputBinding: {glob: '*Aligned.out.bam'} }
   junctions_out: { type: File, doc: "high confidence collapsed splice junctions in tab-delimited form", outputBinding: {glob: '*SJ.out.tab.gz'} }
   transcriptome_bam_out: { type: File, doc: "Read mapping to transcriptome", outputBinding: {glob: '*Aligned.toTranscriptome.out.bam'} }
   chimeric_sam_out: { type: 'File?', doc: "Deprecated output. Incompatible with certain options, has chimeric read alignments", outputBinding: {glob: '*Chimeric.out.sam'} }
   chimeric_junctions: { type: File, doc: "Chimeric junctions output file. May be used for downstream tools for fusion analysis", outputBinding: {glob: '*Chimeric.out.junction'} }
   gene_counts: { type: File, doc: "STAR-generated read counts by gene", outputBinding: {glob: '*ReadsPerGene.out.tab.gz'} }
-  reads_manifest: { type: File, doc: "Reads manifest file processed by STAR.", outputBinding: {glob: 'reads_manifest.tsv' }}
+  reads_manifest: { type: File, doc: "Reads manifest file processed by STAR.", outputBinding: {glob: '*reads_manifest.tsv' }}
 
 $namespaces:
   sbg: https://sevenbridges.com
 hints:
 - class: "sbg:SaveLogs"
-  value: "reads_manifest.tsv"
+  value: "*reads_manifest.tsv"

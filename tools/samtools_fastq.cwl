@@ -5,7 +5,7 @@ label: "Samtools bam/cram-to-fastq"
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.20-multi-arch'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: $(inputs.cores)

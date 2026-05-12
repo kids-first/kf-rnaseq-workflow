@@ -1,15 +1,15 @@
-cwlVersion: v1.0
+cwlVersion: v1.2
 class: CommandLineTool
-id: samtools_sort
-label: "Samtools coordinate sort bam"
+id: samtools_sort_bam
+doc: "Samtools v1.20 coordinate sort"
 requirements:
   - class: ShellCommandRequirement
   - class: DockerRequirement
-    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.9'
+    dockerPull: 'pgc-images.sbgenomics.com/d3b-bixu/samtools:1.20-multi-arch'
   - class: InlineJavascriptRequirement
   - class: ResourceRequirement
     coresMin: $(inputs.cores)
-    ramMin: ${ return inputs.cores * 1000 }
+    ramMin: ${ return inputs.cores * 1500 }
 
 baseCommand: [samtools]
 arguments:
@@ -18,26 +18,13 @@ arguments:
     valueFrom: >-
       sort $(inputs.unsorted_bam.path)
       -@ $(inputs.cores)
-      -m 1G
+      -m 1500M
       -O bam
-      > $(inputs.unsorted_bam.nameroot).sorted.bam &&
-      samtools
-      index
-      -@ $(inputs.cores)
-      $(inputs.unsorted_bam.nameroot).sorted.bam
-      $(inputs.unsorted_bam.nameroot).sorted.bai &&
-      ${
-        var cmd = "echo skip sorting chimeric bam";
-        if (inputs.chimeric_sam_out !== null){
-          var cmd = "samtools view -bh -@ " + inputs.cores + " " + inputs.chimeric_sam_out.path + " -o " + inputs.chimeric_sam_out.nameroot + ".bam";
-        }
-        return cmd;
-      }
-
+      --write-index
+      -o $(inputs.unsorted_bam.nameroot).sorted.bam##idx##$(inputs.unsorted_bam.nameroot).sorted.bai
 inputs:
-  cores: { type: 'int?', doc: "Num cores to use for sorting", default: 16}
+  cores: { type: 'int?', doc: "Num cores to use for sorting", default: 8}
   unsorted_bam: { type: File, doc: "Bam to sort, likely from STAR" }
-  chimeric_sam_out: { type: 'File?', doc: "chimeric bam file - created using v2.6 STAR, probably not in 2.7 STAR" }
 
 outputs:
   sorted_bam:
@@ -47,8 +34,4 @@ outputs:
   sorted_bai:
     type: File
     outputBinding:
-      glob: '*.sorted.bai'
-  chimeric_bam_out:
-    type: 'File?'
-    outputBinding:
-      glob: "${var out = ((inputs.chimeric_sam_out === null) ? null : inputs.chimeric_sam_out.nameroot + '.bam'); return out}"
+      glob: '*.bai'

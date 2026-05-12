@@ -29,6 +29,9 @@ outputs:
 steps:
   samtools_head_rg:
     run: ../tools/samtools_head.cwl
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c7i.xlarge
     in:
       input_bam:
         source: reads_record
@@ -39,6 +42,9 @@ steps:
   create_star_rg_line:
     run:
       cwlVersion: v1.2
+      hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c7i.xlarge
       class: CommandLineTool
       requirements: [{class: InlineJavascriptRequirement}]
       baseCommand: [echo, done]
@@ -62,6 +68,9 @@ steps:
     out: [rg_str]
   alignmentfile_pairedness:
     run: ../tools/alignmentfile_pairedness.cwl
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c7i.2xlarge
     in:
       input_reads:
         source: reads_record

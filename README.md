@@ -75,7 +75,7 @@ T1k v1.0.5 Genotype highly polymorphic genes (e.g. HLA) with bulk RNA-seq data.
 ## Usage
 
 ### Runtime Estimates:
-Based on a test set of five input BAMs, CAVATICA compute and storage estimates:
+Based on a test set of five input BAMs, in 2022, CAVATICA compute and storage estimates:
  - Typical 2 hour run time, 10 hours is a higher end possibility
  - Cost:
    - Pure spot instances with no terminations: $2.37 mean
@@ -149,8 +149,10 @@ converting them to BAM before running the workflow.
 STAR Align has many options available to the user at runtime. For the most part
 users can leave these fields default. Kids First favors setting/overriding
 defaults with "arriba-heavy" specified in [STAR docs](docs/STAR_2.7.10a.md),
-however if it is not a tumor sample, then GTEx is preferred. Here are all of
-the available options for STAR:
+however if it is not a tumor sample, then GTEx is preferred.
+As of v5.2.0, if a sentieon license server is provided, the Sentieon implementation of v2.7.10b wil be run.
+It is functionally equivalent and runs 2-3x times faster.
+Here are all of the available options for STAR:
 - `STARgenome`: TAR gzipped reference that will be unzipped at run time
 - `runThreadN`: Adjust this value to change number of cores used.
 - `twopassMode`: Enable two pass mode to detect novel splice events. Default is basic (on).
@@ -192,6 +194,8 @@ the available options for STAR:
 - `outFilterMultimapNmax`: max number of multiple alignments allowed for a read: if exceeded, the read is considered unmapped. ENCODE value is default. AR recommends 50
 - `peOverlapMMp`: maximum proportion of mismatched bases in the overlap area. SF recommends 0.1
 - `peOverlapNbasesMin`: minimum number of overlap bases to trigger mates merging and realignment. Specify >0 value to switch on the 'merging of overlapping mates' algorithm. SF recommends 12,  AR recommends 10
+- `alignTranscriptsPerReadNmax`: max number of diﬀerent alignments per read to consider, may need to adjust for WARNING: not enough space allocated for transcript
+- `alignTranscriptsPerWindowNmax`: max number of transcripts per window
 
 These are the defaults set by the workflow:
 - `runThreadN`: 36
@@ -234,6 +238,8 @@ These are the defaults set by the workflow:
 - `outFilterMultimapNmax`: 50
 - `peOverlapMMp`: 0.01
 - `peOverlapNbasesMin`: 10
+- `alignTranscriptsPerReadNmax`: 10000
+- `alignTranscriptsPerWindowNmax`: 100
 
 ### Arriba
 - `arriba_memory`: Mem intensive tool. Set in GB
@@ -276,17 +282,17 @@ These are the defaults set by the workflow:
    - For PE FASTQ input, please enter the reads 1 file in `reads1` and the reads 2 file in `reads2`.
    - For SE FASTQ input, enter the single ends reads file in `reads1` and leave `reads2` empty as it is optional.
    - For alignment input (SAM/BAM/CRAM), please enter the reads file in `reads1` and leave `reads2` empty as it is optional.
-2. `r1_adapter` and `r2_adapter` are OPTIONAL:
+1. `r1_adapter` and `r2_adapter` are OPTIONAL:
    - If the input reads have already been trimmed, leave these as null and cutadapt step will simple pass on the FASTQ files to STAR.
    - If they do need trimming, supply the adapters and the cutadapt step will trim, and pass trimmed FASTQs along.
    - `min_len` if adapter is trimmed, currently set to min `20` bp. Change this as you see fit
    - `quality_base` set to Phred scale `33` by default if trimming. There was a weird time when `64` was used - change if different
    - `quality_cutoff` if adapter is trimmed and you want to set a min bp quality. A single value will apply to both paired ends, 2 values will allow you to assign a different one to each (unusual)
-3. `wf_strand_param` is now *optional* as the workflow will try to determine strandedness for you. Note: if the workflow fails to detect a strandedness, it will fail. If you would like to override autodetect, it is a workflow convenience param so that, if you input the following, the equivalent will propagate to the four tools that use that parameter:
+1. `wf_strand_param` is now *optional* as the workflow will try to determine strandedness for you. Note: if the workflow fails to detect a strandedness, it will fail. If you would like to override autodetect, it is a workflow convenience param so that, if you input the following, the equivalent will propagate to the four tools that use that parameter:
    - `default`: 'rsem_std': null, 'kallisto_std': null, 'rnaseqc_std': null, 'arriba_std': null. This means unstranded or auto in the case of arriba.
    - `rf-stranded`: 'rsem_std': 0, 'kallisto_std': 'rf-stranded', 'rnaseqc_std': 'rf', 'arriba_std': 'reverse'.  This means if read1 in the input FASTQ/BAM is reverse complement to the transcript that it maps to.
    - `fr-stranded`: 'rsem_std': 1, 'kallisto_std': 'fr-stranded', 'rnaseqc_std': 'fr', 'arriba_std': 'yes'. This means if read1 in the input FASTQ/BAM is the same sense (maps 5' to 3') to the transcript that it maps to.
-4. Suggested STAR `outSAMattrRGline` format is `ID:sample_name LB:aliquot_id   PL:platform SM:BSID`:
+1. Suggested STAR `outSAMattrRGline` format is `ID:sample_name LB:aliquot_id   PL:platform SM:BSID`:
    - For example, `ID:7316-242 LB:750189 PL:ILLUMINA SM:BS_W72364MN`
    - These `KEY:VALUE` fields can be separated by either a whitespace or tab
      character. Any unquoted whitespace will be automatically converted to a tab
@@ -294,7 +300,8 @@ These are the defaults set by the workflow:
      double quotes around the `VALUE`. For example if you wanted a `DS` key with a
      `I love read groups` value, the entry would look like: `ID:xxx DS:"I love read
      groups"`. See the STAR documentation on `outSAMattrRGline` for complete details.
-5. GENCODE-based reference inputs corresponding to [these versions](./docs/KF_GENCODE_VERSIONS.tsv) can be made using [our workflow](./workflow/prepare_gencode_refs.cwl):
+1. **Note**: If in the `{outFileNamePrefix}.Log.out` you see `WARNING: not enough space allocated for transcript`, increase `alignTranscriptsPerReadNmax` to `50000`, `alignTranscriptsPerWindowNmax` to 500
+1. GENCODE-based reference inputs corresponding to [these versions](./docs/KF_GENCODE_VERSIONS.tsv) can be made using [our workflow](./workflow/prepare_gencode_refs.cwl):
    - `reference_fasta`: GRCh38.primary_assembly.genome.fa
    - `gtf_anno`: gencode.v39.primary_assembly.annotation.gtf
    - `FusionGenome`: GRCh38_v39_CTAT_lib_Mar242022.CUSTOM.tar.gz
@@ -304,8 +311,8 @@ These are the defaults set by the workflow:
    - `kallisto_idx`: RSEM_GENCODE39.transcripts.kallisto.idx
    - `hla_rna_ref_seqs`: hla_v3.43.0_gencode_v39_rna_seq.fa
    - `hla_rna_gene_coords`: hla_v3.43.0_gencode_v39_rna_coord.fa
-6. rMATS requires the length of the reads in the sample. This workflow will attempt to estimate the read length based on a polling of reads. If the user wishes to override this value they can set `read_length_median` to their desired read length. Additionally, there is a `rmats_variable_read_length` boolean that users can set if their reads are not uniform in length. This workflow will poll the reads and set that value to true if it observes multiple read lengths. Like read length, user-provided input will override this guess.
-7. While `output_basename`, `sample_name`, and the `*rg_str` inputs are optional, it is strongly recommended that the user provide these values for data quality purposes. If the user does not provide these values, the basename of the reads1 file will be substituted in their place.
+1. rMATS requires the length of the reads in the sample. This workflow will attempt to estimate the read length based on a polling of reads. If the user wishes to override this value they can set `read_length_median` to their desired read length. Additionally, there is a `rmats_variable_read_length` boolean that users can set if their reads are not uniform in length. This workflow will poll the reads and set that value to true if it observes multiple read lengths. Like read length, user-provided input will override this guess.
+1. While `output_basename`, `sample_name`, and the `*rg_str` inputs are optional, it is strongly recommended that the user provide these values for data quality purposes. If the user does not provide these values, the basename of the reads1 file will be substituted in their place.
    - `output_basename` and `sample_name` values will become `reads1.basename.split('.')[0]`
    - The STAR align `outSAMattrRGline` value will become:
       - For aligned reads inputs, we will use the RG line set in the BAM header (the `SM` value will be set to what we described above
@@ -334,8 +341,3 @@ These are the defaults set by the workflow:
 - `rmats_filtered_retained_introns_jc`: Retained introns JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
 - `rmats_filtered_skipped_exons_jc`: Skipped exons JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
 - `t1k_genotype_tsv`: Genotyping results from T1k
-
-# [Kids First STAR Diploid Beta](docs/STAR_2.7.11b_DIPLOID.md)
-This is an alternative alignment and quantification method currently in beta phase.
-It uses DNA variant calls from a patient to create a "personal genome" for improved alignment.
-See doc linked in section header.

@@ -80,15 +80,15 @@ doc: |
   ## Usage
 
   ### Runtime Estimates:
-  Based on a test set of five input BAMs, CAVATICA compute and storage estimates:
-   - Typical 2 hour run time, 10 hours is a higher end possibility
-   - Cost:
-     - Pure spot instances with no terminations: $2.37 mean
-     - Pure on-demand: $5.19 mean
-     - Warning: If spot instance kill rate is high, especially for `c5.9xlarge` instance type, the cost could end up greater than on-demand
-   - Storage:
-     - Total output size 6GB mean
-     - Storage estimate ~ $0.14 per month
+  Based on a test set of five input BAMs, in 2022, CAVATICA compute and storage estimates:
+  - Typical 2 hour run time, 10 hours is a higher end possibility
+  - Cost:
+    - Pure spot instances with no terminations: $2.37 mean
+    - Pure on-demand: $5.19 mean
+    - Warning: If spot instance kill rate is high, especially for `c5.9xlarge` instance type, the cost could end up greater than on-demand
+  - Storage:
+    - Total output size 6GB mean
+    - Storage estimate ~ $0.14 per month
 
   ## Inputs
 
@@ -154,8 +154,10 @@ doc: |
   STAR Align has many options available to the user at runtime. For the most part
   users can leave these fields default. Kids First favors setting/overriding
   defaults with "arriba-heavy" specified in [STAR docs](docs/STAR_2.7.10a.md),
-  however if it is not a tumor sample, then GTEx is preferred. Here are all of
-  the available options for STAR:
+  however if it is not a tumor sample, then GTEx is preferred.
+  As of v5.2.0, if a sentieon license server is provided, the Sentieon implementation of v2.7.10b wil be run.
+  It is functionally equivalent and runs 2-3x times faster.
+  Here are all of the available options for STAR:
   - `STARgenome`: TAR gzipped reference that will be unzipped at run time
   - `runThreadN`: Adjust this value to change number of cores used.
   - `twopassMode`: Enable two pass mode to detect novel splice events. Default is basic (on).
@@ -197,6 +199,8 @@ doc: |
   - `outFilterMultimapNmax`: max number of multiple alignments allowed for a read: if exceeded, the read is considered unmapped. ENCODE value is default. AR recommends 50
   - `peOverlapMMp`: maximum proportion of mismatched bases in the overlap area. SF recommends 0.1
   - `peOverlapNbasesMin`: minimum number of overlap bases to trigger mates merging and realignment. Specify >0 value to switch on the 'merging of overlapping mates' algorithm. SF recommends 12,  AR recommends 10
+  - `alignTranscriptsPerReadNmax`: max number of diﬀerent alignments per read to consider, may need to adjust for WARNING: not enough space allocated for transcript
+  - `alignTranscriptsPerWindowNmax`: max number of transcripts per window
 
   These are the defaults set by the workflow:
   - `runThreadN`: 36
@@ -239,6 +243,8 @@ doc: |
   - `outFilterMultimapNmax`: 50
   - `peOverlapMMp`: 0.01
   - `peOverlapNbasesMin`: 10
+  - `alignTranscriptsPerReadNmax`: 10000
+  - `alignTranscriptsPerWindowNmax`: 100
 
   ### Arriba
   - `arriba_memory`: Mem intensive tool. Set in GB
@@ -281,17 +287,17 @@ doc: |
      - For PE FASTQ input, please enter the reads 1 file in `reads1` and the reads 2 file in `reads2`.
      - For SE FASTQ input, enter the single ends reads file in `reads1` and leave `reads2` empty as it is optional.
      - For alignment input (SAM/BAM/CRAM), please enter the reads file in `reads1` and leave `reads2` empty as it is optional.
-  2. `r1_adapter` and `r2_adapter` are OPTIONAL:
+  1. `r1_adapter` and `r2_adapter` are OPTIONAL:
      - If the input reads have already been trimmed, leave these as null and cutadapt step will simple pass on the FASTQ files to STAR.
      - If they do need trimming, supply the adapters and the cutadapt step will trim, and pass trimmed FASTQs along.
      - `min_len` if adapter is trimmed, currently set to min `20` bp. Change this as you see fit
      - `quality_base` set to Phred scale `33` by default if trimming. There was a weird time when `64` was used - change if different
      - `quality_cutoff` if adapter is trimmed and you want to set a min bp quality. A single value will apply to both paired ends, 2 values will allow you to assign a different one to each (unusual)
-  3. `wf_strand_param` is now *optional* as the workflow will try to determine strandedness for you. Note: if the workflow fails to detect a strandedness, it will fail. If you would like to override autodetect, it is a workflow convenience param so that, if you input the following, the equivalent will propagate to the four tools that use that parameter:
+  1. `wf_strand_param` is now *optional* as the workflow will try to determine strandedness for you. Note: if the workflow fails to detect a strandedness, it will fail. If you would like to override autodetect, it is a workflow convenience param so that, if you input the following, the equivalent will propagate to the four tools that use that parameter:
      - `default`: 'rsem_std': null, 'kallisto_std': null, 'rnaseqc_std': null, 'arriba_std': null. This means unstranded or auto in the case of arriba.
      - `rf-stranded`: 'rsem_std': 0, 'kallisto_std': 'rf-stranded', 'rnaseqc_std': 'rf', 'arriba_std': 'reverse'.  This means if read1 in the input FASTQ/BAM is reverse complement to the transcript that it maps to.
      - `fr-stranded`: 'rsem_std': 1, 'kallisto_std': 'fr-stranded', 'rnaseqc_std': 'fr', 'arriba_std': 'yes'. This means if read1 in the input FASTQ/BAM is the same sense (maps 5' to 3') to the transcript that it maps to.
-  4. Suggested STAR `outSAMattrRGline` format is `ID:sample_name LB:aliquot_id   PL:platform SM:BSID`:
+  1. Suggested STAR `outSAMattrRGline` format is `ID:sample_name LB:aliquot_id   PL:platform SM:BSID`:
      - For example, `ID:7316-242 LB:750189 PL:ILLUMINA SM:BS_W72364MN`
      - These `KEY:VALUE` fields can be separated by either a whitespace or tab
        character. Any unquoted whitespace will be automatically converted to a tab
@@ -299,22 +305,22 @@ doc: |
        double quotes around the `VALUE`. For example if you wanted a `DS` key with a
        `I love read groups` value, the entry would look like: `ID:xxx DS:"I love read
        groups"`. See the STAR documentation on `outSAMattrRGline` for complete details.
-  5. Suggested REFERENCE inputs are:
-     - `reference_fasta`: [GRCh38.primary_assembly.genome.fa](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_39/GRCh38.primary_assembly.genome.fa.gz), will need to unzip
-     - `gtf_anno`: [gencode.v39.primary_assembly.annotation.gtf](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_39/gencode.v39.primary_assembly.annotation.gtf.gz), will need to unzip
-     - `FusionGenome`: GRCh38_v39_CTAT_lib_Mar242022.CUSTOM.tar.gz. A custom library built using instructions from (https://github.com/STAR-Fusion/STAR-Fusion/wiki/installing-star-fusion#preparing-the-genome-resource-lib), using GENCODE 39 reference.
-     - `RNAseQC_GTF`: gencode.v39.primary_assembly.rnaseqc.stranded.gtf OR gencode.v39.primary_assembly.rnaseqc.unstranded.gtf, built using `gtf_anno` and following build instructions [here](https://github.com/broadinstitute/rnaseqc#usage) and [here](https://github.com/broadinstitute/gtex-pipeline/tree/master/gene_model)
-     - `RSEMgenome`: RSEM_GENCODE39.tar.gz, built using the `reference_fasta` and `gtf_anno`, following `GENCODE` instructions from [here](https://deweylab.github.io/RSEM/README.html), then creating a tar ball of the results.
-     - `STARgenome`: STAR_2.7.10a_GENCODE39.tar.gz, created using the star_2.7.10a_genome_generate.cwl tool, using the `reference_fasta`, `gtf_anno`, and setting `sjdbOverhang` to 100
-     - `kallisto_idx`: RSEM_GENCODE39.transcripts.kallisto.idx, built from RSEM GENCODE 39 transcript fasts, in `RSEMgenome` tar ball, following instructions from [here](https://pachterlab.github.io/kallisto/manual)
-     - `hla_rna_ref_seqs`: hla_v3.43.0_gencode_v39_rna_seq.fa, created using https://github.com/mourisl/T1K/blob/master/t1k-build.pl with [hla.dat v3.43.0](http://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/hla.dat) and [GENCODE v39 primary assembly GTF](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_39/gencode.v39.primary_assembly.annotation.gtf.gz)
-     - `hla_rna_gene_coords`: hla_v3.43.0_gencode_v39_rna_coord.fa, created using https://github.com/mourisl/T1K/blob/master/t1k-build.pl with [hla.dat v3.43.0](http://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/hla.dat) and [GENCODE v39 primary assembly GTF](https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_39/gencode.v39.primary_assembly.annotation.gtf.gz)
-  6. rMATS requires the length of the reads in the sample. This workflow will attempt to estimate the read length based on a polling of reads. If the user wishes to override this value they can set `read_length_median` to their desired read length. Additionally, there is a `rmats_variable_read_length` boolean that users can set if their reads are not uniform in length. This workflow will poll the reads and set that value to true if it observes multiple read lengths. Like read length, user-provided input will override this guess.
-  7. While `output_basename`, `sample_name`, and the `*rg_str` inputs are optional, it is strongly recommended that the user provide these values for data quality purposes. If the user does not provide these values, the basename of the reads1 file will be substituted in their place.
+  1. **Note**: If in the `{outFileNamePrefix}.Log.out` you see `WARNING: not enough space allocated for transcript`, increase `alignTranscriptsPerReadNmax` to `50000`, `alignTranscriptsPerWindowNmax` to 500
+  1. GENCODE-based reference inputs corresponding to [these versions](./docs/KF_GENCODE_VERSIONS.tsv) can be made using [our workflow](./workflow/prepare_gencode_refs.cwl):
+     - `reference_fasta`: GRCh38.primary_assembly.genome.fa
+     - `gtf_anno`: gencode.v39.primary_assembly.annotation.gtf
+     - `FusionGenome`: GRCh38_v39_CTAT_lib_Mar242022.CUSTOM.tar.gz
+     - `RNAseQC_GTF`: gencode.v39.primary_assembly.rnaseqc.stranded.gtf OR gencode.v39.primary_assembly.rnaseqc.unstranded.gtf
+     - `RSEMgenome`: RSEM_GENCODE39.tar.gz
+     - `STARgenome`: STAR_2.7.10a_GENCODE39.tar.gz
+     - `kallisto_idx`: RSEM_GENCODE39.transcripts.kallisto.idx
+     - `hla_rna_ref_seqs`: hla_v3.43.0_gencode_v39_rna_seq.fa
+     - `hla_rna_gene_coords`: hla_v3.43.0_gencode_v39_rna_coord.fa  1. rMATS requires the length of the reads in the sample. This workflow will attempt to estimate the read length based on a polling of reads. If the user wishes to override this value they can set `read_length_median` to their desired read length. Additionally, there is a `rmats_variable_read_length` boolean that users can set if their reads are not uniform in length. This workflow will poll the reads and set that value to true if it observes multiple read lengths. Like read length, user-provided input will override this guess.
+  1. While `output_basename`, `sample_name`, and the `*rg_str` inputs are optional, it is strongly recommended that the user provide these values for data quality purposes. If the user does not provide these values, the basename of the reads1 file will be substituted in their place.
      - `output_basename` and `sample_name` values will become `reads1.basename.split('.')[0]`
      - The STAR align `outSAMattrRGline` value will become:
-        - For aligned reads inputs, we will use the RG line set in the BAM header (the `SM` value will be set to what we described above
-        - For FASTQ inputs, `ID:reads1.basename.split('.')[0]_1 LB:reads1.basename.split('.')[0] SM:reads1.basename.split('.')[0] PL:Illumina`
+         - For aligned reads inputs, we will use the RG line set in the BAM header (the `SM` value will be set to what we described above
+         - For FASTQ inputs, `ID:reads1.basename.split('.')[0]_1 LB:reads1.basename.split('.')[0] SM:reads1.basename.split('.')[0] PL:Illumina`
      - Additionally for FASTQ inputs, if no `outSAMattrRGline` input is provided a disclaimer will be added to the `@RG` header line that reads: `DS:Values for this read group were auto-generated and may not reflect the true read group information.`
 
   ## Outputs
@@ -339,14 +345,6 @@ doc: |
   - `rmats_filtered_retained_introns_jc`: Retained introns JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
   - `rmats_filtered_skipped_exons_jc`: Skipped exons JC.txt output from RMATs containing only those calls with 10 or more junction spanning read counts of support
   - `t1k_genotype_tsv`: Genotyping results from T1k
-
-  ### Reference build notes
-   - STAR-Fusion reference built with command `/usr/local/STAR-Fusion/ctat-genome-lib-builder/prep_genome_lib.pl --gtf gencode.v39.primary_assembly.annotation.gtf --annot_filter_rule ../AnnotFilterRule.pm --CPU 36 --fusion_annot_lib ../fusion_lib.Mar2021.dat.gz --genome_fa ../GRCh38.primary_assembly.genome.fa --output_dir GRCh38_v39_CTAT_lib_Mar242022.CUSTOM --human_gencode_filter --pfam_db current --dfam_db human 2> build.errs > build.out &`
-   - fusion_annotator_ref built by placing GRCh38_v39_CTAT_lib_Mar242022.CUSTOM/fusion_annot_lib.idx and GRCh38_v39_CTAT_lib_Mar242022.CUSTOM/blast_pairs.idx into its own tar ball
-   - kallisto index built using RSEM `RSEM_GENCODE39.transcripts.fa` file as transcriptome FASTA, using command: `kallisto index -i RSEM_GENCODE39.transcripts.kallisto.idx RSEM_GENCODE39.transcripts.fa`
-   - RNA-SEQc reference built using [collapse GTF script](https://github.com/broadinstitute/gtex-pipeline/blob/master/gene_model/collapse_annotation.py)
-     - Two references needed if data are stranded vs. unstranded
-     - Flag `--collapse_only` used for stranded
 
 requirements:
 - class: ScatterFeatureRequirement
@@ -388,9 +386,11 @@ inputs:
   read_length_median: {type: 'int?', doc: "The median read length for the reads provided."}
   read_length_stddev: {type: 'float?', doc: "Standard Deviation of the median read length."}
   samtools_fastq_cores: {type: 'int?', doc: "Num cores for align2fastq conversion, if input is an alignment file", default: 16}
+  sentieon_license: {type: 'string?', default: "10.5.64.221:8990", doc: "License server host and port"}
   STARgenome: {type: File, doc: "Tar gzipped reference that will be unzipped at run time", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a7,
       name: STAR_2.7.10a_GENCODE39.tar.gz}}
-  runThreadN: {type: 'int?', default: 36, doc: "Adjust this value to change number of cores used by STAR."}
+  runThreadN: {type: 'int?', default: 16, doc: "Adjust this value to change number of cores used by STAR."}
+  star_ram: { type: 'int?', default: 60, doc: "Min run time RAM to run STAR" }
   twopassMode: {type: ['null', {type: enum, name: twopassMode, symbols: ["Basic", "None"]}], default: "Basic", doc: "Enable two pass
       mode to detect novel splice events. Default is basic (on)."}
   alignSJoverhangMin: {type: 'int?', default: 8, doc: "minimum overhang for unannotated junctions. ENCODE default used."}
@@ -481,6 +481,9 @@ inputs:
   peOverlapMMp: {type: 'float?', default: 0.01, doc: "maximum proportion of mismatched bases in the overlap area. SF recommends 0.1"}
   peOverlapNbasesMin: {type: 'int?', default: 10, doc: "minimum number of overlap bases to trigger mates merging and realignment.
       Specify >0 value to switch on the 'merging of overlapping mates'algorithm. SF recommends 12,  AR recommends 10"}
+  alignTranscriptsPerReadNmax: { type: 'int?', default: 10000, doc: "max number of diﬀerent alignments per read to consider, \
+    may need to adjust for WARNING: not enough space allocated for transcript" }
+  alignTranscriptsPerWindowNmax: { type: 'int?', default: 100, doc: "max number of transcripts per window" }
   arriba_memory: {type: 'int?', doc: "Mem intensive tool. Set in GB", default: 64}
   FusionGenome: {type: 'File', doc: "STAR-Fusion CTAT Genome lib", "sbg:suggestedValue": {class: File, path: 62853e7ad63f7c6d8d7ae5a8,
       name: GRCh38_v39_CTAT_lib_Mar242022.CUSTOM.tar.gz}}
@@ -520,9 +523,9 @@ outputs:
   STAR_sorted_genomic_cram: {type: 'File', outputSource: samtools_bam_to_cram/output, doc: "STAR sorted and indexed genomic alignment
       cram"}
   STAR_chimeric_junctions: {type: 'File?', outputSource: star_fusion_1-10-1/chimeric_junction_compressed, doc: "STAR chimeric junctions"}
-  STAR_gene_count: {type: 'File', outputSource: star_2-7-10a/gene_counts, doc: "STAR genecounts"}
-  STAR_junctions_out: {type: 'File', outputSource: star_2-7-10a/junctions_out, doc: "STARjunction reads"}
-  STAR_final_log: {type: 'File', outputSource: star_2-7-10a/log_final_out, doc: "STAR metricslog file of unique, multi-mapping, unmapped,
+  STAR_gene_count: {type: 'File', outputSource: [star_2-7-10a/gene_counts, star_2-7-10b_sentieon/gene_counts], pickValue: the_only_non_null, doc: "STAR genecounts"}
+  STAR_junctions_out: {type: 'File', outputSource: [star_2-7-10a/junctions_out, star_2-7-10b_sentieon/junctions_out], pickValue: the_only_non_null, doc: "STARjunction reads"}
+  STAR_final_log: {type: 'File', outputSource: [star_2-7-10a/log_final_out, star_2-7-10b_sentieon/log_final_out], pickValue: the_only_non_null, doc: "STAR metricslog file of unique, multi-mapping, unmapped,
       and chimeric reads"}
   STAR-Fusion_results: {type: 'File', outputSource: star_fusion_1-10-1/abridged_coding, doc: "STAR fusion detection from chimeric
       reads"}
@@ -603,14 +606,18 @@ steps:
       output_basename: output_basename
       samtools_fastq_cores: samtools_fastq_cores
     out: [processed_reads_record, cutadapt_stats]
+  
   star_2-7-10a:
     # will get fastq from first non-null in this order - cutadapt, align2fastq, wf input
     run: ../tools/star_2.7.10a_align.cwl
+    when: $(inputs.sentieon_license == null)
     in:
+      sentieon_license: sentieon_license
       reads_records: preprocess_reads/processed_reads_record
       outFileNamePrefix: basename_picker/outname
       genomeDir: STARgenome
       runThreadN: runThreadN
+      ram: star_ram
       twopassMode: twopassMode
       alignSJoverhangMin: alignSJoverhangMin
       outFilterMismatchNoverLmax: outFilterMismatchNoverLmax
@@ -650,14 +657,76 @@ steps:
       outFilterMultimapNmax: outFilterMultimapNmax
       peOverlapMMp: peOverlapMMp
       peOverlapNbasesMin: peOverlapNbasesMin
+      alignTranscriptsPerReadNmax: alignTranscriptsPerReadNmax
+      alignTranscriptsPerWindowNmax: alignTranscriptsPerWindowNmax
     out: [chimeric_junctions, chimeric_sam_out, gene_counts, genomic_bam_out, junctions_out, log_final_out, log_out, log_progress_out,
       transcriptome_bam_out]
+
+  star_2-7-10b_sentieon:
+    # will get fastq from first non-null in this order - cutadapt, align2fastq, wf input
+    run: ../tools/star_2.7.10b_align_sentieon.cwl
+    when: $(inputs.sentieon_license != null)
+    in:
+      sentieon_license: sentieon_license
+      reads_records: preprocess_reads/processed_reads_record
+      outFileNamePrefix: basename_picker/outname
+      genomeDir: STARgenome
+      runThreadN: runThreadN
+      ram: star_ram
+      twopassMode: twopassMode
+      alignSJoverhangMin: alignSJoverhangMin
+      outFilterMismatchNoverLmax: outFilterMismatchNoverLmax
+      outFilterType: outFilterType
+      outFilterScoreMinOverLread: outFilterScoreMinOverLread
+      outFilterMatchNminOverLread: outFilterMatchNminOverLread
+      outReadsUnmapped: outReadsUnmapped
+      limitSjdbInsertNsj: limitSjdbInsertNsj
+      outSAMstrandField: outSAMstrandField
+      outFilterIntronMotifs: outFilterIntronMotifs
+      alignSoftClipAtReferenceEnds: alignSoftClipAtReferenceEnds
+      quantMode: quantMode
+      outSAMtype: outSAMtype
+      outSAMunmapped: outSAMunmapped
+      genomeLoad: genomeLoad
+      chimMainSegmentMultNmax: chimMainSegmentMultNmax
+      outSAMattributes: outSAMattributes
+      alignInsertionFlush: alignInsertionFlush
+      alignIntronMax: alignIntronMax
+      alignMatesGapMax: alignMatesGapMax
+      alignSJDBoverhangMin: alignSJDBoverhangMin
+      outFilterMismatchNmax: outFilterMismatchNmax
+      alignSJstitchMismatchNmax: alignSJstitchMismatchNmax
+      alignSplicedMateMapLmin: alignSplicedMateMapLmin
+      alignSplicedMateMapLminOverLmate: alignSplicedMateMapLminOverLmate
+      chimJunctionOverhangMin: chimJunctionOverhangMin
+      chimMultimapNmax: chimMultimapNmax
+      chimMultimapScoreRange: chimMultimapScoreRange
+      chimNonchimScoreDropMin: chimNonchimScoreDropMin
+      chimOutJunctionFormat: chimOutJunctionFormat
+      chimOutType: chimOutType
+      chimScoreDropMax: chimScoreDropMax
+      chimScoreJunctionNonGTAG: chimScoreJunctionNonGTAG
+      chimScoreSeparation: chimScoreSeparation
+      chimSegmentMin: chimSegmentMin
+      chimSegmentReadGapMax: chimSegmentReadGapMax
+      outFilterMultimapNmax: outFilterMultimapNmax
+      peOverlapMMp: peOverlapMMp
+      peOverlapNbasesMin: peOverlapNbasesMin
+      alignTranscriptsPerReadNmax: alignTranscriptsPerReadNmax
+      alignTranscriptsPerWindowNmax: alignTranscriptsPerWindowNmax
+    out: [chimeric_junctions, chimeric_sam_out, gene_counts, genomic_bam_out, junctions_out, log_final_out, log_out, log_progress_out,
+      transcriptome_bam_out]
+
   samtools_sort:
     run: ../tools/samtools_sort.cwl
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c7i.2xlarge
     in:
-      unsorted_bam: star_2-7-10a/genomic_bam_out
-      chimeric_sam_out: star_2-7-10a/chimeric_sam_out
-    out: [sorted_bam, sorted_bai, chimeric_bam_out]
+      unsorted_bam:
+        source: [star_2-7-10a/genomic_bam_out, star_2-7-10b_sentieon/genomic_bam_out]
+        pickValue: first_non_null
+    out: [sorted_bam, sorted_bai]
   t1k:
     run: ../tools/t1k.cwl
     when: $(inputs.run_t1k)
@@ -685,6 +754,9 @@ steps:
     out: [genotype_tsv]
   bam_strandness:
     run: ../tools/bam_strandness.cwl
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c7i.2xlarge
     in:
       input_bam: samtools_sort/sorted_bam
       annotation_gtf: gtf_anno
@@ -696,6 +768,9 @@ steps:
     out: [output, strandedness, read_length_median, read_length_stddev, is_paired_end]
   rmats:
     run: ../workflow/rmats_wf.cwl
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c7i.2xlarge
     in:
       gtf_annotation: gtf_anno
       sample_1_bams:
@@ -723,6 +798,9 @@ steps:
       filtered_retained_introns_jc, filtered_skipped_exons_jc]
   strand_parse:
     run: ../tools/expression_parse_strand_param.cwl
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c7i.xlarge
     in:
       wf_strand_param:
         source: [wf_strand_param, bam_strandness/strandedness]
@@ -731,7 +809,9 @@ steps:
   star_fusion_1-10-1:
     run: ../tools/star_fusion_1.10.1_call.cwl
     in:
-      Chimeric_junction: star_2-7-10a/chimeric_junctions
+      Chimeric_junction:
+        source: [star_2-7-10a/chimeric_junctions, star_2-7-10b_sentieon/chimeric_junctions]
+        pickValue: first_non_null
       genome_tar: FusionGenome
       output_basename: basename_picker/outname
       genome_untar_path: star_fusion_genome_untar_path
@@ -772,7 +852,9 @@ steps:
   rsem:
     run: ../tools/rsem_calc_expression.cwl
     in:
-      bam: star_2-7-10a/transcriptome_bam_out
+      bam:
+        source: [star_2-7-10a/transcriptome_bam_out, star_2-7-10b_sentieon/transcriptome_bam_out]
+        pickValue: first_non_null
       paired_end:
         source: bam_strandness/is_paired_end
       estimate_rspd: estimate_rspd
@@ -801,6 +883,9 @@ steps:
     out: [RNASeQC_counts]
   kallisto:
     run: ../tools/kallisto_calc_expression.cwl
+    hints:
+      - class: 'sbg:AWSInstanceType'
+        value: c7i.2xlarge
     in:
       reads_records: preprocess_reads/processed_reads_record
       transcript_idx: kallisto_idx
@@ -863,6 +948,7 @@ hints:
 - RSEM
 - SE
 - STAR
+- T1K
 "sbg:links":
-- id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v5.1.0'
+- id: 'https://github.com/kids-first/kf-rnaseq-workflow/releases/tag/v5.2.0'
   label: github-release
