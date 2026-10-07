@@ -76,7 +76,7 @@ requirements:
 - class: InlineJavascriptRequirement
 - class: MultipleInputFeatureRequirement
 inputs:
-  gencode_version: {type: 'string?', default: 45, doc: "Version of GENCODE to download from https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/"}
+  gencode_version: {type: 'string', doc: "Version of GENCODE to download from https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/"}
   custom_gtf: {type: 'File?', doc: "Custom GTF.GZ to use rather than GENCODE primary_assembly.annotation.gtf.gz. Must be GZIPPED"}
   ctat_resource_version: {type: 'string', doc: "Version of CTAT resource SOURCE file to download from https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/"}
   ctat_fusion_version: {type: 'string', doc: "Version of CTAT fusion dat.gz to download from https://github.com/FusionAnnotator/CTAT_HumanFusionLib/releases"}
